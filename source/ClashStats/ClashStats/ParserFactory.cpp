@@ -7,15 +7,15 @@
 //
 
 #include "ParserFactory.hpp"
+#include "StringHelpers.hpp"
+#include "ParserV1.hpp"
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <iomanip>
-#include <cmath>
-#include <limits>
-#include "StringHelpers.hpp"
+
+#define VERSION_ONE		(1)
 
 Parser* ParserFactory::getParserForFile(const char *fileName)
 {
@@ -32,8 +32,11 @@ Parser* ParserFactory::getParserForFile(const char *fileName)
 		lineData.push_back(reduce(cell));
 	}
 	
-	
-	printf("hello world!\n");
+	if (atoi(lineData[1].c_str()) == VERSION_ONE)
+	{
+		return new ParserV1(fileName);
+	}
+
 	return NULL;
 }
 

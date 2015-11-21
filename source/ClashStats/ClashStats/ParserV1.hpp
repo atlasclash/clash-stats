@@ -15,6 +15,10 @@
 class ParserV1 : public Parser
 {
 public:
+	ParserV1(const char *fileName);
+	virtual ~ParserV1();
+	
+	virtual void ProcessWar();
 	
 protected:
 };

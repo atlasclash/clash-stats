@@ -10,12 +10,19 @@
 #define Parser_hpp
 
 #include <stdio.h>
+#include <fstream>
 
 class Parser
 {
 public:
+	Parser(const char *fileName);
+	virtual ~Parser();
+	
+	virtual void ProcessWar() = 0;
 	
 protected:
+	std::ifstream *m_dataFile;
+
 };
 
 #endif /* Parser_hpp */

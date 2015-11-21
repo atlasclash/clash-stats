@@ -11,7 +11,8 @@
 
 #include <stdio.h>
 #include "Singleton.h"
-#include "Parser.hpp"
+
+class Parser;
 
 class ParserFactory
 {

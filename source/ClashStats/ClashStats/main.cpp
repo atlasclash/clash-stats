@@ -8,12 +8,20 @@
 
 #include <iostream>
 #include "ParserFactory.hpp"
+#include "Parser.hpp"
 
 int main(int argc, const char * argv[])
 {
-	std::cout << "Hello, World!\n";
+
 	PARSER::Instantiate();
-	PARSER::GetInstance().getParserForFile(argv[1]);
+	Parser *parser = PARSER::GetInstance().getParserForFile(argv[1]);
+	if (parser == NULL)
+	{
+		std::cout << "Unable to parse file.\n";
+		return -1;
+	}
+	
+	parser->ProcessWar();
 	
     return 0;
 }

@@ -7,3 +7,14 @@
 //
 
 #include "Parser.hpp"
+
+
+Parser::Parser(const char *fileName)
+{
+	m_dataFile = new std::ifstream(fileName);
+}
+
+Parser::~Parser()
+{
+	delete m_dataFile;
+}
