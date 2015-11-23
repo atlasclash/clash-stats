@@ -12,13 +12,15 @@
 #include <stdio.h>
 #include "Parser.hpp"
 
+class WarData;
+
 class ParserV1 : public Parser
 {
 public:
 	ParserV1(const char *fileName);
 	virtual ~ParserV1();
 	
-	virtual void ProcessWar();
+	virtual void ProcessWar(WarData *warData);
 	
 protected:
 };

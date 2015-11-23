@@ -106,6 +106,7 @@ public:
 	// object.
 	// RETURNS: a pointer to the singleton
 	static _Type* InstancePtr()         { assert(sm_Instance); return  sm_Instance; }
+	
 	// PURPOSE: returns a pointer/reference to the singleton instance.
 	// Access members of the instance as you would members of any
 	// object.

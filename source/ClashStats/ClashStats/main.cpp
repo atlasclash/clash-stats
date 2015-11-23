@@ -9,6 +9,7 @@
 #include <iostream>
 #include "ParserFactory.hpp"
 #include "Parser.hpp"
+#include "WarData.hpp"
 
 int main(int argc, const char * argv[])
 {
@@ -21,7 +22,8 @@ int main(int argc, const char * argv[])
 		return -1;
 	}
 	
-	parser->ProcessWar();
+	WarData *p_warData = new WarData();
+	parser->ProcessWar(p_warData);
 	
     return 0;
 }

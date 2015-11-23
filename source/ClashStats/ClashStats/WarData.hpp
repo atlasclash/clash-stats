@@ -15,16 +15,38 @@
 #include "DataObject.hpp"
 #include "PlayerData.hpp"
 
+class AttackData;
+
 class WarData : public DataObject
 {
 public:
+	// Constructor / Destructor
+	WarData() {}
+	WarData(std::string clanName, std::string clanTag);
+	virtual ~WarData() {}
+	
+	// Access methods
+	void SetWarSize(const int size)			{ m_WarSize = size; }
+	int GetWarSize() const					{ return m_WarSize; }
+	
+	void SetWarDate(const std::string date) { m_DateStr = date; }
+	std::string GetWarDate() const			{ return m_DateStr; }
+
+	void SetClanName(const std::string name){ m_OpponentClanName = name; }
+	void SetClanTag(const std::string tag)	{ m_OpponentClanTag = tag; }
+	
+	void AddUsPlayer(const PlayerData *us);
+	void AddThemPlayer(const PlayerData *them);
+	void AddAttack(const AttackData *ad, const int attackerIndex);
+	void AddDefend(const AttackData *def, const int defenderIndex);
 	
 protected:
-	int							m_PlayerCount;
-	std::string					m_OpponentName;
-	std::string					m_DateStr;
-	std::vector<PlayerData*>	m_ThemList;
-	std::vector<PlayerData*>	m_UsList;
+	int							m_WarSize;										// number of players in the war
+	std::string					m_OpponentClanName;								// opponent clan name
+	std::string					m_OpponentClanTag;								// opponent clan tag, optional
+	std::string					m_DateStr;										// date of war (mm/dd/yy)
+	std::vector<PlayerData>		m_ThemList;										// list of players in enemy clan
+	std::vector<PlayerData>		m_UsList;										// list of players in our clan
 };
 
 #endif /* WarData_hpp */
