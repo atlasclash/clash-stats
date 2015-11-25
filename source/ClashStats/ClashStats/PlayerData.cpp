@@ -7,6 +7,7 @@
 //
 
 #include "PlayerData.hpp"
+#include "AttackData.hpp"
 
 PlayerData::PlayerData()
 : m_SpecialFlag(kSpecialNone)
@@ -72,3 +73,21 @@ void PlayerData::AddDefend(const AttackData *defend)
 	m_Defends.push_back(*defend);
 }
 
+const unsigned long PlayerData::GetAttackCount() const
+{
+	return m_Attacks.size();
+}
+
+const int PlayerData::GetMaxStarsGiven() const
+{
+	int max = 0;
+	for (int i = 0; i < m_Defends.size(); ++i)
+	{
+		if ((int)m_Defends[i].GetStars() > max)
+		{
+			max = (int)m_Defends[i].GetStars();
+		}
+	}
+	
+	return max;
+}

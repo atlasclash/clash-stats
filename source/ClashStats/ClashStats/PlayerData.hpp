@@ -15,6 +15,8 @@
 #include "DataObject.hpp"
 #include "AttackData.hpp"
 
+#define MAX_PLAYER_ATTACKS		(2)
+
 class PlayerData : public DataObject
 {
 public:
@@ -62,6 +64,9 @@ public:
 	// methods
 	void AddAttack(const AttackData *attack);
 	void AddDefend(const AttackData *defend);
+	
+	const unsigned long GetAttackCount() const;
+	const int GetMaxStarsGiven() const;
 	
 protected:
 	eTownHallLevel				m_TownHallLevel;

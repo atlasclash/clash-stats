@@ -8,6 +8,7 @@
 
 #include "WarData.hpp"
 #include <assert.h>
+#include <iostream>
 
 WarData::WarData(std::string clanName, std::string clanTag)
 {
@@ -63,4 +64,60 @@ void WarData::AddThemDefend(const AttackData *def, const int defenderIndex)
 {
 	assert(defenderIndex-1 >= 0 && defenderIndex-1 < m_UsList.size());
 	m_ThemList[defenderIndex-1].AddDefend(def);
+}
+
+void WarData::RunReports() const
+{
+	// Verification
+	ReportFinalScore();
+	
+	
+	// Warnings
+	ReportWarningMissingInAction();
+}
+
+void WarData::ReportFinalScore() const
+{
+	int usScore = 0;
+	int themScore = 0;
+	
+	int usTHScore[PlayerData::kTH11];
+	memset(usTHScore, 0, sizeof(int)*PlayerData::kTH11);
+	
+	int themTHScore[PlayerData::kTH11];
+	memset(themTHScore, 0, sizeof(int)*PlayerData::kTH11);
+	
+	// assumption is that these lists are the same length
+	for (int i = 0; i < m_UsList.size(); ++i)
+	{
+		int usStarsGiven = m_UsList[i].GetMaxStarsGiven();
+		int themStarsGiven = m_ThemList[i].GetMaxStarsGiven();
+		
+		themScore	+= usStarsGiven;
+		usScore		+= themStarsGiven;
+		
+		themTHScore[m_UsList[i].GetTownHallLevel()-1]		+= usStarsGiven;
+		usTHScore[m_ThemList[i].GetTownHallLevel()-1]		+= themStarsGiven;
+	}
+	
+	std::cout << "Final Score:" << std::endl;
+	std::cout << "  Us: " << usScore << std::endl;
+	std::cout << "  Them: " << themScore << std::endl;
+	
+	std::cout << "Stars earned per TH level" << std::endl;
+	for (int i = PlayerData::kTH6-1; i < PlayerData::kTH11; ++i)
+	{
+		std::cout << "TH(" << i+1 << ") Us: " << usTHScore[i] << " Them: " << themTHScore[i] << std::endl;
+	}
+}
+
+void WarData::ReportWarningMissingInAction() const
+{
+	for (int i = 0; i < m_UsList.size(); ++i)
+	{
+		if (m_UsList[i].GetAttackCount() < MAX_PLAYER_ATTACKS)
+		{
+			std::cout << "MIA: " << m_UsList[i].GetPlayerName() << " attacks " << m_UsList[i].GetAttackCount() << std::endl;
+		}
+	}
 }

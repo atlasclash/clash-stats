@@ -25,5 +25,7 @@ int main(int argc, const char * argv[])
 	WarData *p_warData = new WarData();
 	parser->ProcessWar(p_warData);
 	
+	p_warData->RunReports();
+	
     return 0;
 }

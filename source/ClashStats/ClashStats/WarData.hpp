@@ -47,7 +47,13 @@ public:
 	void AddClanDefend(const AttackData *def, const int defenderIndex);
 	void AddThemDefend(const AttackData *def, const int defenderIndex);
 	
+	void RunReports() const;
+	
 protected:
+	void ReportFinalScore() const;
+	void ReportWarningMissingInAction() const;
+	
+	
 	int							m_WarSize;										// number of players in the war
 	std::string					m_OpponentClanName;								// opponent clan name
 	std::string					m_OpponentClanTag;								// opponent clan tag, optional
