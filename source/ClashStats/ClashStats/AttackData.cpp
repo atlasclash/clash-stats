@@ -8,10 +8,11 @@
 
 #include "AttackData.hpp"
 
-AttackData::AttackData(int opponent, StarType stars, int pctDmg)
+AttackData::AttackData(int opponent, StarType stars, int pctDmg, eTownHallLevel th)
 : m_OpponentId(opponent)
 , m_Stars(stars)
 , m_PctDamage(pctDmg)
+, m_TownHall(th)
 {
 	
 }

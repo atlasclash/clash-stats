@@ -38,7 +38,7 @@ void PlayerData::SetTownHallLevel(const eTownHallLevel lvl)
 	m_TownHallLevel = lvl;
 }
 
-PlayerData::eTownHallLevel PlayerData::GetTownHallLevel() const
+eTownHallLevel PlayerData::GetTownHallLevel() const
 {
 	return m_TownHallLevel;
 }
@@ -71,6 +71,16 @@ void PlayerData::AddAttack(const AttackData *attack)
 void PlayerData::AddDefend(const AttackData *defend)
 {
 	m_Defends.push_back(*defend);
+}
+
+const std::vector<AttackData> PlayerData::GetAttacks() const
+{
+	return m_Attacks;
+}
+
+const std::vector<AttackData> PlayerData::GetDefends() const
+{
+	return m_Defends;
 }
 
 const unsigned long PlayerData::GetAttackCount() const

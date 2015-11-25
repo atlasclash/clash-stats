@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include "Constants.h"
 #include "DataObject.hpp"
 #include "AttackData.hpp"
 
@@ -20,22 +21,6 @@
 class PlayerData : public DataObject
 {
 public:
-	// town hall levels
-	enum eTownHallLevel
-	{
-		kTH0,
-		kTH1,
-		kTH2,
-		kTH3,
-		kTH4,
-		kTH5,
-		kTH6,
-		kTH7,
-		kTH8,
-		kTH9,
-		kTH10,
-		kTH11,
-	};
 	
 	// special bitflags
 	enum eSpecialFlags
@@ -63,7 +48,9 @@ public:
 	
 	// methods
 	void AddAttack(const AttackData *attack);
+	const std::vector<AttackData> GetAttacks() const;
 	void AddDefend(const AttackData *defend);
+	const std::vector<AttackData> GetDefends() const;
 	
 	const unsigned long GetAttackCount() const;
 	const int GetMaxStarsGiven() const;

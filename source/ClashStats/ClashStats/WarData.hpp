@@ -47,11 +47,17 @@ public:
 	void AddClanDefend(const AttackData *def, const int defenderIndex);
 	void AddThemDefend(const AttackData *def, const int defenderIndex);
 	
+	// 1s based routines
+	eTownHallLevel GetUsTHLevel(const int usId) const;
+	eTownHallLevel GetThemTHLevel(const int themId) const;
+	
 	void RunReports() const;
 	
 protected:
 	void ReportFinalScore() const;
 	void ReportWarningMissingInAction() const;
+	void ReportWarningNuke() const;
+	void ReportWarningSnipe() const;
 	
 	
 	int							m_WarSize;										// number of players in the war
