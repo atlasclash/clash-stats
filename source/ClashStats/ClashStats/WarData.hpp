@@ -23,7 +23,7 @@ public:
 	// Constructor / Destructor
 	WarData() {}
 	WarData(std::string clanName, std::string clanTag);
-	virtual ~WarData() {}
+	virtual ~WarData();
 	
 	// Access methods
 	void SetWarSize(const int size)			{ m_WarSize = size; }
@@ -36,9 +36,16 @@ public:
 	void SetClanTag(const std::string tag)	{ m_OpponentClanTag = tag; }
 	
 	void AddUsPlayer(const PlayerData *us);
+	const int GetUsPlayerCount() const;
+	
 	void AddThemPlayer(const PlayerData *them);
-	void AddAttack(const AttackData *ad, const int attackerIndex);
-	void AddDefend(const AttackData *def, const int defenderIndex);
+	const int GetThemPlayerCount() const;
+	
+	void AddClanAttack(const AttackData *ad, const int attackerIndex);
+	void AddThemAttack(const AttackData *ad, const int attackerIndex);
+	
+	void AddClanDefend(const AttackData *def, const int defenderIndex);
+	void AddThemDefend(const AttackData *def, const int defenderIndex);
 	
 protected:
 	int							m_WarSize;										// number of players in the war

@@ -49,6 +49,8 @@ ParserV1::~ParserV1()
 
 void ParserV1::ProcessWar(WarData *warData)
 {
+	std::cout << "Reading war data... [v1]" << std::endl;
+	
 	if (m_dataFile == NULL)
 	{
 		std::cout << "Unable to open file" << std::endl;
@@ -70,9 +72,13 @@ void ParserV1::ProcessWar(WarData *warData)
 	warData->SetClanName(cellResults[FIELD_WARDATA_ENEMY_CLAN_NAME]);
 	warData->SetClanTag(cellResults[FIELD_WARDATA_ENEMY_CLAN_TAG]);
 	
+	std::cout << "Clan: " << cellResults[FIELD_WARDATA_ENEMY_CLAN_NAME] << " Tag: " << cellResults[FIELD_WARDATA_ENEMY_CLAN_TAG] << std::endl;
+	
 	// line 3: war size
 	cellResults = GetCellsFromLine();
 	warData->SetWarSize(atoi(cellResults[FIELD_WARDATA_SIZE].c_str()));
+	
+	std::cout << "War size: " << cellResults[FIELD_WARDATA_SIZE] << std::endl;
 	
 	// line 4: war date
 	cellResults = GetCellsFromLine();
@@ -96,6 +102,19 @@ void ParserV1::ProcessWar(WarData *warData)
 		warData->AddThemPlayer(themPlayer);
 	}
 	
+	const int warSize = warData->GetWarSize();
+	if (warData->GetUsPlayerCount() != warSize)
+	{
+		std::cout << "Us player count mis-match.  Aborting" << std::endl;
+		return;
+	}
+	
+	if (warData->GetThemPlayerCount() != warSize)
+	{
+		std::cout << "Them player count mis-match.  Aborting" << std::endl;
+		return;
+	}
+	
 	cellResults = GetCellsFromLine();
 	int attackTotal = 0;
 	while (cellResults.size())
@@ -105,20 +124,34 @@ void ParserV1::ProcessWar(WarData *warData)
 		// we are attacking them
 		if (cellResults[FIELD_ATTACK_US_STARS].length() && cellResults[FIELD_ATTACK_US_PCT].length())
 		{
-			int opponentId = atoi(cellResults[FIELD_ATTACK_THEM_INDEX].c_str());
-			warData->AddAttack(new AttackData(opponentId, (AttackData::StarType)atoi(cellResults[FIELD_ATTACK_US_STARS].c_str()), atoi(cellResults[FIELD_ATTACK_US_PCT].c_str())),
-								 atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str())-1);
+			int opponentId	= atoi(cellResults[FIELD_ATTACK_THEM_INDEX].c_str());
+			int usId		= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
+			int stars		= atoi(cellResults[FIELD_ATTACK_US_STARS].c_str());
+			int pct			= atoi(cellResults[FIELD_ATTACK_US_PCT].c_str());
 			
+			const AttackData *usAttack = new AttackData(opponentId, (AttackData::StarType)stars, pct);
+			const AttackData *themDefend = new AttackData(usId, (AttackData::StarType)stars, pct);
+			warData->AddClanAttack(usAttack, usId);
+			warData->AddThemDefend(themDefend, opponentId);
 		}
 		// they are attacking us
 		else if (cellResults[FIELD_ATTACK_THEM_STARS].length() && cellResults[FIELD_ATTACK_THEM_PCT].length())
 		{
-			int opponentId = atoi(cellResults[FIELD_ATTACK_THEM_INDEX].c_str());
-			warData->AddDefend(new AttackData(opponentId, (AttackData::StarType)atoi(cellResults[FIELD_ATTACK_THEM_STARS].c_str()), atoi(cellResults[FIELD_ATTACK_THEM_PCT].c_str())),
-								 atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str())-1);
+			int opponentId	= atoi(cellResults[FIELD_ATTACK_THEM_INDEX].c_str());
+			int stars		= atoi(cellResults[FIELD_ATTACK_THEM_STARS].c_str());
+			int pct			= atoi(cellResults[FIELD_ATTACK_THEM_PCT].c_str());
+			int usId		= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
+			
+			const AttackData *usDefend = new AttackData(opponentId, (AttackData::StarType)stars, pct);
+			const AttackData *themAttack = new AttackData(usId, (AttackData::StarType)stars, pct);
+			warData->AddClanDefend(usDefend, usId);
+			warData->AddThemAttack(themAttack, opponentId);
 		}
 		
 		// get next attack/defense
 		cellResults = GetCellsFromLine();
 	}
+	
+	std::cout << "Read " << attackTotal << " attacks." << std::endl;
+	std::cout << "War data complete." << std::endl;
 }
