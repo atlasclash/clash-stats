@@ -51,6 +51,7 @@
 		84BFAE001BF8549900FBB85C /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Singleton.h; path = ClashStats/Singleton.h; sourceTree = "<group>"; };
 		84BFAE021BF952BC00FBB85C /* Parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Parser.cpp; path = ClashStats/Parser.cpp; sourceTree = "<group>"; };
 		84BFAE031BF952BC00FBB85C /* Parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Parser.hpp; path = ClashStats/Parser.hpp; sourceTree = "<group>"; };
+		FB4E63DC1C064994001070C4 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ClashStats/Constants.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +108,7 @@
 				84BFADFC1BF8543000FBB85C /* ParserV1.cpp */,
 				84010DA91C001DDF0061FFDE /* DataObject.hpp */,
 				84010DA81C001DDF0061FFDE /* DataObject.cpp */,
+				FB4E63DC1C064994001070C4 /* Constants.h */,
 			);
 			name = "Data Objects";
 			sourceTree = "<group>";
@@ -149,7 +151,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0710;
-				ORGANIZATIONNAME = "Looking Glass Software";
+				ORGANIZATIONNAME = "JTJ";
 				TargetAttributes = {
 					84BFADE71BF8129100FBB85C = {
 						CreatedOnToolsVersion = 7.1.1;

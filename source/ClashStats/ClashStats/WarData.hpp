@@ -41,17 +41,25 @@ public:
 	void AddThemPlayer(const PlayerData *them);
 	const int GetThemPlayerCount() const;
 	
-	void AddClanAttack(const AttackData *ad, const int attackerIndex);
+	void AddUsAttack(const AttackData *ad, const int attackerIndex);
 	void AddThemAttack(const AttackData *ad, const int attackerIndex);
 	
-	void AddClanDefend(const AttackData *def, const int defenderIndex);
+	void AddUsDefend(const AttackData *def, const int defenderIndex);
 	void AddThemDefend(const AttackData *def, const int defenderIndex);
 	
+	// 1s based routines
+	eTownHallLevel GetUsTHLevel(const int usId) const;
+	eTownHallLevel GetThemTHLevel(const int themId) const;
+	
+	void CalcCloserStars();
 	void RunReports() const;
 	
 protected:
 	void ReportFinalScore() const;
+	void ReportPlayerStats() const;
 	void ReportWarningMissingInAction() const;
+	void ReportWarningNuke() const;
+	void ReportWarningSnipe() const;
 	
 	
 	int							m_WarSize;										// number of players in the war

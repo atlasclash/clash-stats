@@ -42,13 +42,13 @@ const int WarData::GetThemPlayerCount() const
 	return (int)m_ThemList.size();
 }
 
-void WarData::AddClanAttack(const AttackData *ad, const int attackerIndex)
+void WarData::AddUsAttack(const AttackData *ad, const int attackerIndex)
 {
 	assert(attackerIndex-1 >= 0 && attackerIndex-1 < m_UsList.size());
 	m_UsList[attackerIndex-1].AddAttack(ad);
 }
 
-void WarData::AddClanDefend(const AttackData *def, const int defenderIndex)
+void WarData::AddUsDefend(const AttackData *def, const int defenderIndex)
 {
 	assert(defenderIndex-1 >= 0 && defenderIndex-1 < m_ThemList.size());
 	m_UsList[defenderIndex-1].AddDefend(def);
@@ -66,14 +66,52 @@ void WarData::AddThemDefend(const AttackData *def, const int defenderIndex)
 	m_ThemList[defenderIndex-1].AddDefend(def);
 }
 
+eTownHallLevel WarData::GetUsTHLevel(const int usId) const
+{
+	return m_UsList[usId-1].GetTownHallLevel();
+}
+
+eTownHallLevel WarData::GetThemTHLevel(const int themId) const
+{
+	return m_ThemList[themId-1].GetTownHallLevel();
+}
+
+void WarData::CalcCloserStars()
+{
+	int *closerStars = new int[m_UsList.size()];
+	memset(closerStars, 0, sizeof(int) * m_UsList.size());
+	
+	for (int i = 0; i < m_ThemList.size(); ++i)
+	{
+		const AttackData *ad = m_ThemList[i].GetCloserAttack();
+		if (ad)
+		{
+			closerStars[ad->GetTargetId()-1] += ad->GetStars();
+		}
+		else
+		{
+			std::cout << "Warning: No attack against enemy #" << i << std::endl;
+		}
+	}
+	
+	for (int i = 0; i < m_UsList.size(); ++i)
+	{
+		m_UsList[i].SetCloserStars(closerStars[i]);
+	}
+	
+	delete closerStars;
+}
+
 void WarData::RunReports() const
 {
 	// Verification
 	ReportFinalScore();
-	
+	ReportPlayerStats();
 	
 	// Warnings
-	ReportWarningMissingInAction();
+//	ReportWarningMissingInAction();
+//	ReportWarningNuke();
+//	ReportWarningSnipe();
 }
 
 void WarData::ReportFinalScore() const
@@ -81,11 +119,11 @@ void WarData::ReportFinalScore() const
 	int usScore = 0;
 	int themScore = 0;
 	
-	int usTHScore[PlayerData::kTH11];
-	memset(usTHScore, 0, sizeof(int)*PlayerData::kTH11);
+	int usTHScore[kTH11];
+	memset(usTHScore, 0, sizeof(int)*kTH11);
 	
-	int themTHScore[PlayerData::kTH11];
-	memset(themTHScore, 0, sizeof(int)*PlayerData::kTH11);
+	int themTHScore[kTH11];
+	memset(themTHScore, 0, sizeof(int)*kTH11);
 	
 	// assumption is that these lists are the same length
 	for (int i = 0; i < m_UsList.size(); ++i)
@@ -105,9 +143,19 @@ void WarData::ReportFinalScore() const
 	std::cout << "  Them: " << themScore << std::endl;
 	
 	std::cout << "Stars earned per TH level" << std::endl;
-	for (int i = PlayerData::kTH6-1; i < PlayerData::kTH11; ++i)
+	for (int i = kTH6-1; i < kTH11; ++i)
 	{
 		std::cout << "TH(" << i+1 << ") Us: " << usTHScore[i] << " Them: " << themTHScore[i] << std::endl;
+	}
+}
+
+void WarData::ReportPlayerStats() const
+{
+	for (int i = 0; i < m_UsList.size(); ++i)
+	{
+		std::cout << m_UsList[i].GetPlayerName() << " stars(" << m_UsList[i].GetTotalStars() << "|" << m_UsList[i].GetCloserStars() << ") bleeds("
+				  << m_UsList[i].GetDefends().size() - 1 << ") hold ("
+				  << 3 - m_UsList[i].GetMaxStarsGiven() << ")" << std::endl;
 	}
 }
 
@@ -121,3 +169,78 @@ void WarData::ReportWarningMissingInAction() const
 		}
 	}
 }
+
+void WarData::ReportWarningNuke() const
+{
+	// us nukes
+	int total = 0;
+	std::cout << "Nukes (Us)" << std::endl;
+	for (int i = 0; i < m_UsList.size(); ++i)
+	{
+		for (int j = 0; j < m_UsList[i].GetAttacks().size(); ++j)
+		{
+			const AttackData attack = m_UsList[i].GetAttacks()[j];
+			if (m_ThemList[attack.GetTargetId()-1].GetTownHallLevel() < m_UsList[i].GetTownHallLevel())
+			{
+				std::cout << "Nuke: " << m_UsList[i].GetPlayerName() << " vs " << attack.GetTargetId() << " - Stars (" << attack.GetStars() << ")" << std::endl;
+				++total;
+			}
+		}
+	}
+	std::cout << "Total nukes (us): " << total << std::endl;
+
+	// them nukes
+	total = 0;
+	std::cout << "Nukes (Them)" << std::endl;
+	for (int i = 0; i < m_ThemList.size(); ++i)
+	{
+		for (int j = 0; j < m_ThemList[i].GetAttacks().size(); ++j)
+		{
+			const AttackData attack = m_ThemList[i].GetAttacks()[j];
+			if (m_UsList[attack.GetTargetId()-1].GetTownHallLevel() < m_ThemList[i].GetTownHallLevel())
+			{
+				std::cout << "Nuke: " << i << " vs " << m_UsList[attack.GetTargetId()-1].GetPlayerName() << " - Stars (" << attack.GetStars() << ")" << std::endl;
+				++total;
+			}
+		}
+	}
+	std::cout << "Total nukes (them): " << total << std::endl;
+}
+
+void WarData::ReportWarningSnipe() const
+{
+	// us snipes
+	int total = 0;
+	std::cout << "Snipes (Us)" << std::endl;
+	for (int i = 0; i < m_UsList.size(); ++i)
+	{
+		for (int j = 0; j < m_UsList[i].GetAttacks().size(); ++j)
+		{
+			const AttackData attack = m_UsList[i].GetAttacks()[j];
+			if (m_ThemList[attack.GetTargetId()-1].GetTownHallLevel() > m_UsList[i].GetTownHallLevel())
+			{
+				std::cout << "Snipe: " << m_UsList[i].GetPlayerName() << " vs " << attack.GetTargetId() << " - Stars (" << attack.GetStars() << ")" << std::endl;
+				++total;
+			}
+		}
+	}
+	std::cout << "Total snipes (us): " << total << std::endl;
+	
+	// them nukes
+	total = 0;
+	std::cout << "Snipes (Them)" << std::endl;
+	for (int i = 0; i < m_ThemList.size(); ++i)
+	{
+		for (int j = 0; j < m_ThemList[i].GetAttacks().size(); ++j)
+		{
+			const AttackData attack = m_ThemList[i].GetAttacks()[j];
+			if (m_UsList[attack.GetTargetId()-1].GetTownHallLevel() > m_ThemList[i].GetTownHallLevel())
+			{
+				std::cout << "Snipe: " << i << " vs " << m_UsList[attack.GetTargetId()-1].GetPlayerName() << " - Stars (" << attack.GetStars() << ")" << std::endl;
+				++total;
+			}
+		}
+	}
+	std::cout << "Total snipes (them): " << total << std::endl;
+}
+

@@ -10,6 +10,7 @@
 #define AttackData_hpp
 
 #include <stdio.h>
+#include "Constants.h"
 #include "DataObject.hpp"
 
 class AttackData : public DataObject
@@ -23,16 +24,17 @@ public:
 		kThreeStar,
 	};
 	
-	AttackData(int opponentId, StarType stars, int pctDmg);
+	AttackData(int opponentId, StarType stars, int pctDmg, eTownHallLevel th);
 	
 	const int GetTargetId() const	{ return m_OpponentId; }
 	const int GetPctDamage() const	{ return m_PctDamage; }
 	const StarType GetStars() const { return m_Stars; }
 	
 protected:
-	int			m_OpponentId;		// index of attacker or defender - based on context
-	StarType	m_Stars;
-	int			m_PctDamage;
+	int				m_OpponentId;		// index (1's based) of attacker or defender - based on context
+	StarType		m_Stars;
+	int				m_PctDamage;
+	eTownHallLevel 	m_TownHall;
 };
 
 #endif /* AttackData_hpp */

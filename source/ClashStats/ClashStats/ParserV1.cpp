@@ -91,12 +91,12 @@ void ParserV1::ProcessWar(WarData *warData)
 		
 		PlayerData *usPlayer = new PlayerData();
 		usPlayer->SetPlayerName(cellResults[FIELD_PLAYER_NAME]);
-		usPlayer->SetTownHallLevel((PlayerData::eTownHallLevel)atoi(cellResults[FIELD_PLAYER_TH].c_str()));
+		usPlayer->SetTownHallLevel((eTownHallLevel)atoi(cellResults[FIELD_PLAYER_TH].c_str()));
 		usPlayer->SetPlayerTag(cellResults[FIELD_PLAYER_TAG]);
 		
 		PlayerData *themPlayer = new PlayerData();
 		themPlayer->SetSpecialFlag((PlayerData::eSpecialFlags)atoi(cellResults[FIELD_PLAYER_SPECIAL].c_str()));
-		themPlayer->SetTownHallLevel((PlayerData::eTownHallLevel)atoi(cellResults[FIELD_PLAYER_OPPONENT_TH].c_str()));
+		themPlayer->SetTownHallLevel((eTownHallLevel)atoi(cellResults[FIELD_PLAYER_OPPONENT_TH].c_str()));
 		
 		warData->AddUsPlayer(usPlayer);
 		warData->AddThemPlayer(themPlayer);
@@ -124,14 +124,17 @@ void ParserV1::ProcessWar(WarData *warData)
 		// we are attacking them
 		if (cellResults[FIELD_ATTACK_US_STARS].length() && cellResults[FIELD_ATTACK_US_PCT].length())
 		{
-			int opponentId	= atoi(cellResults[FIELD_ATTACK_THEM_INDEX].c_str());
-			int usId		= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
-			int stars		= atoi(cellResults[FIELD_ATTACK_US_STARS].c_str());
-			int pct			= atoi(cellResults[FIELD_ATTACK_US_PCT].c_str());
+			int opponentId			= atoi(cellResults[FIELD_ATTACK_THEM_INDEX].c_str());
+			int usId				= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
+			int stars				= atoi(cellResults[FIELD_ATTACK_US_STARS].c_str());
+			int pct					= atoi(cellResults[FIELD_ATTACK_US_PCT].c_str());
+
+			eTownHallLevel usTH		= warData->GetThemTHLevel(opponentId);
+			eTownHallLevel oppTH 	= warData->GetUsTHLevel(usId);
 			
-			const AttackData *usAttack = new AttackData(opponentId, (AttackData::StarType)stars, pct);
-			const AttackData *themDefend = new AttackData(usId, (AttackData::StarType)stars, pct);
-			warData->AddClanAttack(usAttack, usId);
+			const AttackData *usAttack = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH);
+			const AttackData *themDefend = new AttackData(usId, (AttackData::StarType)stars, pct, usTH);
+			warData->AddUsAttack(usAttack, usId);
 			warData->AddThemDefend(themDefend, opponentId);
 		}
 		// they are attacking us
@@ -141,10 +144,13 @@ void ParserV1::ProcessWar(WarData *warData)
 			int stars		= atoi(cellResults[FIELD_ATTACK_THEM_STARS].c_str());
 			int pct			= atoi(cellResults[FIELD_ATTACK_THEM_PCT].c_str());
 			int usId		= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
-			
-			const AttackData *usDefend = new AttackData(opponentId, (AttackData::StarType)stars, pct);
-			const AttackData *themAttack = new AttackData(usId, (AttackData::StarType)stars, pct);
-			warData->AddClanDefend(usDefend, usId);
+
+			eTownHallLevel usTH		= warData->GetThemTHLevel(opponentId);
+			eTownHallLevel oppTH 	= warData->GetUsTHLevel(usId);
+
+			const AttackData *usDefend = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH);
+			const AttackData *themAttack = new AttackData(usId, (AttackData::StarType)stars, pct, usTH);
+			warData->AddUsDefend(usDefend, usId);
 			warData->AddThemAttack(themAttack, opponentId);
 		}
 		
