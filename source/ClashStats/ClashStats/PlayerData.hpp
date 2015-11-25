@@ -43,6 +43,9 @@ public:
 	void SetPlayerTag(const std::string tag);
 	std::string GetPlayerTag() const;
 	
+	void SetCloserStars(const int stars);
+	const int GetCloserStars() const;
+	
 	void SetSpecialFlag(const eSpecialFlags flags);
 	bool IsSalt() const;
 	
@@ -54,8 +57,12 @@ public:
 	
 	const unsigned long GetAttackCount() const;
 	const int GetMaxStarsGiven() const;
+	const int GetTotalStars() const;
+	
+	const AttackData* GetCloserAttack() const;
 	
 protected:
+	int 						m_CloserStars;
 	eTownHallLevel				m_TownHallLevel;
 	eSpecialFlags				m_SpecialFlag;
 	std::string					m_PlayerTag;

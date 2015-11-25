@@ -42,13 +42,13 @@ const int WarData::GetThemPlayerCount() const
 	return (int)m_ThemList.size();
 }
 
-void WarData::AddClanAttack(const AttackData *ad, const int attackerIndex)
+void WarData::AddUsAttack(const AttackData *ad, const int attackerIndex)
 {
 	assert(attackerIndex-1 >= 0 && attackerIndex-1 < m_UsList.size());
 	m_UsList[attackerIndex-1].AddAttack(ad);
 }
 
-void WarData::AddClanDefend(const AttackData *def, const int defenderIndex)
+void WarData::AddUsDefend(const AttackData *def, const int defenderIndex)
 {
 	assert(defenderIndex-1 >= 0 && defenderIndex-1 < m_ThemList.size());
 	m_UsList[defenderIndex-1].AddDefend(def);
@@ -76,16 +76,42 @@ eTownHallLevel WarData::GetThemTHLevel(const int themId) const
 	return m_ThemList[themId-1].GetTownHallLevel();
 }
 
+void WarData::CalcCloserStars()
+{
+	int *closerStars = new int[m_UsList.size()];
+	memset(closerStars, 0, sizeof(int) * m_UsList.size());
+	
+	for (int i = 0; i < m_ThemList.size(); ++i)
+	{
+		const AttackData *ad = m_ThemList[i].GetCloserAttack();
+		if (ad)
+		{
+			closerStars[ad->GetTargetId()-1] += ad->GetStars();
+		}
+		else
+		{
+			std::cout << "Warning: No attack against enemy #" << i << std::endl;
+		}
+	}
+	
+	for (int i = 0; i < m_UsList.size(); ++i)
+	{
+		m_UsList[i].SetCloserStars(closerStars[i]);
+	}
+	
+	delete closerStars;
+}
+
 void WarData::RunReports() const
 {
 	// Verification
 	ReportFinalScore();
-	
+	ReportPlayerStats();
 	
 	// Warnings
-	ReportWarningMissingInAction();
-	ReportWarningNuke();
-	ReportWarningSnipe();
+//	ReportWarningMissingInAction();
+//	ReportWarningNuke();
+//	ReportWarningSnipe();
 }
 
 void WarData::ReportFinalScore() const
@@ -120,6 +146,16 @@ void WarData::ReportFinalScore() const
 	for (int i = kTH6-1; i < kTH11; ++i)
 	{
 		std::cout << "TH(" << i+1 << ") Us: " << usTHScore[i] << " Them: " << themTHScore[i] << std::endl;
+	}
+}
+
+void WarData::ReportPlayerStats() const
+{
+	for (int i = 0; i < m_UsList.size(); ++i)
+	{
+		std::cout << m_UsList[i].GetPlayerName() << " stars(" << m_UsList[i].GetTotalStars() << "|" << m_UsList[i].GetCloserStars() << ") bleeds("
+				  << m_UsList[i].GetDefends().size() - 1 << ") hold ("
+				  << 3 - m_UsList[i].GetMaxStarsGiven() << ")" << std::endl;
 	}
 }
 
@@ -206,5 +242,5 @@ void WarData::ReportWarningSnipe() const
 		}
 	}
 	std::cout << "Total snipes (them): " << total << std::endl;
-
 }
+

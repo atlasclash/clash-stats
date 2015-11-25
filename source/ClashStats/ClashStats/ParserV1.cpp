@@ -1,4 +1,4 @@
-  //
+//
 //  ParserV1.cpp
 //  ClashStats
 //
@@ -134,7 +134,7 @@ void ParserV1::ProcessWar(WarData *warData)
 			
 			const AttackData *usAttack = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH);
 			const AttackData *themDefend = new AttackData(usId, (AttackData::StarType)stars, pct, usTH);
-			warData->AddClanAttack(usAttack, usId);
+			warData->AddUsAttack(usAttack, usId);
 			warData->AddThemDefend(themDefend, opponentId);
 		}
 		// they are attacking us
@@ -150,7 +150,7 @@ void ParserV1::ProcessWar(WarData *warData)
 
 			const AttackData *usDefend = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH);
 			const AttackData *themAttack = new AttackData(usId, (AttackData::StarType)stars, pct, usTH);
-			warData->AddClanDefend(usDefend, usId);
+			warData->AddUsDefend(usDefend, usId);
 			warData->AddThemAttack(themAttack, opponentId);
 		}
 		
