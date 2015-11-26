@@ -9,7 +9,6 @@
 #ifndef WarData_hpp
 #define WarData_hpp
 
-#include <stdio.h>
 #include <string>
 #include <vector>
 #include "DataObject.hpp"
@@ -53,14 +52,13 @@ public:
 	
 	void CalcCloserStars();
 	void RunReports() const;
-	
-protected:
 	void ReportFinalScore() const;
 	void ReportPlayerStats() const;
 	void ReportWarningMissingInAction() const;
 	void ReportWarningNuke() const;
 	void ReportWarningSnipe() const;
 	
+protected:
 	
 	int							m_WarSize;										// number of players in the war
 	std::string					m_OpponentClanName;								// opponent clan name

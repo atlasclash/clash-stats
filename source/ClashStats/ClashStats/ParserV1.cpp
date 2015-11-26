@@ -10,6 +10,7 @@
 #include "StringHelpers.hpp"
 #include "WarData.hpp"
 #include "AttackData.hpp"
+#include "Options.hpp"
 #include <sstream>
 #include <string>
 #include <vector>
@@ -128,6 +129,12 @@ void ParserV1::ProcessWar(WarData *warData)
 			int usId				= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
 			int stars				= atoi(cellResults[FIELD_ATTACK_US_STARS].c_str());
 			int pct					= atoi(cellResults[FIELD_ATTACK_US_PCT].c_str());
+			
+			if (OPTIONS::GetInstance().parser_Check_Data_Ranges && !CheckDataRanges(opponentId, usId, stars, pct, warSize))
+			{
+				std::cout << "Check data range failure: attack: " << attackTotal << std::endl;
+				return;
+			}
 
 			eTownHallLevel usTH		= warData->GetThemTHLevel(opponentId);
 			eTownHallLevel oppTH 	= warData->GetUsTHLevel(usId);
@@ -145,6 +152,12 @@ void ParserV1::ProcessWar(WarData *warData)
 			int pct			= atoi(cellResults[FIELD_ATTACK_THEM_PCT].c_str());
 			int usId		= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
 
+			if (OPTIONS::GetInstance().parser_Check_Data_Ranges && !CheckDataRanges(opponentId, usId, stars, pct, warSize))
+			{
+				std::cout << "Check data range failure: attack: " << attackTotal << std::endl;
+				return;
+			}
+
 			eTownHallLevel usTH		= warData->GetThemTHLevel(opponentId);
 			eTownHallLevel oppTH 	= warData->GetUsTHLevel(usId);
 
@@ -160,4 +173,21 @@ void ParserV1::ProcessWar(WarData *warData)
 	
 	std::cout << "Read " << attackTotal << " attacks." << std::endl;
 	std::cout << "War data complete." << std::endl;
+}
+
+bool ParserV1::CheckDataRanges(int opponentId, int usId, int stars, int pct, int warSize)
+{
+	if (opponentId < MIN_ATTACKER_ID || opponentId > warSize)
+		return false;
+	
+	if (usId < MIN_ATTACKER_ID || usId > warSize)
+		return false;
+	
+	if (stars < MIN_STARS_PER_ATTACK || stars > MAX_STARS_PER_ATTACK)
+		return false;
+
+	if (pct < MIN_PCT_DAMAGE || pct > MAX_PCT_DAMAGE)
+		return false;
+	
+	return true;
 }

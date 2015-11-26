@@ -20,6 +20,10 @@
 Parser* ParserFactory::getParserForFile(const char *fileName)
 {
 	std::ifstream dataFile(fileName);
+	if (dataFile.fail())
+	{
+		return NULL;
+	}
 	
 	std::string line;
 	std::getline(dataFile, line);

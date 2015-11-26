@@ -7,6 +7,7 @@
 //
 
 #include "WarData.hpp"
+#include "Options.hpp"
 #include <assert.h>
 #include <iostream>
 
@@ -88,7 +89,7 @@ void WarData::CalcCloserStars()
 		{
 			closerStars[ad->GetTargetId()-1] += ad->GetStars();
 		}
-		else
+		else if (OPTIONS::GetInstance().parser_Check_Missing_Attacks)
 		{
 			std::cout << "Warning: No attack against enemy #" << i << std::endl;
 		}
@@ -96,10 +97,36 @@ void WarData::CalcCloserStars()
 	
 	for (int i = 0; i < m_UsList.size(); ++i)
 	{
+		if (OPTIONS::GetInstance().parser_Check_Player_Totals)
+		{
+			if (closerStars[i] > MAX_STARS_PER_WAR)
+			{
+				std::cout << "Warning: closer stars exceeded for " << m_UsList[i].GetPlayerName() << std::endl;
+			}
+			
+			if (m_UsList[i].GetTotalStars() > MAX_STARS_PER_WAR)
+			{
+				std::cout << "Warning: max stars exceeded for " << m_UsList[i].GetPlayerName() << std::endl;
+			}
+			
+			if (m_UsList[i].GetAttackCount() > MAX_PLAYER_ATTACKS)
+			{
+				std::cout << "Warning: max attacks per player exceeded for " << m_UsList[i].GetPlayerName() << std::endl;
+			}
+		}
+		
+		if (OPTIONS::GetInstance().parser_Check_Missing_Attacks)
+		{
+			if (m_UsList[i].GetDefends().size() == 0)
+			{
+				std::cout << "Warning: No attack against player: " << m_UsList[i].GetPlayerName() << std::endl;
+			}
+		}
+		
 		m_UsList[i].SetCloserStars(closerStars[i]);
 	}
 	
-	delete closerStars;
+	delete [] closerStars;
 }
 
 void WarData::RunReports() const

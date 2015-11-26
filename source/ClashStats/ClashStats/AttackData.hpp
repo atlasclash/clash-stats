@@ -9,7 +9,6 @@
 #ifndef AttackData_hpp
 #define AttackData_hpp
 
-#include <stdio.h>
 #include "Constants.h"
 #include "DataObject.hpp"
 

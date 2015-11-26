@@ -9,7 +9,6 @@
 #ifndef PlayerData_hpp
 #define PlayerData_hpp
 
-#include <stdio.h>
 #include <string>
 #include <vector>
 #include "Constants.h"

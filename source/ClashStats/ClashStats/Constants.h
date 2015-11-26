@@ -26,4 +26,13 @@ enum eTownHallLevel
 	kTH11,
 };
 
+#define MAX_STARS_PER_WAR			(6)
+#define MAX_STARS_PER_ATTACK		(3)
+#define MIN_STARS_PER_ATTACK		(0)
+
+#define MIN_PCT_DAMAGE				(0)
+#define MAX_PCT_DAMAGE				(100)
+
+#define MIN_ATTACKER_ID				(1)
+
 #endif /* Constants_h */

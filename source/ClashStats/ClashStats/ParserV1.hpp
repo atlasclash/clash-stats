@@ -9,7 +9,6 @@
 #ifndef ParserV1_hpp
 #define ParserV1_hpp
 
-#include <stdio.h>
 #include "Parser.hpp"
 
 class WarData;
@@ -23,6 +22,7 @@ public:
 	virtual void ProcessWar(WarData *warData);
 	
 protected:
+	bool CheckDataRanges(int opponentId, int usId, int stars, int pct, int warSize);
 };
 
 #endif /* ParserV1_hpp */
