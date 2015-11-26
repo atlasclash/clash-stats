@@ -9,7 +9,6 @@
 #ifndef Parser_hpp
 #define Parser_hpp
 
-#include <stdio.h>
 #include <fstream>
 #include <vector>
 #include <string>

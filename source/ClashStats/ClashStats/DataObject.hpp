@@ -9,8 +9,6 @@
 #ifndef DataObject_hpp
 #define DataObject_hpp
 
-#include <stdio.h>
-
 class DataObject
 {
 public:
