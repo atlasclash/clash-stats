@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0FC7BD761C0148FC008B9C28 /* AttackData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD741C0148FC008B9C28 /* AttackData.cpp */; };
+		0FC7BD791C0766EE008B9C28 /* Options.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD771C0766EE008B9C28 /* Options.cpp */; };
 		84010DAA1C001DDF0061FFDE /* DataObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84010DA81C001DDF0061FFDE /* DataObject.cpp */; };
 		84010DAD1C001F330061FFDE /* StringHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84010DAB1C001F330061FFDE /* StringHelpers.cpp */; };
 		84BFADEC1BF8129100FBB85C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84BFADEB1BF8129100FBB85C /* main.cpp */; };
@@ -30,6 +32,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0FC7BD741C0148FC008B9C28 /* AttackData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AttackData.cpp; path = ClashStats/AttackData.cpp; sourceTree = "<group>"; };
+		0FC7BD751C0148FC008B9C28 /* AttackData.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = AttackData.hpp; path = ClashStats/AttackData.hpp; sourceTree = "<group>"; };
+		0FC7BD771C0766EE008B9C28 /* Options.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Options.cpp; path = ClashStats/Options.cpp; sourceTree = "<group>"; };
+		0FC7BD781C0766EE008B9C28 /* Options.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Options.hpp; path = ClashStats/Options.hpp; sourceTree = "<group>"; };
 		84010DA81C001DDF0061FFDE /* DataObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DataObject.cpp; path = ClashStats/DataObject.cpp; sourceTree = "<group>"; };
 		84010DA91C001DDF0061FFDE /* DataObject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DataObject.hpp; path = ClashStats/DataObject.hpp; sourceTree = "<group>"; };
 		84010DAB1C001F330061FFDE /* StringHelpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StringHelpers.cpp; path = ClashStats/StringHelpers.cpp; sourceTree = "<group>"; };
@@ -48,6 +54,7 @@
 		84BFAE001BF8549900FBB85C /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Singleton.h; path = ClashStats/Singleton.h; sourceTree = "<group>"; };
 		84BFAE021BF952BC00FBB85C /* Parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Parser.cpp; path = ClashStats/Parser.cpp; sourceTree = "<group>"; };
 		84BFAE031BF952BC00FBB85C /* Parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Parser.hpp; path = ClashStats/Parser.hpp; sourceTree = "<group>"; };
+		FB4E63DC1C064994001070C4 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ClashStats/Constants.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,18 +97,23 @@
 		84BFADF21BF8382B00FBB85C /* Data Objects */ = {
 			isa = PBXGroup;
 			children = (
-				84BFADF31BF8384A00FBB85C /* WarData.cpp */,
 				84BFADF41BF8384A00FBB85C /* WarData.hpp */,
-				84BFADF61BF83A1C00FBB85C /* PlayerData.cpp */,
+				84BFADF31BF8384A00FBB85C /* WarData.cpp */,
 				84BFADF71BF83A1C00FBB85C /* PlayerData.hpp */,
-				84BFADF91BF853F100FBB85C /* ParserFactory.cpp */,
+				84BFADF61BF83A1C00FBB85C /* PlayerData.cpp */,
+				0FC7BD751C0148FC008B9C28 /* AttackData.hpp */,
+				0FC7BD741C0148FC008B9C28 /* AttackData.cpp */,
 				84BFADFA1BF853F100FBB85C /* ParserFactory.hpp */,
-				84BFAE021BF952BC00FBB85C /* Parser.cpp */,
+				84BFADF91BF853F100FBB85C /* ParserFactory.cpp */,
 				84BFAE031BF952BC00FBB85C /* Parser.hpp */,
-				84BFADFC1BF8543000FBB85C /* ParserV1.cpp */,
+				84BFAE021BF952BC00FBB85C /* Parser.cpp */,
 				84BFADFD1BF8543000FBB85C /* ParserV1.hpp */,
-				84010DA81C001DDF0061FFDE /* DataObject.cpp */,
+				84BFADFC1BF8543000FBB85C /* ParserV1.cpp */,
 				84010DA91C001DDF0061FFDE /* DataObject.hpp */,
+				84010DA81C001DDF0061FFDE /* DataObject.cpp */,
+				FB4E63DC1C064994001070C4 /* Constants.h */,
+				0FC7BD781C0766EE008B9C28 /* Options.hpp */,
+				0FC7BD771C0766EE008B9C28 /* Options.cpp */,
 			);
 			name = "Data Objects";
 			sourceTree = "<group>";
@@ -111,8 +123,8 @@
 			children = (
 				84BFADFF1BF8549900FBB85C /* Architecture.h */,
 				84BFAE001BF8549900FBB85C /* Singleton.h */,
-				84010DAB1C001F330061FFDE /* StringHelpers.cpp */,
 				84010DAC1C001F330061FFDE /* StringHelpers.hpp */,
+				84010DAB1C001F330061FFDE /* StringHelpers.cpp */,
 			);
 			name = Architecture;
 			sourceTree = "<group>";
@@ -144,7 +156,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0710;
-				ORGANIZATIONNAME = "Looking Glass Software";
+				ORGANIZATIONNAME = JTJ;
 				TargetAttributes = {
 					84BFADE71BF8129100FBB85C = {
 						CreatedOnToolsVersion = 7.1.1;
@@ -175,10 +187,12 @@
 			files = (
 				84BFADF51BF8384A00FBB85C /* WarData.cpp in Sources */,
 				84BFADEC1BF8129100FBB85C /* main.cpp in Sources */,
+				0FC7BD791C0766EE008B9C28 /* Options.cpp in Sources */,
 				84BFADF81BF83A1C00FBB85C /* PlayerData.cpp in Sources */,
 				84010DAA1C001DDF0061FFDE /* DataObject.cpp in Sources */,
 				84010DAD1C001F330061FFDE /* StringHelpers.cpp in Sources */,
 				84BFADFE1BF8543000FBB85C /* ParserV1.cpp in Sources */,
+				0FC7BD761C0148FC008B9C28 /* AttackData.cpp in Sources */,
 				84BFAE041BF952BC00FBB85C /* Parser.cpp in Sources */,
 				84BFADFB1BF853F100FBB85C /* ParserFactory.cpp in Sources */,
 			);
@@ -223,7 +237,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -260,7 +274,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};

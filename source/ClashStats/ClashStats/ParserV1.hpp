@@ -9,8 +9,9 @@
 #ifndef ParserV1_hpp
 #define ParserV1_hpp
 
-#include <stdio.h>
 #include "Parser.hpp"
+
+class WarData;
 
 class ParserV1 : public Parser
 {
@@ -18,9 +19,10 @@ public:
 	ParserV1(const char *fileName);
 	virtual ~ParserV1();
 	
-	virtual void ProcessWar();
+	virtual void ProcessWar(WarData *warData);
 	
 protected:
+	bool CheckDataRanges(int opponentId, int usId, int stars, int pct, int warSize);
 };
 
 #endif /* ParserV1_hpp */

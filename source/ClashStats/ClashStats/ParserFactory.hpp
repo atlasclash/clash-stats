@@ -9,7 +9,6 @@
 #ifndef ParserFactory_hpp
 #define ParserFactory_hpp
 
-#include <stdio.h>
 #include "Singleton.h"
 
 class Parser;

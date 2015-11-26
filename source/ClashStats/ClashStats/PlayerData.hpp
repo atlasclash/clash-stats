@@ -9,26 +9,65 @@
 #ifndef PlayerData_hpp
 #define PlayerData_hpp
 
-#include <stdio.h>
 #include <string>
+#include <vector>
+#include "Constants.h"
 #include "DataObject.hpp"
+#include "AttackData.hpp"
+
+#define MAX_PLAYER_ATTACKS		(2)
 
 class PlayerData : public DataObject
 {
 public:
-	enum eTownHallLevel
+	
+	// special bitflags
+	enum eSpecialFlags
 	{
-		kTH7,
-		kTH8,
-		kTH9,
-		kTH10,
+		kSpecialNone	= 0,
+		kSpecialSalt	= 1 << 1,
 	};
 	
+	// construction / destruction
+	PlayerData();
+	virtual ~PlayerData();
+	
+	// accessor methods
+	void SetPlayerName(const std::string name);
+	std::string GetPlayerName() const;
+	
+	void SetTownHallLevel(const eTownHallLevel lvl);
+	eTownHallLevel GetTownHallLevel() const;
+	
+	void SetPlayerTag(const std::string tag);
+	std::string GetPlayerTag() const;
+	
+	void SetCloserStars(const int stars);
+	const int GetCloserStars() const;
+	
+	void SetSpecialFlag(const eSpecialFlags flags);
+	bool IsSalt() const;
+	
+	// methods
+	void AddAttack(const AttackData *attack);
+	const std::vector<AttackData> GetAttacks() const;
+	void AddDefend(const AttackData *defend);
+	const std::vector<AttackData> GetDefends() const;
+	
+	const unsigned long GetAttackCount() const;
+	const int GetMaxStarsGiven() const;
+	const int GetTotalStars() const;
+	
+	const AttackData* GetCloserAttack() const;
 	
 protected:
-	std::string			m_PlayerTag;
-	eTownHallLevel		m_TownHallLevel;
-	std::string			m_PlayerName;
+	int 						m_CloserStars;
+	eTownHallLevel				m_TownHallLevel;
+	eSpecialFlags				m_SpecialFlag;
+	std::string					m_PlayerTag;
+	std::string					m_PlayerName;
+	std::vector<AttackData>		m_Attacks;
+	std::vector<AttackData>		m_Defends;
 };
 
 #endif /* PlayerData_hpp */
