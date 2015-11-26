@@ -25,3 +25,5 @@ DerivedData
 #
 #Pods/
 .DS_Store
+/source/ClashStats/.vs/ClashStats/v14
+/source/ClashStats/x64/Debug
