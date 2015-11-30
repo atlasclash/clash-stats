@@ -136,9 +136,9 @@ void WarData::RunReports() const
 	ReportPlayerStats();
 	
 	// Warnings
-//	ReportWarningMissingInAction();
-//	ReportWarningNuke();
-//	ReportWarningSnipe();
+	ReportWarningMissingInAction();
+	ReportWarningNuke();
+	ReportWarningSnipe();
 }
 
 void WarData::ReportFinalScore() const
@@ -180,8 +180,10 @@ void WarData::ReportPlayerStats() const
 {
 	for (int i = 0; i < m_UsList.size(); ++i)
 	{
+		const int bleeds = (m_UsList[i].GetDefends().size()) ? (int)m_UsList[i].GetDefends().size() - 1 : 0;
+		
 		std::cout << m_UsList[i].GetPlayerName() << " stars(" << m_UsList[i].GetTotalStars() << "|" << m_UsList[i].GetCloserStars() << ") bleeds("
-				  << m_UsList[i].GetDefends().size() - 1 << ") hold ("
+				  << bleeds << ") hold ("
 				  << 3 - m_UsList[i].GetMaxStarsGiven() << ")" << std::endl;
 	}
 }

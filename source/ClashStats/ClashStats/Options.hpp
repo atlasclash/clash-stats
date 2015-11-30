@@ -14,14 +14,13 @@
 class Options
 {
 public:
-	Options();
-	virtual ~Options() {}
-	
 	bool parser_Check_Data_Ranges;			// pct [0-100], stars [0-3]
 	bool parser_Check_Player_Totals;		// player stars <= 6, player attacks <=2
 	bool parser_Check_Missing_Attacks;		// if a player has not been attacked
 
 protected:
+	Options();
+	virtual ~Options() {}
 };
 
 typedef atSingleton<Options> OPTIONS;

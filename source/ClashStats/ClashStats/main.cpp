@@ -12,6 +12,7 @@
 #include "Parser.hpp"
 #include "Options.hpp"
 #include "WarData.hpp"
+#include "Database.hpp"
 
 const int QUIT_OPTION	= 9;
 
@@ -171,6 +172,8 @@ int main(int argc, const char * argv[])
 {
 	OPTIONS::Instantiate();
 	PARSER::Instantiate();
+	DATABASE::Instantiate();
+	DATABASE::GetInstance().OpenDatabase();
 
 	// assume second argument is a file to parse, otherwise go into interactive mode
 	if (argc != 2)
@@ -191,6 +194,9 @@ int main(int argc, const char * argv[])
 		parser->ProcessWar(g_WarData);
 		g_WarData->CalcCloserStars();
 		g_WarData->RunReports();
+		
+		// write to database
+		DATABASE::GetInstance().WritePlayerTags(g_WarData->GetUsList());
 	}
 	
 	if (g_WarData != NULL)

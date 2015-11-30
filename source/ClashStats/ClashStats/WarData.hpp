@@ -46,6 +46,9 @@ public:
 	void AddUsDefend(const AttackData *def, const int defenderIndex);
 	void AddThemDefend(const AttackData *def, const int defenderIndex);
 	
+	std::vector<PlayerData> GetUsList() { return m_UsList; }
+	std::vector<PlayerData> GetThemList() { return m_ThemList; }
+	
 	// 1s based routines
 	eTownHallLevel GetUsTHLevel(const int usId) const;
 	eTownHallLevel GetThemTHLevel(const int themId) const;
