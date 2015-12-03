@@ -10,6 +10,8 @@
 #include "Options.hpp"
 #include <assert.h>
 #include <iostream>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 WarData::WarData(std::string clanName, std::string clanTag)
 {
@@ -139,6 +141,16 @@ void WarData::RunReports() const
 	ReportWarningMissingInAction();
 	ReportWarningNuke();
 	ReportWarningSnipe();
+	
+	std::string date("2015/12/2");
+	boost::gregorian::date d(boost::gregorian::from_simple_string(date));
+	std::cout << boost::gregorian::to_simple_string(d) << std::endl;
+	
+	boost::gregorian::date epoch(boost::gregorian::from_simple_string("2015/12/01"));
+	boost::posix_time::ptime tdA(d);
+	boost::posix_time::ptime tdB(epoch);
+	boost::posix_time::time_duration td = tdA - tdB;
+	std::cout << td.total_seconds() << std::endl;
 }
 
 void WarData::ReportFinalScore() const

@@ -11,6 +11,12 @@
 		0FC7BD791C0766EE008B9C28 /* Options.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD771C0766EE008B9C28 /* Options.cpp */; };
 		0FC7BD821C08EAA9008B9C28 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD7E1C08EAA9008B9C28 /* sqlite3.c */; };
 		0FC7BD881C096B28008B9C28 /* Database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD861C096B28008B9C28 /* Database.cpp */; };
+		0FC7BD8F1C0BDEF8008B9C28 /* PlayerRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD8D1C0BDEF8008B9C28 /* PlayerRecord.cpp */; };
+		0FC7BD921C0BDFB9008B9C28 /* AttackRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD901C0BDFB9008B9C28 /* AttackRecord.cpp */; };
+		0FC7BD951C0BE067008B9C28 /* DefendRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD931C0BE067008B9C28 /* DefendRecord.cpp */; };
+		0FC7BD981C0BE0BC008B9C28 /* WarRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD961C0BE0BC008B9C28 /* WarRecord.cpp */; };
+		0FC7BD9B1C0BE122008B9C28 /* HistoricRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD991C0BE122008B9C28 /* HistoricRecord.cpp */; };
+		0FC7BD9D1C0C1046008B9C28 /* libboost_date_time-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FC7BD9C1C0C1046008B9C28 /* libboost_date_time-mt.a */; };
 		84010DAA1C001DDF0061FFDE /* DataObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84010DA81C001DDF0061FFDE /* DataObject.cpp */; };
 		84010DAD1C001F330061FFDE /* StringHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84010DAB1C001F330061FFDE /* StringHelpers.cpp */; };
 		84BFADEC1BF8129100FBB85C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84BFADEB1BF8129100FBB85C /* main.cpp */; };
@@ -42,6 +48,17 @@
 		0FC7BD7F1C08EAA9008B9C28 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = External/sqlite3/sqlite3.h; sourceTree = "<group>"; };
 		0FC7BD861C096B28008B9C28 /* Database.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Database.cpp; path = ClashStats/Database.cpp; sourceTree = "<group>"; };
 		0FC7BD871C096B28008B9C28 /* Database.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Database.hpp; path = ClashStats/Database.hpp; sourceTree = "<group>"; };
+		0FC7BD8D1C0BDEF8008B9C28 /* PlayerRecord.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlayerRecord.cpp; path = ClashStats/PlayerRecord.cpp; sourceTree = "<group>"; };
+		0FC7BD8E1C0BDEF8008B9C28 /* PlayerRecord.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PlayerRecord.hpp; path = ClashStats/PlayerRecord.hpp; sourceTree = "<group>"; };
+		0FC7BD901C0BDFB9008B9C28 /* AttackRecord.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AttackRecord.cpp; path = ClashStats/AttackRecord.cpp; sourceTree = "<group>"; };
+		0FC7BD911C0BDFB9008B9C28 /* AttackRecord.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = AttackRecord.hpp; path = ClashStats/AttackRecord.hpp; sourceTree = "<group>"; };
+		0FC7BD931C0BE067008B9C28 /* DefendRecord.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DefendRecord.cpp; path = ClashStats/DefendRecord.cpp; sourceTree = "<group>"; };
+		0FC7BD941C0BE067008B9C28 /* DefendRecord.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DefendRecord.hpp; path = ClashStats/DefendRecord.hpp; sourceTree = "<group>"; };
+		0FC7BD961C0BE0BC008B9C28 /* WarRecord.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WarRecord.cpp; path = ClashStats/WarRecord.cpp; sourceTree = "<group>"; };
+		0FC7BD971C0BE0BC008B9C28 /* WarRecord.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = WarRecord.hpp; path = ClashStats/WarRecord.hpp; sourceTree = "<group>"; };
+		0FC7BD991C0BE122008B9C28 /* HistoricRecord.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HistoricRecord.cpp; path = ClashStats/HistoricRecord.cpp; sourceTree = "<group>"; };
+		0FC7BD9A1C0BE122008B9C28 /* HistoricRecord.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = HistoricRecord.hpp; path = ClashStats/HistoricRecord.hpp; sourceTree = "<group>"; };
+		0FC7BD9C1C0C1046008B9C28 /* libboost_date_time-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_date_time-mt.a"; path = "../../../../../../../../opt/local/lib/libboost_date_time-mt.a"; sourceTree = "<group>"; };
 		84010DA81C001DDF0061FFDE /* DataObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DataObject.cpp; path = ClashStats/DataObject.cpp; sourceTree = "<group>"; };
 		84010DA91C001DDF0061FFDE /* DataObject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DataObject.hpp; path = ClashStats/DataObject.hpp; sourceTree = "<group>"; };
 		84010DAB1C001F330061FFDE /* StringHelpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StringHelpers.cpp; path = ClashStats/StringHelpers.cpp; sourceTree = "<group>"; };
@@ -68,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0FC7BD9D1C0C1046008B9C28 /* libboost_date_time-mt.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +114,16 @@
 			children = (
 				0FC7BD871C096B28008B9C28 /* Database.hpp */,
 				0FC7BD861C096B28008B9C28 /* Database.cpp */,
+				0FC7BD8E1C0BDEF8008B9C28 /* PlayerRecord.hpp */,
+				0FC7BD8D1C0BDEF8008B9C28 /* PlayerRecord.cpp */,
+				0FC7BD911C0BDFB9008B9C28 /* AttackRecord.hpp */,
+				0FC7BD901C0BDFB9008B9C28 /* AttackRecord.cpp */,
+				0FC7BD941C0BE067008B9C28 /* DefendRecord.hpp */,
+				0FC7BD931C0BE067008B9C28 /* DefendRecord.cpp */,
+				0FC7BD971C0BE0BC008B9C28 /* WarRecord.hpp */,
+				0FC7BD961C0BE0BC008B9C28 /* WarRecord.cpp */,
+				0FC7BD9A1C0BE122008B9C28 /* HistoricRecord.hpp */,
+				0FC7BD991C0BE122008B9C28 /* HistoricRecord.cpp */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -103,6 +131,7 @@
 		84BFADDF1BF8129100FBB85C = {
 			isa = PBXGroup;
 			children = (
+				0FC7BD9C1C0C1046008B9C28 /* libboost_date_time-mt.a */,
 				0FC7BD7B1C08EA7F008B9C28 /* External */,
 				84BFAE011BF854B900FBB85C /* Architecture */,
 				84BFADF21BF8382B00FBB85C /* Data Objects */,
@@ -223,7 +252,11 @@
 				84BFADEC1BF8129100FBB85C /* main.cpp in Sources */,
 				0FC7BD791C0766EE008B9C28 /* Options.cpp in Sources */,
 				84BFADF81BF83A1C00FBB85C /* PlayerData.cpp in Sources */,
+				0FC7BD921C0BDFB9008B9C28 /* AttackRecord.cpp in Sources */,
+				0FC7BD9B1C0BE122008B9C28 /* HistoricRecord.cpp in Sources */,
 				84010DAA1C001DDF0061FFDE /* DataObject.cpp in Sources */,
+				0FC7BD8F1C0BDEF8008B9C28 /* PlayerRecord.cpp in Sources */,
+				0FC7BD981C0BE0BC008B9C28 /* WarRecord.cpp in Sources */,
 				84010DAD1C001F330061FFDE /* StringHelpers.cpp in Sources */,
 				0FC7BD821C08EAA9008B9C28 /* sqlite3.c in Sources */,
 				84BFADFE1BF8543000FBB85C /* ParserV1.cpp in Sources */,
@@ -231,6 +264,7 @@
 				84BFAE041BF952BC00FBB85C /* Parser.cpp in Sources */,
 				0FC7BD881C096B28008B9C28 /* Database.cpp in Sources */,
 				84BFADFB1BF853F100FBB85C /* ParserFactory.cpp in Sources */,
+				0FC7BD951C0BE067008B9C28 /* DefendRecord.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,6 +353,11 @@
 		84BFADF01BF8129100FBB85C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = /opt/local/include/;
+				LIBRARY_SEARCH_PATHS = (
+					/opt/local/lib/,
+					/opt/local/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -326,6 +365,11 @@
 		84BFADF11BF8129100FBB85C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = /opt/local/include/;
+				LIBRARY_SEARCH_PATHS = (
+					/opt/local/lib/,
+					/opt/local/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
