@@ -8,6 +8,8 @@
 
 #include "WarData.hpp"
 #include "Options.hpp"
+#include "WarRecord.hpp"
+#include "Database.hpp"
 #include <assert.h>
 #include <iostream>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -79,6 +81,23 @@ eTownHallLevel WarData::GetThemTHLevel(const int themId) const
 	return m_ThemList[themId-1].GetTownHallLevel();
 }
 
+PlayerData* WarData::GetUs(const unsigned int which)
+{
+	if (m_UsList.size() < which-1)
+		return NULL;
+	
+	return &m_UsList[which-1];
+}
+
+PlayerData* WarData::GetThem(const unsigned int which)
+{
+	if (m_ThemList.size() < which-1)
+		return NULL;
+	
+	return &m_ThemList[which-1];
+}
+
+
 void WarData::CalcCloserStars()
 {
 	int *closerStars = new int[m_UsList.size()];
@@ -131,29 +150,7 @@ void WarData::CalcCloserStars()
 	delete [] closerStars;
 }
 
-void WarData::RunReports() const
-{
-	// Verification
-	ReportFinalScore();
-	ReportPlayerStats();
-	
-	// Warnings
-	ReportWarningMissingInAction();
-	ReportWarningNuke();
-	ReportWarningSnipe();
-	
-	std::string date("2015/12/2");
-	boost::gregorian::date d(boost::gregorian::from_simple_string(date));
-	std::cout << boost::gregorian::to_simple_string(d) << std::endl;
-	
-	boost::gregorian::date epoch(boost::gregorian::from_simple_string("2015/12/01"));
-	boost::posix_time::ptime tdA(d);
-	boost::posix_time::ptime tdB(epoch);
-	boost::posix_time::time_duration td = tdA - tdB;
-	std::cout << td.total_seconds() << std::endl;
-}
-
-void WarData::ReportFinalScore() const
+void WarData::CalcTotalScores()
 {
 	int usScore = 0;
 	int themScore = 0;
@@ -167,8 +164,8 @@ void WarData::ReportFinalScore() const
 	// assumption is that these lists are the same length
 	for (int i = 0; i < m_UsList.size(); ++i)
 	{
-		int usStarsGiven = m_UsList[i].GetMaxStarsGiven();
-		int themStarsGiven = m_ThemList[i].GetMaxStarsGiven();
+		int usStarsGiven	= m_UsList[i].GetMaxStarsGiven();
+		int themStarsGiven	= m_ThemList[i].GetMaxStarsGiven();
 		
 		themScore	+= usStarsGiven;
 		usScore		+= themStarsGiven;
@@ -177,15 +174,77 @@ void WarData::ReportFinalScore() const
 		usTHScore[m_ThemList[i].GetTownHallLevel()-1]		+= themStarsGiven;
 	}
 	
-	std::cout << "Final Score:" << std::endl;
-	std::cout << "  Us: " << usScore << std::endl;
-	std::cout << "  Them: " << themScore << std::endl;
+	m_UsScore = usScore;
+	m_ThemScore = themScore;
+
+//	std::cout << "Stars earned per TH level" << std::endl;
+//	for (int i = kTH6-1; i < kTH11; ++i)
+//	{
+//		std::cout << "TH(" << i+1 << ") Us: " << usTHScore[i] << " Them: " << themTHScore[i] << std::endl;
+//	}
+}
+
+int WarData::GetTotalSecondsFromEpochOfWarDate() const
+{
+	boost::gregorian::date d(boost::gregorian::from_simple_string(m_DateStr));
+	boost::posix_time::ptime posixTimeDateA(d);
+	boost::posix_time::ptime posixTimeEpochDate(DATABASE::GetInstance().GetEpochDate());
+	boost::posix_time::time_duration td = posixTimeDateA - posixTimeEpochDate;
+
+	return td.total_seconds();
+}
+
+bool WarData::SaveWarToDB()
+{
+	// record any new players seen
+	DATABASE::GetInstance().WritePlayerTags(m_UsList);
 	
-	std::cout << "Stars earned per TH level" << std::endl;
-	for (int i = kTH6-1; i < kTH11; ++i)
+	// record the war summary
+	WarRecord warRecord;
+	warRecord.opponentName	= m_OpponentClanName;
+	warRecord.opponentTag	= m_OpponentClanTag;
+	warRecord.playerCount	= m_WarSize;
+	warRecord.usScore		= m_UsScore;
+	warRecord.themScore		= m_ThemScore;
+	warRecord.date			= GetTotalSecondsFromEpochOfWarDate();
+	
+	DATABASE::GetInstance().WriteWarRecord(warRecord);
+	if (warRecord.pk == Database::INVALID_KEY)
 	{
-		std::cout << "TH(" << i+1 << ") Us: " << usTHScore[i] << " Them: " << themTHScore[i] << std::endl;
+		std::cout << "Unable to write war!" << std::endl;
+		return false;
 	}
+	
+	
+	return true;
+}
+
+void WarData::RunReports() const
+{
+	// Verification
+	ReportFinalScore();
+	ReportPlayerStats();
+	
+	// Warnings
+	ReportWarningMissingInAction();
+	ReportWarningNuke();
+	ReportWarningSnipe();
+}
+
+void WarData::CalcWarStats()
+{
+	// us vs them total score
+	CalcTotalScores();
+	
+	// closer stars
+	CalcCloserStars();
+}
+
+void WarData::ReportFinalScore() const
+{
+	std::cout << "Final Score:" << std::endl;
+	std::cout << "  Us: " << m_UsScore << std::endl;
+	std::cout << "  Them: " << m_ThemScore << std::endl;
 }
 
 void WarData::ReportPlayerStats() const

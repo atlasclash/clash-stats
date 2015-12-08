@@ -10,17 +10,32 @@
 #define Database_hpp
 
 #include <vector>
+#include <boost/date_time/gregorian/gregorian.hpp>
 #include "Singleton.h"
-#include "sqlite3.h"
 #include "PlayerData.hpp"
+
+class sqlite3;
+class WarRecord;
 
 class Database
 {
 public:
+	enum
+	{
+		INVALID_KEY = -1,
+	};
+	
+	// open the database, creating it if necessary
 	bool	OpenDatabase();
 	
 	// write player tags from a war
 	void	WritePlayerTags(std::vector<PlayerData> list);
+	
+	// write war data
+	void	WriteWarRecord(WarRecord &warRecord);
+	
+	// date of our "epoch" (2010-Jan-01)
+	boost::gregorian::date GetEpochDate();
 	
 protected:
 	bool	IsDatabasePresent() const;

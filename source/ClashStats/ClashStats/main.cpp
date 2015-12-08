@@ -37,9 +37,14 @@ void ui_LoadWarData()
 		delete g_WarData;
 	}
 	
+	if (g_WarData)
+	{
+		delete g_WarData;
+	}
+	
 	g_WarData = new WarData();
 	parser->ProcessWar(g_WarData);
-	g_WarData->CalcCloserStars();
+	g_WarData->CalcWarStats();
 	
 	delete parser;
 }
@@ -152,7 +157,15 @@ bool ui_MainMenu()
 				ui_AnalyzeWarData();
 				break;
 			case 3:
-				std::cout << "Unsupported" << std::endl;
+				//std::cout << "Unsupported" << std::endl;
+				if (g_WarData)
+				{
+					std::cout << "Writing war..." << std::endl;
+					if (g_WarData->SaveWarToDB())
+					{
+						std::cout << "Success!" << std::endl;
+					}
+				}
 				break;
 			case 4:
 				ui_Options();
@@ -200,10 +213,13 @@ int main(int argc, const char * argv[])
 	}
 	
 	if (g_WarData != NULL)
+	{
 		delete g_WarData;
+	}
 	
 	OPTIONS::Destroy();
 	PARSER::Destroy();
+	DATABASE::Destroy();
 	
     return 0;
 }

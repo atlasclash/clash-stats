@@ -7,10 +7,12 @@
 //
 
 #include "Database.hpp"
+#include "WarRecord.hpp"
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string>
 #include <iostream>
+#include "sqlite3.h"
 
 #define WAR_DATABASE_NAME				("wardata.sqlite")
 #define WAR_DATABASE_SCHEMA_VERSION		(1)
@@ -21,6 +23,13 @@
 #define TABLE_DEFEND					("DefendTable")
 #define TABLE_WAR						("WarTable")
 #define TABLE_HISTORIC					("Historic")
+
+static boost::gregorian::date s_epoch(boost::gregorian::from_simple_string("2010/01/01"));
+
+boost::gregorian::date Database::GetEpochDate()
+{
+	return s_epoch;
+}
 
 bool Database::IsDatabasePresent() const
 {
@@ -146,3 +155,29 @@ void Database::WritePlayerTags(std::vector<PlayerData> list)
 	sqlite3_finalize(update_statement);
 	sqlite3_finalize(insert_statement);
 }
+
+void Database::WriteWarRecord(WarRecord &warRecord)
+{
+	warRecord.pk = 0;
+	
+	std::string insert_war_sql = "INSERT INTO WarTable (opponentName, playerCnt, usScore, themScore, date) VALUES (?, ?, ?, ?, ?)";
+	sqlite3_stmt *insert_statement;
+
+	const char *unused;
+	sqlite3_prepare_v2(m_database, insert_war_sql.c_str(), (int)insert_war_sql.length(), &insert_statement, &unused);
+	
+	sqlite3_bind_text(insert_statement, 1, warRecord.opponentName.c_str(), (int)warRecord.opponentName.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_int(insert_statement, 2, warRecord.playerCount);
+	sqlite3_bind_int(insert_statement, 3, warRecord.usScore);
+	sqlite3_bind_int(insert_statement, 4, warRecord.themScore);
+	sqlite3_bind_int(insert_statement, 5, warRecord.date);
+	
+	sqlite3_step(insert_statement);
+	warRecord.pk = (int)sqlite3_last_insert_rowid(m_database);
+	
+	sqlite3_finalize(insert_statement);
+}
+
+
+
+

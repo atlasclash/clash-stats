@@ -10,6 +10,7 @@
 #include "StringHelpers.hpp"
 #include "WarData.hpp"
 #include "AttackData.hpp"
+#include "PlayerData.hpp"
 #include "Options.hpp"
 #include <sstream>
 #include <string>
@@ -31,6 +32,7 @@
 #define FIELD_PLAYER_SPECIAL				(4)
 #define FIELD_PLAYER_OPPONENT_TH			(5)
 
+#define FIELD_ATTACK_NUM					(0)
 #define FIELD_ATTACK_US_STARS				(1)
 #define FIELD_ATTACK_US_PCT					(2)
 #define FIELD_ATTACK_US_INDEX				(3)
@@ -125,6 +127,7 @@ void ParserV1::ProcessWar(WarData *warData)
 		// we are attacking them
 		if (cellResults[FIELD_ATTACK_US_STARS].length() && cellResults[FIELD_ATTACK_US_PCT].length())
 		{
+			//int attackNumber		= atoi(cellResults[FIELD_ATTACK_NUM].c_str());
 			int opponentId			= atoi(cellResults[FIELD_ATTACK_THEM_INDEX].c_str());
 			int usId				= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
 			int stars				= atoi(cellResults[FIELD_ATTACK_US_STARS].c_str());
@@ -135,11 +138,17 @@ void ParserV1::ProcessWar(WarData *warData)
 				std::cout << "Check data range failure: attack: " << attackTotal << std::endl;
 				return;
 			}
-
-			eTownHallLevel usTH		= warData->GetThemTHLevel(opponentId);
-			eTownHallLevel oppTH 	= warData->GetUsTHLevel(usId);
 			
-			const AttackData *usAttack = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH);
+			const PlayerData *opponent = warData->GetThem(opponentId);
+			assert(opponent != NULL);
+			
+			eTownHallLevel usTH		= warData->GetUsTHLevel(usId);
+			eTownHallLevel oppTH 	= warData->GetThemTHLevel(opponentId);
+			bool isSalt				= opponent->IsSalt();
+			bool isCloseAttk		= (!opponent->IsClosed() && stars == AttackData::kThreeStar);
+			int attemptNum			= (int)opponent->GetDefendCount() + 1;	// we're the next try
+			
+			const AttackData *usAttack = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH, isSalt, isCloseAttk, attemptNum);
 			const AttackData *themDefend = new AttackData(usId, (AttackData::StarType)stars, pct, usTH);
 			warData->AddUsAttack(usAttack, usId);
 			warData->AddThemDefend(themDefend, opponentId);
@@ -147,10 +156,10 @@ void ParserV1::ProcessWar(WarData *warData)
 		// they are attacking us
 		else if (cellResults[FIELD_ATTACK_THEM_STARS].length() && cellResults[FIELD_ATTACK_THEM_PCT].length())
 		{
-			int opponentId	= atoi(cellResults[FIELD_ATTACK_THEM_INDEX].c_str());
-			int stars		= atoi(cellResults[FIELD_ATTACK_THEM_STARS].c_str());
-			int pct			= atoi(cellResults[FIELD_ATTACK_THEM_PCT].c_str());
-			int usId		= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
+			int opponentId			= atoi(cellResults[FIELD_ATTACK_THEM_INDEX].c_str());
+			int stars				= atoi(cellResults[FIELD_ATTACK_THEM_STARS].c_str());
+			int pct					= atoi(cellResults[FIELD_ATTACK_THEM_PCT].c_str());
+			int usId				= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
 
 			if (OPTIONS::GetInstance().parser_Check_Data_Ranges && !CheckDataRanges(opponentId, usId, stars, pct, warSize))
 			{
@@ -158,8 +167,8 @@ void ParserV1::ProcessWar(WarData *warData)
 				return;
 			}
 
-			eTownHallLevel usTH		= warData->GetThemTHLevel(opponentId);
-			eTownHallLevel oppTH 	= warData->GetUsTHLevel(usId);
+			eTownHallLevel usTH		= warData->GetUsTHLevel(usId);
+			eTownHallLevel oppTH 	= warData->GetThemTHLevel(opponentId);
 
 			const AttackData *usDefend = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH);
 			const AttackData *themAttack = new AttackData(usId, (AttackData::StarType)stars, pct, usTH);

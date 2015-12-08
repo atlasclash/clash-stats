@@ -19,6 +19,6 @@ struct WarRecord
 	int			playerCount;
 	int			usScore;
 	int			themScore;
-	int			date;			// TBD type
+	int			date;			// seconds from "epoch" (2010-Jan-01)
 };
 #endif /* WarRecord_hpp */
