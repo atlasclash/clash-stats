@@ -8,8 +8,15 @@
 
 #include "WarData.hpp"
 #include "Options.hpp"
+#include "WarRecord.hpp"
+#include "PlayerWarRecord.hpp"
+#include "AttackRecord.hpp"
+#include "DefendRecord.hpp"
+#include "Database.hpp"
 #include <assert.h>
 #include <iostream>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 WarData::WarData(std::string clanName, std::string clanTag)
 {
@@ -77,6 +84,23 @@ eTownHallLevel WarData::GetThemTHLevel(const int themId) const
 	return m_ThemList[themId-1].GetTownHallLevel();
 }
 
+PlayerData* WarData::GetUs(const unsigned int which)
+{
+	if (m_UsList.size() < which-1)
+		return NULL;
+	
+	return &m_UsList[which-1];
+}
+
+PlayerData* WarData::GetThem(const unsigned int which)
+{
+	if (m_ThemList.size() < which-1)
+		return NULL;
+	
+	return &m_ThemList[which-1];
+}
+
+
 void WarData::CalcCloserStars()
 {
 	int *closerStars = new int[m_UsList.size()];
@@ -129,19 +153,7 @@ void WarData::CalcCloserStars()
 	delete [] closerStars;
 }
 
-void WarData::RunReports() const
-{
-	// Verification
-	ReportFinalScore();
-	ReportPlayerStats();
-	
-	// Warnings
-//	ReportWarningMissingInAction();
-//	ReportWarningNuke();
-//	ReportWarningSnipe();
-}
-
-void WarData::ReportFinalScore() const
+void WarData::CalcTotalScores()
 {
 	int usScore = 0;
 	int themScore = 0;
@@ -155,8 +167,8 @@ void WarData::ReportFinalScore() const
 	// assumption is that these lists are the same length
 	for (int i = 0; i < m_UsList.size(); ++i)
 	{
-		int usStarsGiven = m_UsList[i].GetMaxStarsGiven();
-		int themStarsGiven = m_ThemList[i].GetMaxStarsGiven();
+		int usStarsGiven	= m_UsList[i].GetMaxStarsGiven();
+		int themStarsGiven	= m_ThemList[i].GetMaxStarsGiven();
 		
 		themScore	+= usStarsGiven;
 		usScore		+= themStarsGiven;
@@ -165,15 +177,128 @@ void WarData::ReportFinalScore() const
 		usTHScore[m_ThemList[i].GetTownHallLevel()-1]		+= themStarsGiven;
 	}
 	
-	std::cout << "Final Score:" << std::endl;
-	std::cout << "  Us: " << usScore << std::endl;
-	std::cout << "  Them: " << themScore << std::endl;
+	m_UsScore = usScore;
+	m_ThemScore = themScore;
+
+//	std::cout << "Stars earned per TH level" << std::endl;
+//	for (int i = kTH6-1; i < kTH11; ++i)
+//	{
+//		std::cout << "TH(" << i+1 << ") Us: " << usTHScore[i] << " Them: " << themTHScore[i] << std::endl;
+//	}
+}
+
+int WarData::GetTotalSecondsFromEpochOfWarDate() const
+{
+	boost::gregorian::date d(boost::gregorian::from_simple_string(m_DateStr));
+	boost::posix_time::ptime posixTimeDateA(d);
+	boost::posix_time::ptime posixTimeEpochDate(DATABASE::GetInstance().GetEpochDate());
+	boost::posix_time::time_duration td = posixTimeDateA - posixTimeEpochDate;
+
+	return td.total_seconds();
+}
+
+bool WarData::SaveWarToDB()
+{
+	// record any new players seen
+	DATABASE::GetInstance().WritePlayerTags(m_UsList);
 	
-	std::cout << "Stars earned per TH level" << std::endl;
-	for (int i = kTH6-1; i < kTH11; ++i)
+	// record the war summary
+	WarRecord warRecord;
+	warRecord.opponentName	= m_OpponentClanName;
+	warRecord.opponentTag	= m_OpponentClanTag;
+	warRecord.playerCount	= m_WarSize;
+	warRecord.usScore		= m_UsScore;
+	warRecord.themScore		= m_ThemScore;
+	warRecord.date			= GetTotalSecondsFromEpochOfWarDate();
+	
+	DATABASE::GetInstance().WriteWarRecord(warRecord);
+	if (warRecord.pk == Database::INVALID_KEY)
 	{
-		std::cout << "TH(" << i+1 << ") Us: " << usTHScore[i] << " Them: " << themTHScore[i] << std::endl;
+		std::cout << "Unable to write war!" << std::endl;
+		return false;
 	}
+	
+	for (int i = 0; i < m_UsList.size(); ++i)
+	{
+		PlayerData pd = m_UsList[i];
+		
+		PlayerWarRecord playerWarRecord;
+		playerWarRecord.playerTagKey		= pd.GetPlayerTag();
+		playerWarRecord.warKey				= warRecord.pk;
+		playerWarRecord.closerStars			= pd.GetCloserStars();
+		playerWarRecord.holds				= pd.GetHolds();
+		playerWarRecord.bleeds				= pd.GetBleeds();
+		playerWarRecord.nuked				= pd.GetNukes();
+		playerWarRecord.totalStars			= pd.GetTotalStars();
+		playerWarRecord.threeStars			= pd.GetThreeStars();
+		playerWarRecord.playerTH			= (int)pd.GetTownHallLevel();
+		
+		DATABASE::GetInstance().WritePlayerWarRecord(playerWarRecord);
+		
+		for (int j = 0; j < pd.GetAttackCount(); ++j)
+		{
+			AttackData ad = pd.GetAttacks()[j];
+			AttackRecord ar;
+			
+			ar.playerTagPk					= pd.GetPlayerTag();
+			ar.playerTH						= (int)pd.GetTownHallLevel();
+			ar.opponentTH					= ad.GetTownHall();
+			ar.starCount					= ad.GetStars();
+			ar.percentDmg					= ad.GetPctDamage();
+			ar.isSalt						= ad.IsSalt();
+			ar.isClose						= ad.IsClose();
+			ar.attemptNum					= ad.GetAttemptNumber();
+			ar.warPk						= warRecord.pk;
+			ar.attackNum					= ad.GetAttackNumber();
+			
+			DATABASE::GetInstance().WritePlayerAttackRecord(ar);
+		}
+		
+		for (int k = 0; k < pd.GetDefendCount(); ++k)
+		{
+			AttackData ad = pd.GetDefends()[k];
+			DefendRecord dd;
+			
+			dd.playerTagPk					= pd.GetPlayerTag();
+			dd.playerTH						= (int)pd.GetTownHallLevel();
+			dd.opponentTH					= ad.GetTownHall();
+			dd.starCount					= ad.GetStars();
+			dd.percentDmg					= ad.GetPctDamage();
+			dd.warPk						= warRecord.pk;
+			
+			DATABASE::GetInstance().WritePlayerDefendRecord(dd);
+		}
+	}
+	
+	return true;
+}
+
+void WarData::RunReports() const
+{
+	// Verification
+	ReportFinalScore();
+	ReportPlayerStats();
+	
+	// Warnings
+	ReportWarningMissingInAction();
+	ReportWarningNuke();
+	ReportWarningSnipe();
+}
+
+void WarData::CalcWarStats()
+{
+	// us vs them total score
+	CalcTotalScores();
+	
+	// closer stars
+	CalcCloserStars();
+}
+
+void WarData::ReportFinalScore() const
+{
+	std::cout << "Final Score:" << std::endl;
+	std::cout << "  Us: " << m_UsScore << std::endl;
+	std::cout << "  Them: " << m_ThemScore << std::endl;
 }
 
 void WarData::ReportPlayerStats() const
@@ -181,8 +306,9 @@ void WarData::ReportPlayerStats() const
 	for (int i = 0; i < m_UsList.size(); ++i)
 	{
 		std::cout << m_UsList[i].GetPlayerName() << " stars(" << m_UsList[i].GetTotalStars() << "|" << m_UsList[i].GetCloserStars() << ") bleeds("
-				  << m_UsList[i].GetDefends().size() - 1 << ") hold ("
-				  << 3 - m_UsList[i].GetMaxStarsGiven() << ")" << std::endl;
+				  << m_UsList[i].GetBleeds() << ") hold ("
+				  << m_UsList[i].GetHolds()  << ") nukes ("
+				  << m_UsList[i].GetNukes()  << ")" << std::endl;
 	}
 }
 

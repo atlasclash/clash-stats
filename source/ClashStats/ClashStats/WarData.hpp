@@ -46,11 +46,22 @@ public:
 	void AddUsDefend(const AttackData *def, const int defenderIndex);
 	void AddThemDefend(const AttackData *def, const int defenderIndex);
 	
+	std::vector<PlayerData> GetUsList() { return m_UsList; }
+	std::vector<PlayerData> GetThemList() { return m_ThemList; }
+	
+	// 1s based routines
+	PlayerData* GetThem(const unsigned int which);
+	PlayerData* GetUs(const unsigned int which);
+	
 	// 1s based routines
 	eTownHallLevel GetUsTHLevel(const int usId) const;
 	eTownHallLevel GetThemTHLevel(const int themId) const;
 	
+	// calculates post-read war stats
+	void CalcWarStats();
 	void CalcCloserStars();
+	
+	// displays results of the war stats
 	void RunReports() const;
 	void ReportFinalScore() const;
 	void ReportPlayerStats() const;
@@ -58,7 +69,12 @@ public:
 	void ReportWarningNuke() const;
 	void ReportWarningSnipe() const;
 	
+	bool SaveWarToDB();
+	
 protected:
+	void CalcTotalScores();
+
+	int GetTotalSecondsFromEpochOfWarDate() const;
 	
 	int							m_WarSize;										// number of players in the war
 	std::string					m_OpponentClanName;								// opponent clan name
@@ -66,6 +82,9 @@ protected:
 	std::string					m_DateStr;										// date of war (mm/dd/yy)
 	std::vector<PlayerData>		m_ThemList;										// list of players in enemy clan
 	std::vector<PlayerData>		m_UsList;										// list of players in our clan
+	
+	int							m_UsScore;										// must call CalcWarStats()
+	int							m_ThemScore;									// must call CalcWarStats()
 };
 
 #endif /* WarData_hpp */
