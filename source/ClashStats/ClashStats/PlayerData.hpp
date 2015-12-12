@@ -25,7 +25,7 @@ public:
 	enum eSpecialFlags
 	{
 		kSpecialNone	= 0,
-		kSpecialSalt	= 1 << 1,
+		kSpecialSalt	= 1 << 0,
 	};
 	
 	// construction / destruction
@@ -44,9 +44,16 @@ public:
 	
 	void SetCloserStars(const int stars);
 	const int GetCloserStars() const;
+
+	const int GetBleeds() const;
+	const int GetHolds() const;
+	const int GetNukes() const;
+	const int GetThreeStars() const;
 	
 	void SetSpecialFlag(const eSpecialFlags flags);
 	bool IsSalt() const;
+	
+	bool IsClosed() const;
 	
 	// methods
 	void AddAttack(const AttackData *attack);
@@ -55,6 +62,7 @@ public:
 	const std::vector<AttackData> GetDefends() const;
 	
 	const unsigned long GetAttackCount() const;
+	const unsigned long GetDefendCount() const;
 	const int GetMaxStarsGiven() const;
 	const int GetTotalStars() const;
 	

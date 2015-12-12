@@ -12,6 +12,7 @@
 #include "Parser.hpp"
 #include "Options.hpp"
 #include "WarData.hpp"
+#include "Database.hpp"
 
 const int QUIT_OPTION	= 9;
 
@@ -36,9 +37,14 @@ void ui_LoadWarData()
 		delete g_WarData;
 	}
 	
+	if (g_WarData)
+	{
+		delete g_WarData;
+	}
+	
 	g_WarData = new WarData();
 	parser->ProcessWar(g_WarData);
-	g_WarData->CalcCloserStars();
+	g_WarData->CalcWarStats();
 	
 	delete parser;
 }
@@ -151,7 +157,15 @@ bool ui_MainMenu()
 				ui_AnalyzeWarData();
 				break;
 			case 3:
-				std::cout << "Unsupported" << std::endl;
+				//std::cout << "Unsupported" << std::endl;
+				if (g_WarData)
+				{
+					std::cout << "Writing war..." << std::endl;
+					if (g_WarData->SaveWarToDB())
+					{
+						std::cout << "Success!" << std::endl;
+					}
+				}
 				break;
 			case 4:
 				ui_Options();
@@ -171,6 +185,8 @@ int main(int argc, const char * argv[])
 {
 	OPTIONS::Instantiate();
 	PARSER::Instantiate();
+	DATABASE::Instantiate();
+	DATABASE::GetInstance().OpenDatabase();
 
 	// assume second argument is a file to parse, otherwise go into interactive mode
 	if (argc != 2)
@@ -191,13 +207,19 @@ int main(int argc, const char * argv[])
 		parser->ProcessWar(g_WarData);
 		g_WarData->CalcCloserStars();
 		g_WarData->RunReports();
+		
+		// write to database
+		DATABASE::GetInstance().WritePlayerTags(g_WarData->GetUsList());
 	}
 	
 	if (g_WarData != NULL)
+	{
 		delete g_WarData;
+	}
 	
 	OPTIONS::Destroy();
 	PARSER::Destroy();
+	DATABASE::Destroy();
 	
     return 0;
 }

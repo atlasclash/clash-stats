@@ -13,6 +13,22 @@ AttackData::AttackData(int opponent, StarType stars, int pctDmg, eTownHallLevel 
 , m_Stars(stars)
 , m_PctDamage(pctDmg)
 , m_TownHall(th)
+, m_IsSalt(false)
+, m_IsClose(false)
+, m_AttemptNumber(0)
+, m_AttackNumber(0)
+{
+}
+
+AttackData::AttackData(int opponent, StarType stars, int pctDmg, eTownHallLevel th, bool isSalt, bool isClose, int attempt, int attackNum)
+: m_OpponentId(opponent)
+, m_Stars(stars)
+, m_PctDamage(pctDmg)
+, m_TownHall(th)
+, m_IsSalt(isSalt)
+, m_IsClose(isClose)
+, m_AttemptNumber(attempt)
+, m_AttackNumber(attackNum)
 {
 	
 }

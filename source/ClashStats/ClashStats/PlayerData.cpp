@@ -72,9 +72,36 @@ const int PlayerData::GetCloserStars() const
 	return m_CloserStars;
 }
 
+const int PlayerData::GetThreeStars() const
+{
+	int count = 0;
+	for (int i = 0; i < m_Attacks.size(); ++i)
+	{
+		if (m_Attacks[i].GetStars() == MAX_STARS_PER_ATTACK)
+		{
+			++count;
+		}
+	}
+	
+	return count;
+}
+
 bool PlayerData::IsSalt() const
 {
-	return (m_SpecialFlag & kSpecialNone);
+	return (m_SpecialFlag & kSpecialSalt);
+}
+
+bool PlayerData::IsClosed() const
+{
+	for (int i = 0; i < m_Defends.size(); ++i)
+	{
+		if ((int)m_Defends[i].GetStars() == AttackData::kThreeStar)
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 void PlayerData::AddAttack(const AttackData *attack)
@@ -100,6 +127,35 @@ const std::vector<AttackData> PlayerData::GetDefends() const
 const unsigned long PlayerData::GetAttackCount() const
 {
 	return m_Attacks.size();
+}
+
+const unsigned long PlayerData::GetDefendCount() const
+{
+	return m_Defends.size();
+}
+
+const int PlayerData::GetBleeds() const
+{
+	return GetDefendCount() ? (int)GetDefendCount() - 1 : 0;
+}
+
+const int PlayerData::GetHolds() const
+{
+	return (MAX_STARS_PER_ATTACK - GetMaxStarsGiven());
+}
+
+const int PlayerData::GetNukes() const
+{
+	int count = 0;
+	for (int i = 0; i < m_Defends.size(); ++i)
+	{
+		if (m_Defends[i].GetTownHall() > m_TownHallLevel)
+		{
+			++count;
+		}
+	}
+	
+	return count;
 }
 
 const int PlayerData::GetMaxStarsGiven() const
