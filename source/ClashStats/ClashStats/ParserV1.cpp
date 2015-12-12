@@ -127,7 +127,7 @@ void ParserV1::ProcessWar(WarData *warData)
 		// we are attacking them
 		if (cellResults[FIELD_ATTACK_US_STARS].length() && cellResults[FIELD_ATTACK_US_PCT].length())
 		{
-			//int attackNumber		= atoi(cellResults[FIELD_ATTACK_NUM].c_str());
+			int attackNumber		= atoi(cellResults[FIELD_ATTACK_NUM].c_str());
 			int opponentId			= atoi(cellResults[FIELD_ATTACK_THEM_INDEX].c_str());
 			int usId				= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
 			int stars				= atoi(cellResults[FIELD_ATTACK_US_STARS].c_str());
@@ -148,7 +148,7 @@ void ParserV1::ProcessWar(WarData *warData)
 			bool isCloseAttk		= (!opponent->IsClosed() && stars == AttackData::kThreeStar);
 			int attemptNum			= (int)opponent->GetDefendCount() + 1;	// we're the next try
 			
-			const AttackData *usAttack = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH, isSalt, isCloseAttk, attemptNum);
+			const AttackData *usAttack = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH, isSalt, isCloseAttk, attemptNum, attackNumber);
 			const AttackData *themDefend = new AttackData(usId, (AttackData::StarType)stars, pct, usTH);
 			warData->AddUsAttack(usAttack, usId);
 			warData->AddThemDefend(themDefend, opponentId);

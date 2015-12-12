@@ -9,6 +9,9 @@
 #include "WarData.hpp"
 #include "Options.hpp"
 #include "WarRecord.hpp"
+#include "PlayerWarRecord.hpp"
+#include "AttackRecord.hpp"
+#include "DefendRecord.hpp"
 #include "Database.hpp"
 #include <assert.h>
 #include <iostream>
@@ -215,6 +218,57 @@ bool WarData::SaveWarToDB()
 		return false;
 	}
 	
+	for (int i = 0; i < m_UsList.size(); ++i)
+	{
+		PlayerData pd = m_UsList[i];
+		
+		PlayerWarRecord playerWarRecord;
+		playerWarRecord.playerTagKey		= pd.GetPlayerTag();
+		playerWarRecord.warKey				= warRecord.pk;
+		playerWarRecord.closerStars			= pd.GetCloserStars();
+		playerWarRecord.holds				= pd.GetHolds();
+		playerWarRecord.bleeds				= pd.GetBleeds();
+		playerWarRecord.nuked				= pd.GetNukes();
+		playerWarRecord.totalStars			= pd.GetTotalStars();
+		playerWarRecord.threeStars			= pd.GetThreeStars();
+		playerWarRecord.playerTH			= (int)pd.GetTownHallLevel();
+		
+		DATABASE::GetInstance().WritePlayerWarRecord(playerWarRecord);
+		
+		for (int j = 0; j < pd.GetAttackCount(); ++j)
+		{
+			AttackData ad = pd.GetAttacks()[j];
+			AttackRecord ar;
+			
+			ar.playerTagPk					= pd.GetPlayerTag();
+			ar.playerTH						= (int)pd.GetTownHallLevel();
+			ar.opponentTH					= ad.GetTownHall();
+			ar.starCount					= ad.GetStars();
+			ar.percentDmg					= ad.GetPctDamage();
+			ar.isSalt						= ad.IsSalt();
+			ar.isClose						= ad.IsClose();
+			ar.attemptNum					= ad.GetAttemptNumber();
+			ar.warPk						= warRecord.pk;
+			ar.attackNum					= ad.GetAttackNumber();
+			
+			DATABASE::GetInstance().WritePlayerAttackRecord(ar);
+		}
+		
+		for (int k = 0; k < pd.GetDefendCount(); ++k)
+		{
+			AttackData ad = pd.GetDefends()[k];
+			DefendRecord dd;
+			
+			dd.playerTagPk					= pd.GetPlayerTag();
+			dd.playerTH						= (int)pd.GetTownHallLevel();
+			dd.opponentTH					= ad.GetTownHall();
+			dd.starCount					= ad.GetStars();
+			dd.percentDmg					= ad.GetPctDamage();
+			dd.warPk						= warRecord.pk;
+			
+			DATABASE::GetInstance().WritePlayerDefendRecord(dd);
+		}
+	}
 	
 	return true;
 }
@@ -251,11 +305,10 @@ void WarData::ReportPlayerStats() const
 {
 	for (int i = 0; i < m_UsList.size(); ++i)
 	{
-		const int bleeds = (m_UsList[i].GetDefends().size()) ? (int)m_UsList[i].GetDefends().size() - 1 : 0;
-		
 		std::cout << m_UsList[i].GetPlayerName() << " stars(" << m_UsList[i].GetTotalStars() << "|" << m_UsList[i].GetCloserStars() << ") bleeds("
-				  << bleeds << ") hold ("
-				  << 3 - m_UsList[i].GetMaxStarsGiven() << ")" << std::endl;
+				  << m_UsList[i].GetBleeds() << ") hold ("
+				  << m_UsList[i].GetHolds()  << ") nukes ("
+				  << m_UsList[i].GetNukes()  << ")" << std::endl;
 	}
 }
 

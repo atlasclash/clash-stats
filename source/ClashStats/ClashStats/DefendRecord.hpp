@@ -9,10 +9,12 @@
 #ifndef DefendRecord_hpp
 #define DefendRecord_hpp
 
+#include <string>
+
 struct DefendRecord
 {
 	int			pk;
-	int			playerTagPk;
+	std::string	playerTagPk;
 	int			playerTH;
 	int			opponentTH;
 	int			starCount;

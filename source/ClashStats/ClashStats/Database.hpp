@@ -15,7 +15,10 @@
 #include "PlayerData.hpp"
 
 class sqlite3;
-class WarRecord;
+struct WarRecord;
+struct PlayerWarRecord;
+struct AttackRecord;
+struct DefendRecord;
 
 class Database
 {
@@ -33,6 +36,13 @@ public:
 	
 	// write war data
 	void	WriteWarRecord(WarRecord &warRecord);
+	
+	// write player war record
+	void	WritePlayerWarRecord(PlayerWarRecord &playerWarRecord);
+	
+	void	WritePlayerAttackRecord(AttackRecord &attackRecord);
+	
+	void	WritePlayerDefendRecord(DefendRecord &defendRecord);
 	
 	// date of our "epoch" (2010-Jan-01)
 	boost::gregorian::date GetEpochDate();

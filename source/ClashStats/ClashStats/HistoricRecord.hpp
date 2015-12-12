@@ -9,10 +9,12 @@
 #ifndef HistoricRecord_hpp
 #define HistoricRecord_hpp
 
+#include <string>
+
 struct HistoricRecord
 {
 	int			pk;
-	int			playerTagPk;
+	std::string	playerTagPk;
 	int			warTotal;
 	int			closerStars;
 	int			holds;

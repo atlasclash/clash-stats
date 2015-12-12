@@ -17,6 +17,7 @@
 		0FC7BD981C0BE0BC008B9C28 /* WarRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD961C0BE0BC008B9C28 /* WarRecord.cpp */; };
 		0FC7BD9B1C0BE122008B9C28 /* HistoricRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD991C0BE122008B9C28 /* HistoricRecord.cpp */; };
 		0FC7BD9D1C0C1046008B9C28 /* libboost_date_time-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FC7BD9C1C0C1046008B9C28 /* libboost_date_time-mt.a */; };
+		0FC7BDA01C17E96B008B9C28 /* PlayerWarRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD9E1C17E96B008B9C28 /* PlayerWarRecord.cpp */; };
 		84010DAA1C001DDF0061FFDE /* DataObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84010DA81C001DDF0061FFDE /* DataObject.cpp */; };
 		84010DAD1C001F330061FFDE /* StringHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84010DAB1C001F330061FFDE /* StringHelpers.cpp */; };
 		84BFADEC1BF8129100FBB85C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84BFADEB1BF8129100FBB85C /* main.cpp */; };
@@ -59,6 +60,8 @@
 		0FC7BD991C0BE122008B9C28 /* HistoricRecord.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HistoricRecord.cpp; path = ClashStats/HistoricRecord.cpp; sourceTree = "<group>"; };
 		0FC7BD9A1C0BE122008B9C28 /* HistoricRecord.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = HistoricRecord.hpp; path = ClashStats/HistoricRecord.hpp; sourceTree = "<group>"; };
 		0FC7BD9C1C0C1046008B9C28 /* libboost_date_time-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_date_time-mt.a"; path = "../../../../../../../../opt/local/lib/libboost_date_time-mt.a"; sourceTree = "<group>"; };
+		0FC7BD9E1C17E96B008B9C28 /* PlayerWarRecord.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlayerWarRecord.cpp; path = ClashStats/PlayerWarRecord.cpp; sourceTree = "<group>"; };
+		0FC7BD9F1C17E96B008B9C28 /* PlayerWarRecord.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PlayerWarRecord.hpp; path = ClashStats/PlayerWarRecord.hpp; sourceTree = "<group>"; };
 		84010DA81C001DDF0061FFDE /* DataObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DataObject.cpp; path = ClashStats/DataObject.cpp; sourceTree = "<group>"; };
 		84010DA91C001DDF0061FFDE /* DataObject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DataObject.hpp; path = ClashStats/DataObject.hpp; sourceTree = "<group>"; };
 		84010DAB1C001F330061FFDE /* StringHelpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StringHelpers.cpp; path = ClashStats/StringHelpers.cpp; sourceTree = "<group>"; };
@@ -124,6 +127,8 @@
 				0FC7BD961C0BE0BC008B9C28 /* WarRecord.cpp */,
 				0FC7BD9A1C0BE122008B9C28 /* HistoricRecord.hpp */,
 				0FC7BD991C0BE122008B9C28 /* HistoricRecord.cpp */,
+				0FC7BD9F1C17E96B008B9C28 /* PlayerWarRecord.hpp */,
+				0FC7BD9E1C17E96B008B9C28 /* PlayerWarRecord.cpp */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -256,6 +261,7 @@
 				0FC7BD9B1C0BE122008B9C28 /* HistoricRecord.cpp in Sources */,
 				84010DAA1C001DDF0061FFDE /* DataObject.cpp in Sources */,
 				0FC7BD8F1C0BDEF8008B9C28 /* PlayerRecord.cpp in Sources */,
+				0FC7BDA01C17E96B008B9C28 /* PlayerWarRecord.cpp in Sources */,
 				0FC7BD981C0BE0BC008B9C28 /* WarRecord.cpp in Sources */,
 				84010DAD1C001F330061FFDE /* StringHelpers.cpp in Sources */,
 				0FC7BD821C08EAA9008B9C28 /* sqlite3.c in Sources */,

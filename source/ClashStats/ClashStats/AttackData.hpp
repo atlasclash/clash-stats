@@ -24,11 +24,16 @@ public:
 	};
 	
 	AttackData(int opponentId, StarType stars, int pctDmg, eTownHallLevel th);
-	AttackData(int opponentId, StarType stars, int pctDmg, eTownHallLevel th, bool isSalt, bool isClose, int attempt);
+	AttackData(int opponentId, StarType stars, int pctDmg, eTownHallLevel th, bool isSalt, bool isClose, int attempt, int attackNum);
 	
-	const int GetTargetId() const	{ return m_OpponentId; }
-	const int GetPctDamage() const	{ return m_PctDamage; }
-	const StarType GetStars() const { return m_Stars; }
+	const int GetTargetId() const					{ return m_OpponentId; }
+	const int GetPctDamage() const					{ return m_PctDamage; }
+	const StarType GetStars() const					{ return m_Stars; }
+	const eTownHallLevel GetTownHall() const		{ return m_TownHall; }
+	const bool IsSalt() const						{ return m_IsSalt; }
+	const bool IsClose() const						{ return m_IsClose; }
+	const int GetAttemptNumber() const				{ return m_AttemptNumber; }
+	const int GetAttackNumber() const				{ return m_AttackNumber; }
 	
 protected:
 	int				m_OpponentId;		// index (1's based) of attacker or defender - based on context
@@ -38,6 +43,7 @@ protected:
 	bool			m_IsSalt;			// is this attack vs a 'max' defender
 	bool			m_IsClose;			// did this attack close the base (first 3-star attack)
 	int				m_AttemptNumber;	// this is the 1st, 2nd, 3rd, etc try
+	int				m_AttackNumber;		// shows the sequence of attacks within a war
 };
 
 #endif /* AttackData_hpp */

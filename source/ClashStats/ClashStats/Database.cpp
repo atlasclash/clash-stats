@@ -8,6 +8,9 @@
 
 #include "Database.hpp"
 #include "WarRecord.hpp"
+#include "PlayerWarRecord.hpp"
+#include "AttackRecord.hpp"
+#include "DefendRecord.hpp"
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string>
@@ -23,6 +26,14 @@
 #define TABLE_DEFEND					("DefendTable")
 #define TABLE_WAR						("WarTable")
 #define TABLE_HISTORIC					("Historic")
+
+#ifndef YES
+#define YES								(1)
+#endif
+
+#ifndef NO
+#define NO								(0)
+#endif
 
 static boost::gregorian::date s_epoch(boost::gregorian::from_simple_string("2010/01/01"));
 
@@ -78,25 +89,26 @@ const char* Database::CreateVersion1()
 										"'playerName' TEXT );"
 			""
 			"DROP TABLE IF EXISTS 'AttackTable';"
-			"CREATE TABLE 'AttackTable' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"
-										"'playerTagKey' TEXT,"
-										"'warKey' INTEGER,"
-										"'playerTH' INTEGER,"
-										"'opponentTH' INTEGER,"
-										"'starCnt' INTEGER,"
-										"'pctDmg' INTEGER,"
-										"'isSalt' INTEGER,"
-										"'isClose' INTEGER,"
-										"'attemptNum' INTEGER );"
+			"CREATE TABLE 'AttackTable' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"		// primary key
+										"'playerTagKey' TEXT,"							// player tag key (foreign key)
+										"'warKey' INTEGER,"								// war key (foreign key)
+										"'attackNum' INTEGER,"
+										"'playerTH' INTEGER,"							// player's TH level
+										"'opponentTH' INTEGER,"							// opponent's TH level
+										"'starCnt' INTEGER,"							// stars earned
+										"'pctDmg' INTEGER,"								// percent destruction
+										"'isSalt' INTEGER,"								// is this a 'salt' base?
+										"'isClose' INTEGER,"							// was the attack a 'close'?
+										"'attemptNum' INTEGER );"						// number of attempts on the base
 			""
 			"DROP TABLE IF EXISTS 'DefendTable';"
-			"CREATE TABLE 'DefendTable' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"
-										"'playerTagKey' TEXT,"
-										"'warKey' INTEGER,"
-										"'playerTH' INTEGER,"
-										"'opponentTH' INTEGER,"
-										"'starCnt' INTEGER,"
-										"'pctDmg' INTEGER );"
+			"CREATE TABLE 'DefendTable' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"		// primary key
+										"'playerTagKey' TEXT,"							// player tag key (foreign key)
+										"'warKey' INTEGER,"								// war key (foreign key)
+										"'playerTH' INTEGER,"							// player's TH level
+										"'opponentTH' INTEGER,"							// opponent's TH level
+										"'starCnt' INTEGER,"							// stars earned
+										"'pctDmg' INTEGER );"							// percent destruction
 			""
 			"DROP TABLE IF EXISTS 'WarTable';"
 			"CREATE TABLE 'WarTable' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -104,17 +116,30 @@ const char* Database::CreateVersion1()
 										"'playerCnt' INTEGER,"
 										"'usScore' INTEGER,"
 										"'themScore' INTEGER,"
-										"'date' NUMERIC );"
+										"'date' NUMERIC );"								// date stored in seconds since 'epoch'
 			""
-			"DROP TABLE IF EXISTS 'Historic';"
-			"CREATE TABLE 'Historic' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"
+			"DROP TABLE IF EXISTS 'PlayerWarTable';"									// stores aggregate totals per war
+			"CREATE TABLE 'PlayerWarTable' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"	// primary key
+										"'playerTagKey' TEXT,"							// player tag key (foreign key)
+										"'warKey' INTEGER,"								// war key (foreign key)
+										"'playerTH' INTEGER,"
+										"'closerStars' INTEGER,"						// closer stars
+										"'holds' INTEGER,"								// holds
+										"'bleeds' INTEGER,"								// bleeds
+										"'nuked' INTEGER,"								// nuked
+										"'totalStars' INTEGER,"							// total stars
+										"'threeStars' INTEGER );"						// three star attacks
+			""
+			"DROP TABLE IF EXISTS 'Historic';"											// table to store summary data to bootstrap missing war info
+			"CREATE TABLE 'Historic' ('pk' INTEGER PRIMARY TEXT AUTOINCREMENT,"
 										"'playerTagKey' TEXT,"
-										"'warTotal' INTEGER,"
+										"'warTotal' INTEGER,"							// total wars participated
 										"'closerStars' INTEGER,"
 										"'holds' INTEGER,"
 										"'bleeds' INTEGER,"
 										"'nuked' INTEGER,"
 										"'starsTotal' INTEGER,"
+										"'threeStars' INTEGER,"
 										"'mia' INTEGER,"
 										"'scout' INTEGER );"
 	;
@@ -178,6 +203,81 @@ void Database::WriteWarRecord(WarRecord &warRecord)
 	sqlite3_finalize(insert_statement);
 }
 
+void Database::WritePlayerWarRecord(PlayerWarRecord &playerWarRecord)
+{
+	playerWarRecord.pk = 0;
+	
+	std::string insert_sql = "INSERT INTO PlayerWarTable (playerTagKey, warKey, playerTH, closerStars, holds, bleeds, nuked, totalStars, threeStars) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	sqlite3_stmt *insert_statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, insert_sql.c_str(), (int)insert_sql.length(), &insert_statement, &unused);
+	
+	sqlite3_bind_text(insert_statement, 1, playerWarRecord.playerTagKey.c_str(), (int)playerWarRecord.playerTagKey.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_int(insert_statement, 2, playerWarRecord.warKey);
+	sqlite3_bind_int(insert_statement, 3, playerWarRecord.playerTH);
+	sqlite3_bind_int(insert_statement, 4, playerWarRecord.closerStars);
+	sqlite3_bind_int(insert_statement, 5, playerWarRecord.holds);
+	sqlite3_bind_int(insert_statement, 6, playerWarRecord.bleeds);
+	sqlite3_bind_int(insert_statement, 7, playerWarRecord.nuked);
+	sqlite3_bind_int(insert_statement, 8, playerWarRecord.totalStars);
+	sqlite3_bind_int(insert_statement, 9, playerWarRecord.threeStars);
+	
+	sqlite3_step(insert_statement);
+	playerWarRecord.pk = (int)sqlite3_last_insert_rowid(m_database);
+	
+	sqlite3_finalize(insert_statement);
+}
+
+void Database::WritePlayerAttackRecord(AttackRecord &attackRecord)
+{
+	attackRecord.pk = 0;
+	
+	std::string insert_sql = "INSERT INTO AttackTable (playerTagKey, warKey, attackNum, playerTH, opponentTH, starCnt, pctDmg, isSalt, isClose, attemptNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	sqlite3_stmt *insert_statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, insert_sql.c_str(), (int)insert_sql.length(), &insert_statement, &unused);
+	
+	sqlite3_bind_text(insert_statement, 1, attackRecord.playerTagPk.c_str(), (int)attackRecord.playerTagPk.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_int(insert_statement, 2, attackRecord.warPk);
+	sqlite3_bind_int(insert_statement, 3, attackRecord.attackNum);
+	sqlite3_bind_int(insert_statement, 4, attackRecord.playerTH);
+	sqlite3_bind_int(insert_statement, 5, attackRecord.opponentTH);
+	sqlite3_bind_int(insert_statement, 6, attackRecord.starCount);
+	sqlite3_bind_int(insert_statement, 7, attackRecord.percentDmg);
+	sqlite3_bind_int(insert_statement, 8, (attackRecord.isSalt)?YES:NO);
+	sqlite3_bind_int(insert_statement, 9, (attackRecord.isClose)?YES:NO);
+	sqlite3_bind_int(insert_statement, 10, attackRecord.attemptNum);
+	
+	sqlite3_step(insert_statement);
+	attackRecord.pk = (int)sqlite3_last_insert_rowid(m_database);
+	
+	sqlite3_finalize(insert_statement);
+}
+
+void Database::WritePlayerDefendRecord(DefendRecord &defendRecord)
+{
+	defendRecord.pk = 0;
+	
+	std::string insert_sql = "INSERT INTO DefendTable (playerTagKey, warKey, playerTH, opponentTH, starCnt, pctDmg) VALUES (?, ?, ?, ?, ?, ?)";
+	sqlite3_stmt *insert_statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, insert_sql.c_str(), (int)insert_sql.length(), &insert_statement, &unused);
+	
+	sqlite3_bind_text(insert_statement, 1, defendRecord.playerTagPk.c_str(), (int)defendRecord.playerTagPk.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_int(insert_statement, 2, defendRecord.warPk);
+	sqlite3_bind_int(insert_statement, 3, defendRecord.playerTH);
+	sqlite3_bind_int(insert_statement, 4, defendRecord.opponentTH);
+	sqlite3_bind_int(insert_statement, 5, defendRecord.starCount);
+	sqlite3_bind_int(insert_statement, 6, defendRecord.percentDmg);
+	
+	sqlite3_step(insert_statement);
+	defendRecord.pk = (int)sqlite3_last_insert_rowid(m_database);
+	
+	sqlite3_finalize(insert_statement);
+}
 
 
 

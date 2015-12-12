@@ -9,10 +9,12 @@
 #ifndef AttackRecord_hpp
 #define AttackRecord_hpp
 
+#include <string>
+
 struct AttackRecord
 {
 	int			pk;
-	int			playerTagPk;
+	std::string	playerTagPk;
 	int			playerTH;
 	int			opponentTH;
 	int			starCount;
@@ -20,6 +22,7 @@ struct AttackRecord
 	bool		isSalt;
 	bool		isClose;
 	int			attemptNum;
+	int			attackNum;
 	int			warPk;
 };
 

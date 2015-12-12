@@ -12,7 +12,7 @@
 // town hall levels
 enum eTownHallLevel
 {
-	kTH0,
+	kTH0 = 0,
 	kTH1,
 	kTH2,
 	kTH3,

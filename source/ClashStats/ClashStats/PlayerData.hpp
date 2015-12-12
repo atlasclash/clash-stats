@@ -44,6 +44,11 @@ public:
 	
 	void SetCloserStars(const int stars);
 	const int GetCloserStars() const;
+
+	const int GetBleeds() const;
+	const int GetHolds() const;
+	const int GetNukes() const;
+	const int GetThreeStars() const;
 	
 	void SetSpecialFlag(const eSpecialFlags flags);
 	bool IsSalt() const;
