@@ -7,3 +7,16 @@
 //
 
 #include "WarRecord.hpp"
+#include "Database.hpp"
+#include <iostream>
+
+void WarRecord::Description()
+{
+	std::cout	<< opponentName
+				<< " (" << opponentTag << ") "
+				<< playerCount
+				<< " Us:" << usScore
+				<< " Them:" << themScore
+				<< " Date: " << DATABASE::GetInstance().StringFromDate(date)
+				<< std::endl;
+}

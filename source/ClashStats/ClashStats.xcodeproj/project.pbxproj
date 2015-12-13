@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F71E4F11C1CEA1A00E75E97 /* Clan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F71E4EF1C1CEA1A00E75E97 /* Clan.cpp */; };
+		0F71E4F41C1CEA2C00E75E97 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F71E4F21C1CEA2C00E75E97 /* Player.cpp */; };
 		0FC7BD761C0148FC008B9C28 /* AttackData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD741C0148FC008B9C28 /* AttackData.cpp */; };
 		0FC7BD791C0766EE008B9C28 /* Options.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD771C0766EE008B9C28 /* Options.cpp */; };
 		0FC7BD821C08EAA9008B9C28 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD7E1C08EAA9008B9C28 /* sqlite3.c */; };
@@ -41,6 +43,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0F71E4EF1C1CEA1A00E75E97 /* Clan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Clan.cpp; path = ClashStats/Clan.cpp; sourceTree = "<group>"; };
+		0F71E4F01C1CEA1A00E75E97 /* Clan.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Clan.hpp; path = ClashStats/Clan.hpp; sourceTree = "<group>"; };
+		0F71E4F21C1CEA2C00E75E97 /* Player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Player.cpp; path = ClashStats/Player.cpp; sourceTree = "<group>"; };
+		0F71E4F31C1CEA2C00E75E97 /* Player.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Player.hpp; path = ClashStats/Player.hpp; sourceTree = "<group>"; };
 		0FC7BD741C0148FC008B9C28 /* AttackData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AttackData.cpp; path = ClashStats/AttackData.cpp; sourceTree = "<group>"; };
 		0FC7BD751C0148FC008B9C28 /* AttackData.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = AttackData.hpp; path = ClashStats/AttackData.hpp; sourceTree = "<group>"; };
 		0FC7BD771C0766EE008B9C28 /* Options.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Options.cpp; path = ClashStats/Options.cpp; sourceTree = "<group>"; };
@@ -95,6 +101,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0F71E4F51C1CEA3900E75E97 /* Report Objects */ = {
+			isa = PBXGroup;
+			children = (
+				0F71E4EF1C1CEA1A00E75E97 /* Clan.cpp */,
+				0F71E4F01C1CEA1A00E75E97 /* Clan.hpp */,
+				0F71E4F21C1CEA2C00E75E97 /* Player.cpp */,
+				0F71E4F31C1CEA2C00E75E97 /* Player.hpp */,
+			);
+			name = "Report Objects";
+			sourceTree = "<group>";
+		};
 		0FC7BD7B1C08EA7F008B9C28 /* External */ = {
 			isa = PBXGroup;
 			children = (
@@ -139,6 +156,7 @@
 				0FC7BD9C1C0C1046008B9C28 /* libboost_date_time-mt.a */,
 				0FC7BD7B1C08EA7F008B9C28 /* External */,
 				84BFAE011BF854B900FBB85C /* Architecture */,
+				0F71E4F51C1CEA3900E75E97 /* Report Objects */,
 				84BFADF21BF8382B00FBB85C /* Data Objects */,
 				84BFADEA1BF8129100FBB85C /* ClashStats */,
 				84BFADE91BF8129100FBB85C /* Products */,
@@ -257,6 +275,7 @@
 				84BFADEC1BF8129100FBB85C /* main.cpp in Sources */,
 				0FC7BD791C0766EE008B9C28 /* Options.cpp in Sources */,
 				84BFADF81BF83A1C00FBB85C /* PlayerData.cpp in Sources */,
+				0F71E4F41C1CEA2C00E75E97 /* Player.cpp in Sources */,
 				0FC7BD921C0BDFB9008B9C28 /* AttackRecord.cpp in Sources */,
 				0FC7BD9B1C0BE122008B9C28 /* HistoricRecord.cpp in Sources */,
 				84010DAA1C001DDF0061FFDE /* DataObject.cpp in Sources */,
@@ -264,6 +283,7 @@
 				0FC7BDA01C17E96B008B9C28 /* PlayerWarRecord.cpp in Sources */,
 				0FC7BD981C0BE0BC008B9C28 /* WarRecord.cpp in Sources */,
 				84010DAD1C001F330061FFDE /* StringHelpers.cpp in Sources */,
+				0F71E4F11C1CEA1A00E75E97 /* Clan.cpp in Sources */,
 				0FC7BD821C08EAA9008B9C28 /* sqlite3.c in Sources */,
 				84BFADFE1BF8543000FBB85C /* ParserV1.cpp in Sources */,
 				0FC7BD761C0148FC008B9C28 /* AttackData.cpp in Sources */,

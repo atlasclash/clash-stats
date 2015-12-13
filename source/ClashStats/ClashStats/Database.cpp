@@ -15,6 +15,8 @@
 #include <unistd.h>
 #include <string>
 #include <iostream>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "sqlite3.h"
 
 #define WAR_DATABASE_NAME				("wardata.sqlite")
@@ -40,6 +42,12 @@ static boost::gregorian::date s_epoch(boost::gregorian::from_simple_string("2010
 boost::gregorian::date Database::GetEpochDate()
 {
 	return s_epoch;
+}
+
+std::string Database::StringFromDate(const int seconds)
+{
+	boost::posix_time::ptime posixTimeSec(s_epoch, boost::posix_time::time_duration(0,0,seconds));
+	return boost::posix_time::to_simple_string(posixTimeSec);
 }
 
 bool Database::IsDatabasePresent() const
@@ -113,6 +121,7 @@ const char* Database::CreateVersion1()
 			"DROP TABLE IF EXISTS 'WarTable';"
 			"CREATE TABLE 'WarTable' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"
 										"'opponentName' VARCHAR,"
+										"'opponentTag' VARCHAR,"
 										"'playerCnt' INTEGER,"
 										"'usScore' INTEGER,"
 										"'themScore' INTEGER,"
@@ -185,17 +194,18 @@ void Database::WriteWarRecord(WarRecord &warRecord)
 {
 	warRecord.pk = 0;
 	
-	std::string insert_war_sql = "INSERT INTO WarTable (opponentName, playerCnt, usScore, themScore, date) VALUES (?, ?, ?, ?, ?)";
+	std::string insert_war_sql = "INSERT INTO WarTable (opponentName, opponentTag, playerCnt, usScore, themScore, date) VALUES (?, ?, ?, ?, ?, ?)";
 	sqlite3_stmt *insert_statement;
 
 	const char *unused;
 	sqlite3_prepare_v2(m_database, insert_war_sql.c_str(), (int)insert_war_sql.length(), &insert_statement, &unused);
 	
 	sqlite3_bind_text(insert_statement, 1, warRecord.opponentName.c_str(), (int)warRecord.opponentName.length(), SQLITE_TRANSIENT);
-	sqlite3_bind_int(insert_statement, 2, warRecord.playerCount);
-	sqlite3_bind_int(insert_statement, 3, warRecord.usScore);
-	sqlite3_bind_int(insert_statement, 4, warRecord.themScore);
-	sqlite3_bind_int(insert_statement, 5, warRecord.date);
+	sqlite3_bind_text(insert_statement, 2, warRecord.opponentTag.c_str(), (int)warRecord.opponentTag.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_int(insert_statement, 3, warRecord.playerCount);
+	sqlite3_bind_int(insert_statement, 4, warRecord.usScore);
+	sqlite3_bind_int(insert_statement, 5, warRecord.themScore);
+	sqlite3_bind_int(insert_statement, 6, warRecord.date);
 	
 	sqlite3_step(insert_statement);
 	warRecord.pk = (int)sqlite3_last_insert_rowid(m_database);
@@ -279,5 +289,30 @@ void Database::WritePlayerDefendRecord(DefendRecord &defendRecord)
 	sqlite3_finalize(insert_statement);
 }
 
+void Database::ReadAllWars(std::vector<WarRecord>& list)
+{
+	std::string sql = "SELECT * FROM WarTable;";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		WarRecord war;
+		
+		war.pk				= sqlite3_column_int(statement, 0);
+		war.opponentName	= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
+		war.opponentTag		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 2)));
+		war.playerCount		= sqlite3_column_int(statement, 3);
+		war.usScore			= sqlite3_column_int(statement, 4);
+		war.themScore		= sqlite3_column_int(statement, 5);
+		war.date			= sqlite3_column_int(statement, 6);
+		
+		list.push_back(war);
+	}
+	
+	sqlite3_finalize(statement);
+}
 
 

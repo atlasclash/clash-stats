@@ -40,16 +40,23 @@ public:
 	// write player war record
 	void	WritePlayerWarRecord(PlayerWarRecord &playerWarRecord);
 	
+	// write player attack record
 	void	WritePlayerAttackRecord(AttackRecord &attackRecord);
 	
+	// write player defend record
 	void	WritePlayerDefendRecord(DefendRecord &defendRecord);
 	
+	// read all wars
+	void	ReadAllWars(std::vector<WarRecord> &list);
+	
 	// date of our "epoch" (2010-Jan-01)
-	boost::gregorian::date GetEpochDate();
+	boost::gregorian::date	GetEpochDate();
+	std::string				StringFromDate(const int seconds);
 	
 protected:
 	bool	IsDatabasePresent() const;
 	bool	CreateDatabase();
+	
 	
 	sqlite3		*m_database;
 	

@@ -20,5 +20,7 @@ struct WarRecord
 	int			usScore;
 	int			themScore;
 	int			date;			// seconds from "epoch" (2010-Jan-01)
+	
+	void		Description();
 };
 #endif /* WarRecord_hpp */

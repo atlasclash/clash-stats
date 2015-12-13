@@ -13,6 +13,7 @@
 #include "Options.hpp"
 #include "WarData.hpp"
 #include "Database.hpp"
+#include "WarRecord.hpp"
 
 const int QUIT_OPTION	= 9;
 
@@ -134,6 +135,39 @@ void ui_Options()
 	}
 }
 
+void ui_Reports()
+{
+	int choice = 0;
+	
+	std::vector<WarRecord> list;
+	
+	while (choice != QUIT_OPTION)
+	{
+		std::cout << "Reports"										<< std::endl;
+		std::cout << "[1] List all wars"							<< std::endl;
+		std::cout << "[9] Quit"										<< std::endl;
+		std::cin >> choice;
+		
+		switch (choice)
+		{
+			case 1:
+				DATABASE::GetInstance().ReadAllWars(list);
+				for (int i = 0; i < list.size(); ++i)
+				{
+					list[i].Description();
+				}
+				break;
+				
+			case 9:
+			default:
+				return;
+				break;
+		}
+		
+		std::cout << std::endl;
+	}
+}
+
 bool ui_MainMenu()
 {
 	int choice = 0;
@@ -145,6 +179,7 @@ bool ui_MainMenu()
 		std::cout << "[2] Analyze war data"				<< std::endl;
 		std::cout << "[3] Write war data to DB"			<< std::endl;
 		std::cout << "[4] Options"						<< std::endl;
+		std::cout << "[5] Reports"						<< std::endl;
 		std::cout << "[9] Quit"							<< std::endl;
 		std::cin >> choice;
 
@@ -164,11 +199,15 @@ bool ui_MainMenu()
 					if (g_WarData->SaveWarToDB())
 					{
 						std::cout << "Success!" << std::endl;
+						choice = 0;
 					}
 				}
 				break;
 			case 4:
 				ui_Options();
+				break;
+			case 5:
+				ui_Reports();
 				break;
 			case QUIT_OPTION:
 			default:
