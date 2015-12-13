@@ -48,9 +48,12 @@ public:
 	
 	// read all wars
 	void	ReadAllWars(std::vector<WarRecord> &list);
+	void	ReadWarsBetweenDates(std::vector<WarRecord> &list, int startDate, int endDate);
 	
 	// date of our "epoch" (2010-Jan-01)
 	boost::gregorian::date	GetEpochDate();
+	int						GetTotalSecondsFromEpoch(std::string dateString);
+	int						GetTotalSecondsBetweenEpochAndDate(boost::gregorian::date d);
 	std::string				StringFromDate(const int seconds);
 	
 protected:

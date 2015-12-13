@@ -50,6 +50,21 @@ std::string Database::StringFromDate(const int seconds)
 	return boost::posix_time::to_simple_string(posixTimeSec);
 }
 
+int Database::GetTotalSecondsFromEpoch(std::string dateString)
+{
+	boost::gregorian::date d(boost::gregorian::from_simple_string(dateString));
+	return GetTotalSecondsBetweenEpochAndDate(d);
+}
+
+int Database::GetTotalSecondsBetweenEpochAndDate(boost::gregorian::date d)
+{
+	boost::posix_time::ptime posixTimeDateA(d);
+	boost::posix_time::ptime posixTimeEpochDate(s_epoch);
+	boost::posix_time::time_duration td = posixTimeDateA - posixTimeEpochDate;
+	
+	return td.total_seconds();
+}
+
 bool Database::IsDatabasePresent() const
 {
 	struct stat buffer;
@@ -289,7 +304,7 @@ void Database::WritePlayerDefendRecord(DefendRecord &defendRecord)
 	sqlite3_finalize(insert_statement);
 }
 
-void Database::ReadAllWars(std::vector<WarRecord>& list)
+void Database::ReadAllWars(std::vector<WarRecord> &list)
 {
 	std::string sql = "SELECT * FROM WarTable;";
 	sqlite3_stmt *statement;
@@ -315,4 +330,32 @@ void Database::ReadAllWars(std::vector<WarRecord>& list)
 	sqlite3_finalize(statement);
 }
 
+void Database::ReadWarsBetweenDates(std::vector<WarRecord> &list, int startDate, int endDate)
+{
+	std::string sql = "SELECT * FROM WarTable WHERE date >= ? AND date <= ? ORDER BY date ASC;";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	sqlite3_bind_int(statement, 1, startDate);
+	sqlite3_bind_int(statement, 2, endDate);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		WarRecord war;
+
+		war.pk				= sqlite3_column_int(statement, 0);
+		war.opponentName	= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
+		war.opponentTag		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 2)));
+		war.playerCount		= sqlite3_column_int(statement, 3);
+		war.usScore			= sqlite3_column_int(statement, 4);
+		war.themScore		= sqlite3_column_int(statement, 5);
+		war.date			= sqlite3_column_int(statement, 6);
+		
+		list.push_back(war);
+	}
+	
+	sqlite3_finalize(statement);
+}
 

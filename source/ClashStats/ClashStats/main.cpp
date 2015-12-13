@@ -14,6 +14,7 @@
 #include "WarData.hpp"
 #include "Database.hpp"
 #include "WarRecord.hpp"
+#include <boost/date_time/gregorian/gregorian.hpp>
 
 const int QUIT_OPTION	= 9;
 
@@ -138,13 +139,18 @@ void ui_Options()
 void ui_Reports()
 {
 	int choice = 0;
+	std::string date1;
+	std::string date2;
+	boost::gregorian::date today = boost::gregorian::day_clock::local_day();
 	
 	std::vector<WarRecord> list;
 	
 	while (choice != QUIT_OPTION)
 	{
-		std::cout << "Reports"										<< std::endl;
-		std::cout << "[1] List all wars"							<< std::endl;
+		std::cout << "War Reports"									<< std::endl;
+		std::cout << "[1] All"										<< std::endl;
+		std::cout << "[2] Between dates"							<< std::endl;
+		std::cout << "[3] After date"								<< std::endl;
 		std::cout << "[9] Quit"										<< std::endl;
 		std::cin >> choice;
 		
@@ -158,12 +164,36 @@ void ui_Reports()
 				}
 				break;
 				
+			case 2:
+				std::cout << "Date1 (yyyy/mm/dd)" << std::endl;
+				std::cin >> date1;
+				std::cout << "Date2 (yyyy/mm/dd)" << std::endl;
+				std::cin >> date2;
+				DATABASE::GetInstance().ReadWarsBetweenDates(list, DATABASE::GetInstance().GetTotalSecondsFromEpoch(date1), DATABASE::GetInstance().GetTotalSecondsFromEpoch(date2));
+				for (int i = 0; i < list.size(); ++i)
+				{
+					list[i].Description();
+				}
+				break;
+				
+			case 3:
+				std::cout << "Date1 (yyyy/mm/dd)" << std::endl;
+				std::cin >> date1;
+				DATABASE::GetInstance().ReadWarsBetweenDates(list, DATABASE::GetInstance().GetTotalSecondsFromEpoch(date1), DATABASE::GetInstance().GetTotalSecondsBetweenEpochAndDate(today));
+				for (int i = 0; i < list.size(); ++i)
+				{
+					list[i].Description();
+				}
+				break;
+				
 			case 9:
 			default:
 				return;
 				break;
 		}
-		
+
+		list.clear();
+		choice = 0;
 		std::cout << std::endl;
 	}
 }
@@ -179,7 +209,7 @@ bool ui_MainMenu()
 		std::cout << "[2] Analyze war data"				<< std::endl;
 		std::cout << "[3] Write war data to DB"			<< std::endl;
 		std::cout << "[4] Options"						<< std::endl;
-		std::cout << "[5] Reports"						<< std::endl;
+		std::cout << "[5] War Reports"					<< std::endl;
 		std::cout << "[9] Quit"							<< std::endl;
 		std::cin >> choice;
 

@@ -104,10 +104,10 @@
 		0F71E4F51C1CEA3900E75E97 /* Report Objects */ = {
 			isa = PBXGroup;
 			children = (
-				0F71E4EF1C1CEA1A00E75E97 /* Clan.cpp */,
 				0F71E4F01C1CEA1A00E75E97 /* Clan.hpp */,
-				0F71E4F21C1CEA2C00E75E97 /* Player.cpp */,
+				0F71E4EF1C1CEA1A00E75E97 /* Clan.cpp */,
 				0F71E4F31C1CEA2C00E75E97 /* Player.hpp */,
+				0F71E4F21C1CEA2C00E75E97 /* Player.cpp */,
 			);
 			name = "Report Objects";
 			sourceTree = "<group>";

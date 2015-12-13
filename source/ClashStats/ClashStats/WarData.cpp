@@ -15,8 +15,6 @@
 #include "Database.hpp"
 #include <assert.h>
 #include <iostream>
-#include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 WarData::WarData(std::string clanName, std::string clanTag)
 {
@@ -189,12 +187,7 @@ void WarData::CalcTotalScores()
 
 int WarData::GetTotalSecondsFromEpochOfWarDate() const
 {
-	boost::gregorian::date d(boost::gregorian::from_simple_string(m_DateStr));
-	boost::posix_time::ptime posixTimeDateA(d);
-	boost::posix_time::ptime posixTimeEpochDate(DATABASE::GetInstance().GetEpochDate());
-	boost::posix_time::time_duration td = posixTimeDateA - posixTimeEpochDate;
-
-	return td.total_seconds();
+	return DATABASE::GetInstance().GetTotalSecondsFromEpoch(m_DateStr);
 }
 
 bool WarData::SaveWarToDB()
