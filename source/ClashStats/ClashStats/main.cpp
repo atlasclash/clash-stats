@@ -136,7 +136,7 @@ void ui_Options()
 	}
 }
 
-void ui_Reports()
+void ui_WarReports()
 {
 	int choice = 0;
 	std::string date1;
@@ -208,8 +208,8 @@ bool ui_MainMenu()
 		std::cout << "[1] Load war data"				<< std::endl;
 		std::cout << "[2] Analyze war data"				<< std::endl;
 		std::cout << "[3] Write war data to DB"			<< std::endl;
-		std::cout << "[4] Options"						<< std::endl;
-		std::cout << "[5] War Reports"					<< std::endl;
+		std::cout << "[4] War Reports"					<< std::endl;
+		std::cout << "[8] Options"						<< std::endl;
 		std::cout << "[9] Quit"							<< std::endl;
 		std::cin >> choice;
 
@@ -218,9 +218,11 @@ bool ui_MainMenu()
 			case 1:
 				ui_LoadWarData();
 				break;
+
 			case 2:
 				ui_AnalyzeWarData();
 				break;
+
 			case 3:
 				//std::cout << "Unsupported" << std::endl;
 				if (g_WarData)
@@ -233,11 +235,13 @@ bool ui_MainMenu()
 					}
 				}
 				break;
+
 			case 4:
-				ui_Options();
+				ui_WarReports();
 				break;
-			case 5:
-				ui_Reports();
+
+			case 8:
+				ui_Options();
 				break;
 			case QUIT_OPTION:
 			default:
