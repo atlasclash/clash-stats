@@ -12,12 +12,14 @@
 #include "AttackRecord.hpp"
 #include "DefendRecord.hpp"
 #include <sys/stat.h>
-#include <unistd.h>
 #include <string>
 #include <iostream>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "sqlite3.h"
+#ifndef _WIN
+#include <unistd.h>
+#endif
 
 #define WAR_DATABASE_NAME				("wardata.sqlite")
 #define WAR_DATABASE_SCHEMA_VERSION		(1)
