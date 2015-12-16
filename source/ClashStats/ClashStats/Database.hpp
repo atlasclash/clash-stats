@@ -14,7 +14,12 @@
 #include "Singleton.h"
 #include "PlayerData.hpp"
 
+#ifndef _WIN
 class sqlite3;
+#else
+struct sqlite3;
+#endif
+
 struct WarRecord;
 struct PlayerWarRecord;
 struct AttackRecord;

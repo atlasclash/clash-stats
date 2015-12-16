@@ -235,7 +235,7 @@ bool WarData::SaveWarToDB()
 		
 		DATABASE::GetInstance().WritePlayerWarRecord(playerWarRecord);
 		
-		for (int j = 0; j < pd.GetAttackCount(); ++j)
+		for (int j = 0; j < (int)pd.GetAttackCount(); ++j)
 		{
 			AttackData ad = pd.GetAttacks()[j];
 			AttackRecord ar;
@@ -254,7 +254,7 @@ bool WarData::SaveWarToDB()
 			DATABASE::GetInstance().WritePlayerAttackRecord(ar);
 		}
 		
-		for (int k = 0; k < pd.GetDefendCount(); ++k)
+		for (int k = 0; k < (int)pd.GetDefendCount(); ++k)
 		{
 			AttackData ad = pd.GetDefends()[k];
 			DefendRecord dd;
@@ -352,7 +352,7 @@ void WarData::ReportWarningNuke() const
 			const AttackData attack = m_ThemList[i].GetAttacks()[j];
 			if (m_UsList[attack.GetTargetId()-1].GetTownHallLevel() < m_ThemList[i].GetTownHallLevel())
 			{
-				std::cout << "Nuke: " << i << " vs " << m_UsList[attack.GetTargetId()-1].GetPlayerName() << " - Stars (" << attack.GetStars() << ")" << std::endl;
+				std::cout << "Nuke: " << i+1 << " vs " << m_UsList[attack.GetTargetId()-1].GetPlayerName() << " - Stars (" << attack.GetStars() << ")" << std::endl;
 				++total;
 			}
 		}
@@ -389,7 +389,7 @@ void WarData::ReportWarningSnipe() const
 			const AttackData attack = m_ThemList[i].GetAttacks()[j];
 			if (m_UsList[attack.GetTargetId()-1].GetTownHallLevel() > m_ThemList[i].GetTownHallLevel())
 			{
-				std::cout << "Snipe: " << i << " vs " << m_UsList[attack.GetTargetId()-1].GetPlayerName() << " - Stars (" << attack.GetStars() << ")" << std::endl;
+				std::cout << "Snipe: " << i+1 << " vs " << m_UsList[attack.GetTargetId()-1].GetPlayerName() << " - Stars (" << attack.GetStars() << ")" << std::endl;
 				++total;
 			}
 		}

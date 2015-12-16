@@ -12,10 +12,12 @@
 #include "AttackRecord.hpp"
 #include "DefendRecord.hpp"
 #include <sys/stat.h>
-#include <unistd.h>
 #include <string>
 #include <iostream>
 #include "sqlite3.h"
+#ifndef _WIN
+#include <unistd.h>
+#endif
 
 #define WAR_DATABASE_NAME				("wardata.sqlite")
 #define WAR_DATABASE_SCHEMA_VERSION		(1)
