@@ -15,6 +15,9 @@ void WarRecord::Description()
 	std::cout	<< "[" << pk << "] "
 				<< opponentName
 				<< " (" << opponentTag << ") "
+				<< " vs "
+				<< usName
+				<< " (" << usTag << ") "
 				<< playerCount
 				<< " Us:" << usScore
 				<< " Them:" << themScore

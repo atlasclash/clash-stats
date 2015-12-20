@@ -16,6 +16,8 @@ struct WarRecord
 	int			pk;
 	std::string	opponentName;
 	std::string	opponentTag;
+	std::string usName;
+	std::string usTag;
 	int			playerCount;
 	int			usScore;
 	int			themScore;

@@ -31,8 +31,11 @@ public:
 	void SetWarDate(const std::string date) { m_DateStr = date; }
 	std::string GetWarDate() const			{ return m_DateStr; }
 
-	void SetClanName(const std::string name){ m_OpponentClanName = name; }
-	void SetClanTag(const std::string tag)	{ m_OpponentClanTag = tag; }
+	void SetThemClanName(const std::string name){ m_OpponentClanName = name; }
+	void SetThemClanTag(const std::string tag)	{ m_OpponentClanTag = tag; }
+	
+	void SetUsClanName(const std::string name)	{ m_UsClanName = name; }
+	void SetUsClanTag(const std::string tag)	{ m_UsClanTag = tag; }
 	
 	void AddUsPlayer(const PlayerData *us);
 	const int GetUsPlayerCount() const;
@@ -79,6 +82,8 @@ protected:
 	int							m_WarSize;										// number of players in the war
 	std::string					m_OpponentClanName;								// opponent clan name
 	std::string					m_OpponentClanTag;								// opponent clan tag, optional
+	std::string					m_UsClanName;									// our clan name
+	std::string					m_UsClanTag;									// our clan tag
 	std::string					m_DateStr;										// date of war (mm/dd/yy)
 	std::vector<PlayerData>		m_ThemList;										// list of players in enemy clan
 	std::vector<PlayerData>		m_UsList;										// list of players in our clan

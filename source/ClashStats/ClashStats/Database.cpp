@@ -139,6 +139,8 @@ const char* Database::CreateVersion1()
 			"CREATE TABLE 'WarTable' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"
 										"'opponentName' VARCHAR,"
 										"'opponentTag' VARCHAR,"
+										"'usName' VARCHAR,"
+										"'usTag' VARCHAR,"
 										"'playerCnt' INTEGER,"
 										"'usScore' INTEGER,"
 										"'themScore' INTEGER,"
@@ -211,7 +213,7 @@ void Database::WriteWarRecord(WarRecord &warRecord)
 {
 	warRecord.pk = 0;
 	
-	std::string insert_war_sql = "INSERT INTO WarTable (opponentName, opponentTag, playerCnt, usScore, themScore, date) VALUES (?, ?, ?, ?, ?, ?)";
+	std::string insert_war_sql = "INSERT INTO WarTable (opponentName, opponentTag, usName, usTag, playerCnt, usScore, themScore, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 	sqlite3_stmt *insert_statement;
 
 	const char *unused;
@@ -219,10 +221,12 @@ void Database::WriteWarRecord(WarRecord &warRecord)
 	
 	sqlite3_bind_text(insert_statement, 1, warRecord.opponentName.c_str(), (int)warRecord.opponentName.length(), SQLITE_TRANSIENT);
 	sqlite3_bind_text(insert_statement, 2, warRecord.opponentTag.c_str(), (int)warRecord.opponentTag.length(), SQLITE_TRANSIENT);
-	sqlite3_bind_int(insert_statement, 3, warRecord.playerCount);
-	sqlite3_bind_int(insert_statement, 4, warRecord.usScore);
-	sqlite3_bind_int(insert_statement, 5, warRecord.themScore);
-	sqlite3_bind_int(insert_statement, 6, warRecord.date);
+	sqlite3_bind_text(insert_statement, 3, warRecord.usName.c_str(), (int)warRecord.usName.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_text(insert_statement, 4, warRecord.usTag.c_str(), (int)warRecord.usTag.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_int(insert_statement, 5, warRecord.playerCount);
+	sqlite3_bind_int(insert_statement, 6, warRecord.usScore);
+	sqlite3_bind_int(insert_statement, 7, warRecord.themScore);
+	sqlite3_bind_int(insert_statement, 8, warRecord.date);
 	
 	sqlite3_step(insert_statement);
 	warRecord.pk = (int)sqlite3_last_insert_rowid(m_database);
@@ -321,10 +325,12 @@ void Database::ReadAllWars(std::vector<WarRecord> &list)
 		war.pk				= sqlite3_column_int(statement, 0);
 		war.opponentName	= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
 		war.opponentTag		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 2)));
-		war.playerCount		= sqlite3_column_int(statement, 3);
-		war.usScore			= sqlite3_column_int(statement, 4);
-		war.themScore		= sqlite3_column_int(statement, 5);
-		war.date			= sqlite3_column_int(statement, 6);
+		war.usName			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 3)));
+		war.usTag			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 4)));
+		war.playerCount		= sqlite3_column_int(statement, 5);
+		war.usScore			= sqlite3_column_int(statement, 6);
+		war.themScore		= sqlite3_column_int(statement, 7);
+		war.date			= sqlite3_column_int(statement, 8);
 		
 		list.push_back(war);
 	}
@@ -350,10 +356,12 @@ void Database::ReadWarsBetweenDates(std::vector<WarRecord> &list, int startDate,
 		war.pk				= sqlite3_column_int(statement, 0);
 		war.opponentName	= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
 		war.opponentTag		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 2)));
-		war.playerCount		= sqlite3_column_int(statement, 3);
-		war.usScore			= sqlite3_column_int(statement, 4);
-		war.themScore		= sqlite3_column_int(statement, 5);
-		war.date			= sqlite3_column_int(statement, 6);
+		war.usName			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 3)));
+		war.usTag			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 4)));
+		war.playerCount		= sqlite3_column_int(statement, 5);
+		war.usScore			= sqlite3_column_int(statement, 6);
+		war.themScore		= sqlite3_column_int(statement, 7);
+		war.date			= sqlite3_column_int(statement, 8);
 		
 		list.push_back(war);
 	}

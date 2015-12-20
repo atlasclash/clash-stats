@@ -6,6 +6,10 @@
 //  Copyright © 2015 JTJ. All rights reserved.
 //
 
+//
+// prebuilt boost binaries for Windows: http://boost.teeks99.com/
+//
+
 #include <iostream>
 #include <string>
 #include "ParserFactory.hpp"

@@ -199,6 +199,8 @@ bool WarData::SaveWarToDB()
 	WarRecord warRecord;
 	warRecord.opponentName	= m_OpponentClanName;
 	warRecord.opponentTag	= m_OpponentClanTag;
+	warRecord.usName		= m_UsClanName;
+	warRecord.usTag			= m_UsClanTag;
 	warRecord.playerCount	= m_WarSize;
 	warRecord.usScore		= m_UsScore;
 	warRecord.themScore		= m_ThemScore;
