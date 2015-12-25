@@ -141,6 +141,7 @@ const char* Database::CreateVersion1()
 										"'opponentTag' VARCHAR,"
 										"'usName' VARCHAR,"
 										"'usTag' VARCHAR,"
+										"'userMeta' VARCHAR,"
 										"'playerCnt' INTEGER,"
 										"'usScore' INTEGER,"
 										"'themScore' INTEGER,"
@@ -175,8 +176,10 @@ const char* Database::CreateVersion1()
 
 void Database::WritePlayerTags(std::vector<PlayerData> list)
 {
+	//
 	// ref: http://stackoverflow.com/questions/15277373/sqlite-upsert-update-or-insert
 	//
+
 	//																		  1 				2
 	const char *unused;
 	std::string update_player_tag_sql = "UPDATE PlayerTagTable SET playerName=? WHERE playerTag=?";
@@ -213,7 +216,7 @@ void Database::WriteWarRecord(WarRecord &warRecord)
 {
 	warRecord.pk = 0;
 	
-	std::string insert_war_sql = "INSERT INTO WarTable (opponentName, opponentTag, usName, usTag, playerCnt, usScore, themScore, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	std::string insert_war_sql = "INSERT INTO WarTable (opponentName, opponentTag, usName, usTag, userMeta, playerCnt, usScore, themScore, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	sqlite3_stmt *insert_statement;
 
 	const char *unused;
@@ -223,10 +226,11 @@ void Database::WriteWarRecord(WarRecord &warRecord)
 	sqlite3_bind_text(insert_statement, 2, warRecord.opponentTag.c_str(), (int)warRecord.opponentTag.length(), SQLITE_TRANSIENT);
 	sqlite3_bind_text(insert_statement, 3, warRecord.usName.c_str(), (int)warRecord.usName.length(), SQLITE_TRANSIENT);
 	sqlite3_bind_text(insert_statement, 4, warRecord.usTag.c_str(), (int)warRecord.usTag.length(), SQLITE_TRANSIENT);
-	sqlite3_bind_int(insert_statement, 5, warRecord.playerCount);
-	sqlite3_bind_int(insert_statement, 6, warRecord.usScore);
-	sqlite3_bind_int(insert_statement, 7, warRecord.themScore);
-	sqlite3_bind_int(insert_statement, 8, warRecord.date);
+	sqlite3_bind_text(insert_statement, 5, warRecord.userMeta.c_str(), (int)warRecord.userMeta.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_int(insert_statement, 6, warRecord.playerCount);
+	sqlite3_bind_int(insert_statement, 7, warRecord.usScore);
+	sqlite3_bind_int(insert_statement, 8, warRecord.themScore);
+	sqlite3_bind_int(insert_statement, 9, warRecord.date);
 	
 	sqlite3_step(insert_statement);
 	warRecord.pk = (int)sqlite3_last_insert_rowid(m_database);
@@ -327,10 +331,11 @@ void Database::ReadAllWars(std::vector<WarRecord> &list)
 		war.opponentTag		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 2)));
 		war.usName			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 3)));
 		war.usTag			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 4)));
-		war.playerCount		= sqlite3_column_int(statement, 5);
-		war.usScore			= sqlite3_column_int(statement, 6);
-		war.themScore		= sqlite3_column_int(statement, 7);
-		war.date			= sqlite3_column_int(statement, 8);
+		war.userMeta		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 5)));
+		war.playerCount		= sqlite3_column_int(statement, 6);
+		war.usScore			= sqlite3_column_int(statement, 7);
+		war.themScore		= sqlite3_column_int(statement, 8);
+		war.date			= sqlite3_column_int(statement, 9);
 		
 		list.push_back(war);
 	}
@@ -358,10 +363,11 @@ void Database::ReadWarsBetweenDates(std::vector<WarRecord> &list, int startDate,
 		war.opponentTag		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 2)));
 		war.usName			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 3)));
 		war.usTag			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 4)));
-		war.playerCount		= sqlite3_column_int(statement, 5);
-		war.usScore			= sqlite3_column_int(statement, 6);
-		war.themScore		= sqlite3_column_int(statement, 7);
-		war.date			= sqlite3_column_int(statement, 8);
+		war.userMeta		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 5)));
+		war.playerCount		= sqlite3_column_int(statement, 6);
+		war.usScore			= sqlite3_column_int(statement, 7);
+		war.themScore		= sqlite3_column_int(statement, 8);
+		war.date			= sqlite3_column_int(statement, 9);
 		
 		list.push_back(war);
 	}

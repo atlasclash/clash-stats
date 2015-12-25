@@ -49,6 +49,9 @@ public:
 	void AddUsDefend(const AttackData *def, const int defenderIndex);
 	void AddThemDefend(const AttackData *def, const int defenderIndex);
 	
+	void SetUserMeda(const std::string meta) { m_UserDefinedMeta = meta; }
+	std::string GetUserDefinedMeta() const	{ return m_UserDefinedMeta; }
+	
 	std::vector<PlayerData> GetUsList() { return m_UsList; }
 	std::vector<PlayerData> GetThemList() { return m_ThemList; }
 	
@@ -80,6 +83,7 @@ protected:
 	int GetTotalSecondsFromEpochOfWarDate() const;
 	
 	int							m_WarSize;										// number of players in the war
+	std::string					m_UserDefinedMeta;								// optional field for meta-data
 	std::string					m_OpponentClanName;								// opponent clan name
 	std::string					m_OpponentClanTag;								// opponent clan tag, optional
 	std::string					m_UsClanName;									// our clan name

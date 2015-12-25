@@ -23,6 +23,7 @@
 #define FIELD_WARDATA_ENEMY_CLAN_TAG		(1)
 #define FIELD_WARDATA_US_CLAN_NAME			(3)
 #define FIELD_WARDATA_US_CLAN_TAG			(4)
+#define FIELD_WARDATA_USER_META				(6)
 
 #define FIELD_WARDATA_SIZE					(0)
 
@@ -78,6 +79,7 @@ void ParserV1::ProcessWar(WarData *warData)
 	warData->SetThemClanTag(cellResults[FIELD_WARDATA_ENEMY_CLAN_TAG]);
 	warData->SetUsClanName(cellResults[FIELD_WARDATA_US_CLAN_NAME]);
 	warData->SetUsClanTag(cellResults[FIELD_WARDATA_US_CLAN_TAG]);
+	warData->SetUserMeda(cellResults[FIELD_WARDATA_USER_META]);
 	
 	std::cout << "Clan: " << cellResults[FIELD_WARDATA_ENEMY_CLAN_NAME] << " Tag: " << cellResults[FIELD_WARDATA_ENEMY_CLAN_TAG] << std::endl;
 	
