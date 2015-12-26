@@ -18,6 +18,7 @@
 #include "WarData.hpp"
 #include "Database.hpp"
 #include "WarRecord.hpp"
+#include "Clan.hpp"
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 const int QUIT_OPTION	= 9;
@@ -41,11 +42,7 @@ void ui_LoadWarData()
 	if (g_WarData != NULL)
 	{
 		delete g_WarData;
-	}
-	
-	if (g_WarData)
-	{
-		delete g_WarData;
+		g_WarData = NULL;
 	}
 	
 	g_WarData = new WarData();
@@ -202,6 +199,39 @@ void ui_WarReports()
 	}
 }
 
+void ui_ClanReports()
+{
+	int choice = 0;
+	std::string meta;
+	Clan myClan;
+	
+	while (choice != QUIT_OPTION)
+	{
+		std::cout << "Clan Reports"						<< std::endl;
+		std::cout << "[1] User Meta"					<< std::endl;
+		std::cout << "[9] Quit"							<< std::endl;
+		
+		std::cin >> choice;
+		
+		switch (choice)
+		{
+			case 1:
+				std::cout << "User meta:"				<< std::endl;
+				std::cin >> meta;
+				myClan.CreateClanWithUserMeta(meta);
+				break;
+				
+			case 9:
+			default:
+				return;
+				break;
+		}
+		
+		choice = 0;
+		std::cout << std::endl;
+	}
+}
+
 bool ui_MainMenu()
 {
 	int choice = 0;
@@ -213,6 +243,7 @@ bool ui_MainMenu()
 		std::cout << "[2] Analyze war data"				<< std::endl;
 		std::cout << "[3] Write war data to DB"			<< std::endl;
 		std::cout << "[4] War Reports"					<< std::endl;
+		std::cout << "[5] Clan Reports"					<< std::endl;
 		std::cout << "[8] Options"						<< std::endl;
 		std::cout << "[9] Quit"							<< std::endl;
 		std::cin >> choice;
@@ -242,6 +273,10 @@ bool ui_MainMenu()
 
 			case 4:
 				ui_WarReports();
+				break;
+				
+			case 5:
+				ui_ClanReports();
 				break;
 
 			case 8:
