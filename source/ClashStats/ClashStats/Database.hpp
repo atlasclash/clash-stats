@@ -54,6 +54,12 @@ public:
 	// read all wars
 	void	ReadAllWars(std::vector<WarRecord> &list);
 	void	ReadWarsBetweenDates(std::vector<WarRecord> &list, int startDate, int endDate);
+	void	ReadWarsWithUserMeta(std::vector<WarRecord> &list, std::string userMeta);
+	
+	// read player specific data
+	void	ReadAllPlayerAttackData(std::string playerName, std::vector<AttackRecord> &list);
+	void	ReadAllPlayerDefendData(std::string playerName, std::vector<DefendRecord> &list);
+	void	ReadAllPlayerWarRecordData(std::string playerName, std::vector<PlayerWarRecord> &list);
 	
 	// date of our "epoch" (2010-Jan-01)
 	boost::gregorian::date	GetEpochDate();

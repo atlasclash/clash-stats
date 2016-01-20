@@ -19,6 +19,7 @@
 #include "Database.hpp"
 #include "WarRecord.hpp"
 #include "Clan.hpp"
+#include "Player.hpp"
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 const int QUIT_OPTION	= 9;
@@ -232,6 +233,45 @@ void ui_ClanReports()
 	}
 }
 
+void ui_PlayerReports()
+{
+	int choice = 0;
+	std::string meta;
+	Player *player = NULL;
+	
+	while (choice != QUIT_OPTION)
+	{
+		std::cout << "Player Reports"					<< std::endl;
+		std::cout << "[1] Player Name"					<< std::endl;
+		
+		std::cin >> choice;
+		
+//		if (player != NULL)
+//		{
+//			delete player;
+//			player = NULL;
+//		}
+		
+		switch (choice)
+		{
+			case 1:
+				std::cout << "Name:"					<< std::endl;
+				std::cin >> meta;
+				player = new Player();
+				player->GenerateHistoryWithName(meta);
+				break;
+				
+			case 9:
+			default:
+				return;
+				break;
+		}
+		
+		choice = 0;
+		std::cout << std::endl;
+	}
+}
+
 bool ui_MainMenu()
 {
 	int choice = 0;
@@ -244,6 +284,7 @@ bool ui_MainMenu()
 		std::cout << "[3] Write war data to DB"			<< std::endl;
 		std::cout << "[4] War Reports"					<< std::endl;
 		std::cout << "[5] Clan Reports"					<< std::endl;
+		std::cout << "[6] Player Reports"				<< std::endl;
 		std::cout << "[8] Options"						<< std::endl;
 		std::cout << "[9] Quit"							<< std::endl;
 		std::cin >> choice;
@@ -279,6 +320,10 @@ bool ui_MainMenu()
 				ui_ClanReports();
 				break;
 
+			case 6:
+				ui_PlayerReports();
+				break;
+				
 			case 8:
 				ui_Options();
 				break;
