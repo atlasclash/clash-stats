@@ -15,6 +15,8 @@
 #include "Database.hpp"
 #include <assert.h>
 #include <iostream>
+#include <fstream>
+#include <algorithm>
 
 WarData::WarData(std::string clanName, std::string clanTag)
 {
@@ -299,6 +301,17 @@ void WarData::ReportFinalScore() const
 
 void WarData::ReportPlayerStats() const
 {
+	// player name
+	// player tag
+	// closer stars
+	// holds
+	// bleeds
+	// nuked
+	// total stars
+	// three stars
+	// <scouts>
+	// mia ?
+	
 	for (int i = 0; i < m_UsList.size(); ++i)
 	{
 		std::cout << m_UsList[i].GetPlayerName() << " stars(" << m_UsList[i].GetTotalStars() << "|" << m_UsList[i].GetCloserStars() << ") bleeds("
@@ -306,6 +319,27 @@ void WarData::ReportPlayerStats() const
 				  << m_UsList[i].GetHolds()  << ") nukes ("
 				  << m_UsList[i].GetNukes()  << ")" << std::endl;
 	}
+	
+	std::ofstream outputFile;
+	std::string dateStr = m_DateStr;
+	std::replace(dateStr.begin(), dateStr.end(), '/', '-');
+	outputFile.open(dateStr + "-" + m_OpponentClanName + "-results.csv");
+	
+	// header
+	outputFile << "player,tag,closer stars,holds,bleeds,nuked,total stars,three stars\n";
+	for (int i = 0; i < m_UsList.size(); ++i)
+	{
+		outputFile	<< m_UsList[i].GetPlayerName()		<< ","
+					<< m_UsList[i].GetPlayerTag()		<< ","
+					<< m_UsList[i].GetCloserStars()		<< ","
+					<< m_UsList[i].GetHolds()			<< ","
+					<< m_UsList[i].GetBleeds()			<< ","
+					<< m_UsList[i].GetNukes()			<< ","
+					<< m_UsList[i].GetTotalStars()		<< ","
+					<< m_UsList[i].GetThreeStars()		<< ",\n";
+	}
+	
+	outputFile.close();
 }
 
 void WarData::ReportWarningMissingInAction() const
