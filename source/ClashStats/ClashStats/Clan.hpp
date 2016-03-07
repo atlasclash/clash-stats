@@ -27,7 +27,7 @@ public:
 	
 protected:
 	std::vector<WarRecord> m_WarRecordList;
-	std::vector<Player> m_PlayerList;
+	std::vector<Player*> m_PlayerList;
 };
 
 #endif /* Clan_hpp */

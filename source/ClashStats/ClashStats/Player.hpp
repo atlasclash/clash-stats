@@ -20,7 +20,7 @@ struct DefendRecord;
 struct PlayerAttackSummary
 {
 	PlayerAttackSummary();
-	
+
 	int m_TotalAttacks;
 	int	m_TotalStars;
 	int m_TotalPctDmg;
@@ -107,15 +107,19 @@ class Player
 {
 public:
 	Player();
+	Player(const int pk);
 	virtual ~Player();
 	
 	void Reset();
 	
 	void GenerateHistoryWithName(std::string name);
+	void GenerateSeasonHistoryWithMeta(std::string warMeta);
 	
 	void AddWarRecord(const PlayerWarRecord &record);
 	void AddAttackRecord(const AttackRecord &record);
 	void AddDefendRecord(const DefendRecord &record);
+	
+	void WritePlayerStatsData(std::ofstream &outputFile);
 	
 protected:
 	void GenerateAttackSummaryData();
@@ -127,6 +131,8 @@ protected:
 	std::vector<DefendRecord> m_DefendRecordList;
 	
 	std::string m_Name;
+	std::string m_Tag;
+	int			m_Key;
 	PlayerAttackSummary m_AttackSummary[eTownHallLevel::kTH11+1];
 	PlayerDefendSummary m_DefendSummary[eTownHallLevel::kTH11+1];
 	PlayerWarSummary m_WarSummary[eTownHallLevel::kTH11+1];

@@ -24,6 +24,7 @@ struct WarRecord;
 struct PlayerWarRecord;
 struct AttackRecord;
 struct DefendRecord;
+struct PlayerRecord;
 
 class Database
 {
@@ -60,6 +61,16 @@ public:
 	void	ReadAllPlayerAttackData(std::string playerName, std::vector<AttackRecord> &list);
 	void	ReadAllPlayerDefendData(std::string playerName, std::vector<DefendRecord> &list);
 	void	ReadAllPlayerWarRecordData(std::string playerName, std::vector<PlayerWarRecord> &list);
+
+	// read player specific data using a war meta key
+	void	ReadWarAttackData(std::string playerTag, std::string warMeta, std::vector<AttackRecord> &list);
+	void	ReadWarDefendData(std::string playerTag, std::string warMeta, std::vector<DefendRecord> &list);
+	void	ReadWarRecordData(std::string playerTag, std::string warMeta, std::vector<PlayerWarRecord> &list);
+	
+	void	ReadPlayerIDsWithWarUserMeta(std::string warMeta, std::vector<int> &list);
+
+	
+	void	ReadPlayerRecord(const int pk, PlayerRecord &record);
 	
 	// date of our "epoch" (2010-Jan-01)
 	boost::gregorian::date	GetEpochDate();
