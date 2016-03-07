@@ -6,6 +6,10 @@
 //  Copyright © 2015 JTJ. All rights reserved.
 //
 
+//
+// prebuilt boost binaries for Windows: http://boost.teeks99.com/
+//
+
 #include <iostream>
 #include <string>
 #include "ParserFactory.hpp"
@@ -13,6 +17,10 @@
 #include "Options.hpp"
 #include "WarData.hpp"
 #include "Database.hpp"
+#include "WarRecord.hpp"
+#include "Clan.hpp"
+#include "Player.hpp"
+#include <boost/date_time/gregorian/gregorian.hpp>
 
 const int QUIT_OPTION	= 9;
 
@@ -35,11 +43,7 @@ void ui_LoadWarData()
 	if (g_WarData != NULL)
 	{
 		delete g_WarData;
-	}
-	
-	if (g_WarData)
-	{
-		delete g_WarData;
+		g_WarData = NULL;
 	}
 	
 	g_WarData = new WarData();
@@ -134,6 +138,140 @@ void ui_Options()
 	}
 }
 
+void ui_WarReports()
+{
+	int choice = 0;
+	std::string date1;
+	std::string date2;
+	boost::gregorian::date today = boost::gregorian::day_clock::local_day();
+	
+	std::vector<WarRecord> list;
+	
+	while (choice != QUIT_OPTION)
+	{
+		std::cout << "War Reports"									<< std::endl;
+		std::cout << "[1] All"										<< std::endl;
+		std::cout << "[2] Between dates"							<< std::endl;
+		std::cout << "[3] After date"								<< std::endl;
+		std::cout << "[9] Quit"										<< std::endl;
+		std::cin >> choice;
+		
+		switch (choice)
+		{
+			case 1:
+				DATABASE::GetInstance().ReadAllWars(list);
+				for (int i = 0; i < list.size(); ++i)
+				{
+					list[i].Description();
+				}
+				break;
+				
+			case 2:
+				std::cout << "Date1 (yyyy/mm/dd)" << std::endl;
+				std::cin >> date1;
+				std::cout << "Date2 (yyyy/mm/dd)" << std::endl;
+				std::cin >> date2;
+				DATABASE::GetInstance().ReadWarsBetweenDates(list, DATABASE::GetInstance().GetTotalSecondsFromEpoch(date1), DATABASE::GetInstance().GetTotalSecondsFromEpoch(date2));
+				for (int i = 0; i < list.size(); ++i)
+				{
+					list[i].Description();
+				}
+				break;
+				
+			case 3:
+				std::cout << "Date1 (yyyy/mm/dd)" << std::endl;
+				std::cin >> date1;
+				DATABASE::GetInstance().ReadWarsBetweenDates(list, DATABASE::GetInstance().GetTotalSecondsFromEpoch(date1), DATABASE::GetInstance().GetTotalSecondsBetweenEpochAndDate(today));
+				for (int i = 0; i < list.size(); ++i)
+				{
+					list[i].Description();
+				}
+				break;
+				
+			case 9:
+			default:
+				return;
+				break;
+		}
+
+		list.clear();
+		choice = 0;
+		std::cout << std::endl;
+	}
+}
+
+void ui_ClanReports()
+{
+	int choice = 0;
+	std::string meta;
+	Clan myClan;
+	
+	while (choice != QUIT_OPTION)
+	{
+		std::cout << "Clan Reports"						<< std::endl;
+		std::cout << "[1] User Meta"					<< std::endl;
+		std::cout << "[9] Quit"							<< std::endl;
+		
+		std::cin >> choice;
+		
+		switch (choice)
+		{
+			case 1:
+				std::cout << "User meta:"				<< std::endl;
+				std::cin >> meta;
+				myClan.CreateClanWithUserMeta(meta);
+				break;
+				
+			case 9:
+			default:
+				return;
+				break;
+		}
+		
+		choice = 0;
+		std::cout << std::endl;
+	}
+}
+
+void ui_PlayerReports()
+{
+	int choice = 0;
+	std::string meta;
+	Player *player = NULL;
+	
+	while (choice != QUIT_OPTION)
+	{
+		std::cout << "Player Reports"					<< std::endl;
+		std::cout << "[1] Player Name"					<< std::endl;
+		
+		std::cin >> choice;
+		
+//		if (player != NULL)
+//		{
+//			delete player;
+//			player = NULL;
+//		}
+		
+		switch (choice)
+		{
+			case 1:
+				std::cout << "Name:"					<< std::endl;
+				std::cin >> meta;
+				player = new Player();
+				player->GenerateHistoryWithName(meta);
+				break;
+				
+			case 9:
+			default:
+				return;
+				break;
+		}
+		
+		choice = 0;
+		std::cout << std::endl;
+	}
+}
+
 bool ui_MainMenu()
 {
 	int choice = 0;
@@ -144,7 +282,10 @@ bool ui_MainMenu()
 		std::cout << "[1] Load war data"				<< std::endl;
 		std::cout << "[2] Analyze war data"				<< std::endl;
 		std::cout << "[3] Write war data to DB"			<< std::endl;
-		std::cout << "[4] Options"						<< std::endl;
+		std::cout << "[4] War Reports"					<< std::endl;
+		std::cout << "[5] Clan Reports"					<< std::endl;
+		std::cout << "[6] Player Reports"				<< std::endl;
+		std::cout << "[8] Options"						<< std::endl;
 		std::cout << "[9] Quit"							<< std::endl;
 		std::cin >> choice;
 
@@ -153,9 +294,11 @@ bool ui_MainMenu()
 			case 1:
 				ui_LoadWarData();
 				break;
+
 			case 2:
 				ui_AnalyzeWarData();
 				break;
+
 			case 3:
 				//std::cout << "Unsupported" << std::endl;
 				if (g_WarData)
@@ -164,10 +307,24 @@ bool ui_MainMenu()
 					if (g_WarData->SaveWarToDB())
 					{
 						std::cout << "Success!" << std::endl;
+						choice = 0;
 					}
 				}
 				break;
+
 			case 4:
+				ui_WarReports();
+				break;
+				
+			case 5:
+				ui_ClanReports();
+				break;
+
+			case 6:
+				ui_PlayerReports();
+				break;
+				
+			case 8:
 				ui_Options();
 				break;
 			case QUIT_OPTION:
