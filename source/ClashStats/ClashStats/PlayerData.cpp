@@ -126,12 +126,12 @@ const std::vector<AttackData> PlayerData::GetDefends() const
 
 const unsigned long PlayerData::GetAttackCount() const
 {
-	return m_Attacks.size();
+	return (unsigned long)m_Attacks.size();
 }
 
 const unsigned long PlayerData::GetDefendCount() const
 {
-	return m_Defends.size();
+	return (unsigned long)m_Defends.size();
 }
 
 const int PlayerData::GetBleeds() const
