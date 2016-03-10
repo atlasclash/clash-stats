@@ -74,6 +74,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\Jeremy\Documents\GitHubVisualStudio\clash-stats\source\ClashStats\External\sqlite3;C:\Users\Jeremy\Documents\GitHubVisualStudio\boost_1_59_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Jeremy\Documents\GitHubVisualStudio\boost_1_59_0\lib64-msvc-14.0;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -100,7 +102,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_WIN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,26 +146,43 @@
   <ItemGroup>
     <ClInclude Include="ClashStats\Architecture.h" />
     <ClInclude Include="ClashStats\AttackData.hpp" />
+    <ClInclude Include="ClashStats\AttackRecord.hpp" />
     <ClInclude Include="ClashStats\Constants.h" />
+    <ClInclude Include="ClashStats\Database.hpp" />
     <ClInclude Include="ClashStats\DataObject.hpp" />
+    <ClInclude Include="ClashStats\DefendRecord.hpp" />
+    <ClInclude Include="ClashStats\HistoricRecord.hpp" />
+    <ClInclude Include="ClashStats\Options.hpp" />
     <ClInclude Include="ClashStats\Parser.hpp" />
     <ClInclude Include="ClashStats\ParserFactory.hpp" />
     <ClInclude Include="ClashStats\ParserV1.hpp" />
     <ClInclude Include="ClashStats\PlayerData.hpp" />
+    <ClInclude Include="ClashStats\PlayerRecord.hpp" />
+    <ClInclude Include="ClashStats\PlayerWarRecord.hpp" />
     <ClInclude Include="ClashStats\Singleton.h" />
     <ClInclude Include="ClashStats\StringHelpers.hpp" />
     <ClInclude Include="ClashStats\WarData.hpp" />
+    <ClInclude Include="ClashStats\WarRecord.hpp" />
+    <ClInclude Include="External\sqlite3\sqlite3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClashStats\AttackData.cpp" />
+    <ClCompile Include="ClashStats\Database.cpp" />
     <ClCompile Include="ClashStats\DataObject.cpp" />
+    <ClCompile Include="ClashStats\DefendRecord.cpp" />
+    <ClCompile Include="ClashStats\HistoricRecord.cpp" />
     <ClCompile Include="ClashStats\main.cpp" />
+    <ClCompile Include="ClashStats\Options.cpp" />
     <ClCompile Include="ClashStats\Parser.cpp" />
     <ClCompile Include="ClashStats\ParserFactory.cpp" />
     <ClCompile Include="ClashStats\ParserV1.cpp" />
     <ClCompile Include="ClashStats\PlayerData.cpp" />
+    <ClCompile Include="ClashStats\PlayerRecord.cpp" />
+    <ClCompile Include="ClashStats\PlayerWarRecord.cpp" />
     <ClCompile Include="ClashStats\StringHelpers.cpp" />
     <ClCompile Include="ClashStats\WarData.cpp" />
+    <ClCompile Include="ClashStats\WarRecord.cpp" />
+    <ClCompile Include="External\sqlite3\sqlite3.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

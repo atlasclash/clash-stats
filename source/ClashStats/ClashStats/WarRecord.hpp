@@ -14,11 +14,17 @@
 struct WarRecord
 {
 	int			pk;
+	std::string userMeta;
 	std::string	opponentName;
 	std::string	opponentTag;
+	std::string usName;
+	std::string usTag;
 	int			playerCount;
 	int			usScore;
 	int			themScore;
 	int			date;			// seconds from "epoch" (2010-Jan-01)
+	
+	// Displays human readable description of the data
+	void		Description();
 };
 #endif /* WarRecord_hpp */

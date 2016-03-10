@@ -14,11 +14,17 @@
 #include "Singleton.h"
 #include "PlayerData.hpp"
 
+#ifndef _WIN
 class sqlite3;
+#else
+struct sqlite3;
+#endif
+
 struct WarRecord;
 struct PlayerWarRecord;
 struct AttackRecord;
 struct DefendRecord;
+struct PlayerRecord;
 
 class Database
 {
@@ -40,16 +46,42 @@ public:
 	// write player war record
 	void	WritePlayerWarRecord(PlayerWarRecord &playerWarRecord);
 	
+	// write player attack record
 	void	WritePlayerAttackRecord(AttackRecord &attackRecord);
 	
+	// write player defend record
 	void	WritePlayerDefendRecord(DefendRecord &defendRecord);
 	
+	// read all wars
+	void	ReadAllWars(std::vector<WarRecord> &list);
+	void	ReadWarsBetweenDates(std::vector<WarRecord> &list, int startDate, int endDate);
+	void	ReadWarsWithUserMeta(std::vector<WarRecord> &list, std::string userMeta);
+	
+	// read player specific data
+	void	ReadAllPlayerAttackData(std::string playerName, std::vector<AttackRecord> &list);
+	void	ReadAllPlayerDefendData(std::string playerName, std::vector<DefendRecord> &list);
+	void	ReadAllPlayerWarRecordData(std::string playerName, std::vector<PlayerWarRecord> &list);
+
+	// read player specific data using a war meta key
+	void	ReadWarAttackData(std::string playerTag, std::string warMeta, std::vector<AttackRecord> &list);
+	void	ReadWarDefendData(std::string playerTag, std::string warMeta, std::vector<DefendRecord> &list);
+	void	ReadWarRecordData(std::string playerTag, std::string warMeta, std::vector<PlayerWarRecord> &list);
+	
+	void	ReadPlayerIDsWithWarUserMeta(std::string warMeta, std::vector<int> &list);
+
+	
+	void	ReadPlayerRecord(const int pk, PlayerRecord &record);
+	
 	// date of our "epoch" (2010-Jan-01)
-	boost::gregorian::date GetEpochDate();
+	boost::gregorian::date	GetEpochDate();
+	int						GetTotalSecondsFromEpoch(std::string dateString);
+	int						GetTotalSecondsBetweenEpochAndDate(boost::gregorian::date d);
+	std::string				StringFromDate(const int seconds);
 	
 protected:
 	bool	IsDatabasePresent() const;
 	bool	CreateDatabase();
+	
 	
 	sqlite3		*m_database;
 	

@@ -11,11 +11,16 @@
 #include "PlayerWarRecord.hpp"
 #include "AttackRecord.hpp"
 #include "DefendRecord.hpp"
+#include "PlayerRecord.hpp"
 #include <sys/stat.h>
-#include <unistd.h>
 #include <string>
 #include <iostream>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "sqlite3.h"
+#ifndef _WIN
+#include <unistd.h>
+#endif
 
 #define WAR_DATABASE_NAME				("wardata.sqlite")
 #define WAR_DATABASE_SCHEMA_VERSION		(1)
@@ -40,6 +45,27 @@ static boost::gregorian::date s_epoch(boost::gregorian::from_simple_string("2010
 boost::gregorian::date Database::GetEpochDate()
 {
 	return s_epoch;
+}
+
+std::string Database::StringFromDate(const int seconds)
+{
+	boost::posix_time::ptime posixTimeSec(s_epoch, boost::posix_time::time_duration(0,0,seconds));
+	return boost::posix_time::to_simple_string(posixTimeSec);
+}
+
+int Database::GetTotalSecondsFromEpoch(std::string dateString)
+{
+	boost::gregorian::date d(boost::gregorian::from_simple_string(dateString));
+	return GetTotalSecondsBetweenEpochAndDate(d);
+}
+
+int Database::GetTotalSecondsBetweenEpochAndDate(boost::gregorian::date d)
+{
+	boost::posix_time::ptime posixTimeDateA(d);
+	boost::posix_time::ptime posixTimeEpochDate(s_epoch);
+	boost::posix_time::time_duration td = posixTimeDateA - posixTimeEpochDate;
+	
+	return td.total_seconds();
 }
 
 bool Database::IsDatabasePresent() const
@@ -113,6 +139,10 @@ const char* Database::CreateVersion1()
 			"DROP TABLE IF EXISTS 'WarTable';"
 			"CREATE TABLE 'WarTable' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"
 										"'opponentName' VARCHAR,"
+										"'opponentTag' VARCHAR,"
+										"'usName' VARCHAR,"
+										"'usTag' VARCHAR,"
+										"'userMeta' VARCHAR,"
 										"'playerCnt' INTEGER,"
 										"'usScore' INTEGER,"
 										"'themScore' INTEGER,"
@@ -147,8 +177,10 @@ const char* Database::CreateVersion1()
 
 void Database::WritePlayerTags(std::vector<PlayerData> list)
 {
+	//
 	// ref: http://stackoverflow.com/questions/15277373/sqlite-upsert-update-or-insert
 	//
+
 	//																		  1 				2
 	const char *unused;
 	std::string update_player_tag_sql = "UPDATE PlayerTagTable SET playerName=? WHERE playerTag=?";
@@ -185,17 +217,21 @@ void Database::WriteWarRecord(WarRecord &warRecord)
 {
 	warRecord.pk = 0;
 	
-	std::string insert_war_sql = "INSERT INTO WarTable (opponentName, playerCnt, usScore, themScore, date) VALUES (?, ?, ?, ?, ?)";
+	std::string insert_war_sql = "INSERT INTO WarTable (opponentName, opponentTag, usName, usTag, userMeta, playerCnt, usScore, themScore, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	sqlite3_stmt *insert_statement;
 
 	const char *unused;
 	sqlite3_prepare_v2(m_database, insert_war_sql.c_str(), (int)insert_war_sql.length(), &insert_statement, &unused);
 	
 	sqlite3_bind_text(insert_statement, 1, warRecord.opponentName.c_str(), (int)warRecord.opponentName.length(), SQLITE_TRANSIENT);
-	sqlite3_bind_int(insert_statement, 2, warRecord.playerCount);
-	sqlite3_bind_int(insert_statement, 3, warRecord.usScore);
-	sqlite3_bind_int(insert_statement, 4, warRecord.themScore);
-	sqlite3_bind_int(insert_statement, 5, warRecord.date);
+	sqlite3_bind_text(insert_statement, 2, warRecord.opponentTag.c_str(), (int)warRecord.opponentTag.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_text(insert_statement, 3, warRecord.usName.c_str(), (int)warRecord.usName.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_text(insert_statement, 4, warRecord.usTag.c_str(), (int)warRecord.usTag.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_text(insert_statement, 5, warRecord.userMeta.c_str(), (int)warRecord.userMeta.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_int(insert_statement, 6, warRecord.playerCount);
+	sqlite3_bind_int(insert_statement, 7, warRecord.usScore);
+	sqlite3_bind_int(insert_statement, 8, warRecord.themScore);
+	sqlite3_bind_int(insert_statement, 9, warRecord.date);
 	
 	sqlite3_step(insert_statement);
 	warRecord.pk = (int)sqlite3_last_insert_rowid(m_database);
@@ -279,5 +315,317 @@ void Database::WritePlayerDefendRecord(DefendRecord &defendRecord)
 	sqlite3_finalize(insert_statement);
 }
 
+void Database::ReadAllWars(std::vector<WarRecord> &list)
+{
+	std::string sql = "SELECT * FROM WarTable;";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		WarRecord war;
+		
+		war.pk				= sqlite3_column_int(statement, 0);
+		war.opponentName	= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
+		war.opponentTag		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 2)));
+		war.usName			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 3)));
+		war.usTag			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 4)));
+		war.userMeta		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 5)));
+		war.playerCount		= sqlite3_column_int(statement, 6);
+		war.usScore			= sqlite3_column_int(statement, 7);
+		war.themScore		= sqlite3_column_int(statement, 8);
+		war.date			= sqlite3_column_int(statement, 9);
+		
+		list.push_back(war);
+	}
+	
+	sqlite3_finalize(statement);
+}
+
+void Database::ReadWarsBetweenDates(std::vector<WarRecord> &list, int startDate, int endDate)
+{
+	std::string sql = "SELECT * FROM WarTable WHERE date >= ? AND date <= ? ORDER BY date ASC;";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	sqlite3_bind_int(statement, 1, startDate);
+	sqlite3_bind_int(statement, 2, endDate);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		WarRecord war;
+
+		war.pk				= sqlite3_column_int(statement, 0);
+		war.opponentName	= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
+		war.opponentTag		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 2)));
+		war.usName			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 3)));
+		war.usTag			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 4)));
+		war.userMeta		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 5)));
+		war.playerCount		= sqlite3_column_int(statement, 6);
+		war.usScore			= sqlite3_column_int(statement, 7);
+		war.themScore		= sqlite3_column_int(statement, 8);
+		war.date			= sqlite3_column_int(statement, 9);
+		
+		list.push_back(war);
+	}
+	
+	sqlite3_finalize(statement);
+}
+
+void Database::ReadWarsWithUserMeta(std::vector<WarRecord> &list, std::string userMeta)
+{
+	std::string sql = "SELECT * FROM WarTable WHERE userMeta = ?";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	sqlite3_bind_text(statement, 1, userMeta.c_str(), (int)userMeta.length(), SQLITE_TRANSIENT);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		WarRecord war;
+		
+		war.pk				= sqlite3_column_int(statement, 0);
+		war.opponentName	= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
+		war.opponentTag		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 2)));
+		war.usName			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 3)));
+		war.usTag			= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 4)));
+		war.userMeta		= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 5)));
+		war.playerCount		= sqlite3_column_int(statement, 6);
+		war.usScore			= sqlite3_column_int(statement, 7);
+		war.themScore		= sqlite3_column_int(statement, 8);
+		war.date			= sqlite3_column_int(statement, 9);
+		
+		list.push_back(war);
+	}
+	
+	sqlite3_finalize(statement);
+}
 
 
+void Database::ReadAllPlayerAttackData(std::string playerName, std::vector<AttackRecord> &list)
+{
+	std::string sql = "SELECT * FROM AttackTable WHERE playerTagKey = (SELECT playerTag FROM PlayerTagTable WHERE playerName LIKE ?)";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	sqlite3_bind_text(statement, 1, playerName.c_str(), (int)playerName.length(), SQLITE_TRANSIENT);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		AttackRecord attack;
+		
+		attack.pk			= sqlite3_column_int(statement, 0);
+		attack.playerTagPk	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1)));
+		attack.warPk		= sqlite3_column_int(statement, 2);
+		attack.attackNum	= sqlite3_column_int(statement, 3);
+		attack.playerTH		= sqlite3_column_int(statement, 4);
+		attack.opponentTH	= sqlite3_column_int(statement, 5);
+		attack.starCount	= sqlite3_column_int(statement, 6);
+		attack.percentDmg	= sqlite3_column_int(statement, 7);
+		attack.isSalt		= (sqlite3_column_int(statement, 8) == 1) ? true : false;
+		attack.isClose		= (sqlite3_column_int(statement, 9) == 1) ? true : false;
+		attack.attemptNum	= sqlite3_column_int(statement, 10);
+		
+		list.push_back(attack);
+	}
+	
+	sqlite3_finalize(statement);
+}
+
+void Database::ReadAllPlayerDefendData(std::string playerName, std::vector<DefendRecord> &list)
+{
+	std::string sql = "SELECT * FROM DefendTable WHERE playerTagKey = (SELECT playerTag FROM PlayerTagTable WHERE playerName LIKE ?)";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	sqlite3_bind_text(statement, 1, playerName.c_str(), (int)playerName.length(), SQLITE_TRANSIENT);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		DefendRecord defend;
+		
+		defend.pk			= sqlite3_column_int(statement, 0);
+		defend.playerTagPk	= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
+		defend.warPk		= sqlite3_column_int(statement, 2);
+		defend.playerTH		= sqlite3_column_int(statement, 3);
+		defend.opponentTH	= sqlite3_column_int(statement, 4);
+		defend.starCount	= sqlite3_column_int(statement, 5);
+		defend.percentDmg	= sqlite3_column_int(statement, 6);
+		
+		list.push_back(defend);
+	}
+	
+	sqlite3_finalize(statement);
+}
+
+void Database::ReadAllPlayerWarRecordData(std::string playerName, std::vector<PlayerWarRecord> &list)
+{
+	std::string sql = "SELECT * FROM PlayerWarTable WHERE playerTagKey = (SELECT playerTag FROM PlayerTagTable WHERE playerName LIKE ?)";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	sqlite3_bind_text(statement, 1, playerName.c_str(), (int)playerName.length(), SQLITE_TRANSIENT);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		PlayerWarRecord war;
+		
+		war.pk				= sqlite3_column_int(statement, 0);
+		war.playerTagKey	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1)));
+		war.warKey			= sqlite3_column_int(statement, 2);
+		war.playerTH		= sqlite3_column_int(statement, 3);
+		war.closerStars		= sqlite3_column_int(statement, 4);
+		war.holds			= sqlite3_column_int(statement, 5);
+		war.bleeds			= sqlite3_column_int(statement, 6);
+		war.nuked			= sqlite3_column_int(statement, 7);
+		war.totalStars		= sqlite3_column_int(statement, 8);
+		war.threeStars		= sqlite3_column_int(statement, 9);
+		
+		list.push_back(war);
+	}
+	
+	sqlite3_finalize(statement);
+}
+
+void Database::ReadWarAttackData(std::string playerTag, std::string warMeta, std::vector<AttackRecord> &list)
+{
+	std::string sql = "SELECT * FROM AttackTable WHERE playerTagKey=? AND warKey IN (SELECT pk FROM WarTable WHERE userMeta LIKE ?)";
+	sqlite3_stmt *statement;
+	const char *unused;
+	
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	sqlite3_bind_text(statement, 1, playerTag.c_str(), (int)playerTag.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_text(statement, 2, warMeta.c_str(), (int)warMeta.length(), SQLITE_TRANSIENT);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		AttackRecord attack;
+		
+		attack.pk			= sqlite3_column_int(statement, 0);
+		attack.playerTagPk	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1)));
+		attack.warPk		= sqlite3_column_int(statement, 2);
+		attack.attackNum	= sqlite3_column_int(statement, 3);
+		attack.playerTH		= sqlite3_column_int(statement, 4);
+		attack.opponentTH	= sqlite3_column_int(statement, 5);
+		attack.starCount	= sqlite3_column_int(statement, 6);
+		attack.percentDmg	= sqlite3_column_int(statement, 7);
+		attack.isSalt		= (sqlite3_column_int(statement, 8) == 1) ? true : false;
+		attack.isClose		= (sqlite3_column_int(statement, 9) == 1) ? true : false;
+		attack.attemptNum	= sqlite3_column_int(statement, 10);
+		
+		list.push_back(attack);
+	}
+	
+	sqlite3_finalize(statement);
+}
+
+void Database::ReadWarDefendData(std::string playerTag, std::string warMeta, std::vector<DefendRecord> &list)
+{
+	std::string sql = "SELECT * FROM DefendTable WHERE playerTagKey=? AND warKey IN (SELECT pk FROM WarTable WHERE userMeta LIKE ?)";
+	sqlite3_stmt *statement;
+	const char *unused;
+	
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	sqlite3_bind_text(statement, 1, playerTag.c_str(), (int)playerTag.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_text(statement, 2, warMeta.c_str(), (int)warMeta.length(), SQLITE_TRANSIENT);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		DefendRecord defend;
+		
+		defend.pk			= sqlite3_column_int(statement, 0);
+		defend.playerTagPk	= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
+		defend.warPk		= sqlite3_column_int(statement, 2);
+		defend.playerTH		= sqlite3_column_int(statement, 3);
+		defend.opponentTH	= sqlite3_column_int(statement, 4);
+		defend.starCount	= sqlite3_column_int(statement, 5);
+		defend.percentDmg	= sqlite3_column_int(statement, 6);
+		
+		list.push_back(defend);
+	}
+	
+	sqlite3_finalize(statement);
+}
+
+void Database::ReadWarRecordData(std::string playerTag, std::string warMeta, std::vector<PlayerWarRecord> &list)
+{
+	std::string sql = "SELECT * FROM PlayerWarTable WHERE playerTagKey=? AND warKey IN (SELECT pk FROM WarTable WHERE userMeta LIKE ?)";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	sqlite3_bind_text(statement, 1, playerTag.c_str(), (int)playerTag.length(), SQLITE_TRANSIENT);
+	sqlite3_bind_text(statement, 2, warMeta.c_str(), (int)warMeta.length(), SQLITE_TRANSIENT);
+
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		PlayerWarRecord war;
+		
+		war.pk				= sqlite3_column_int(statement, 0);
+		war.playerTagKey	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1)));
+		war.warKey			= sqlite3_column_int(statement, 2);
+		war.playerTH		= sqlite3_column_int(statement, 3);
+		war.closerStars		= sqlite3_column_int(statement, 4);
+		war.holds			= sqlite3_column_int(statement, 5);
+		war.bleeds			= sqlite3_column_int(statement, 6);
+		war.nuked			= sqlite3_column_int(statement, 7);
+		war.totalStars		= sqlite3_column_int(statement, 8);
+		war.threeStars		= sqlite3_column_int(statement, 9);
+		
+		list.push_back(war);
+	}
+	
+	sqlite3_finalize(statement);
+}
+
+void Database::ReadPlayerIDsWithWarUserMeta(std::string warMeta, std::vector<int> &list)
+{
+	std::string sql = "SELECT pk FROM PlayerTagTable WHERE playerTag IN (SELECT DISTINCT playerTagKey FROM PlayerWarTable WHERE warKey IN (SELECT pk FROM WarTable WHERE userMeta LIKE ?))";
+	sqlite3_stmt *statement;
+	const char *unused;
+	
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	sqlite3_bind_text(statement, 1, warMeta.c_str(), (int)warMeta.length(), SQLITE_TRANSIENT);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		int pk = sqlite3_column_int(statement, 0);
+		list.push_back(pk);
+	}
+	
+	sqlite3_finalize(statement);
+}
+
+void Database::ReadPlayerRecord(const int pk, PlayerRecord &record)
+{
+	std::string sql = "SELECT * from PlayerTagTable WHERE pk=?";
+	sqlite3_stmt *statement;
+	const char *unused;
+	
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	sqlite3_bind_int(statement, 1, pk);
+	
+	if (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		record.pk			= sqlite3_column_int(statement, 0);
+		record.playerTag	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1)));
+		record.playerName	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 2)));
+	}
+	
+	sqlite3_finalize(statement);
+}
