@@ -54,6 +54,43 @@ PlayerAttackSummary::PlayerAttackSummary()
 	
 }
 
+void PlayerAttackSummary::Reset()
+{
+	m_TotalAttacks			=
+	m_TotalStars			=
+	m_TotalPctDmg			=
+	m_TotalThreeStars		=
+	m_TotalNearMiss			=
+	
+	// same TH vs TH level
+	m_NumSaltAttacks		=
+	m_NumSaltStars			=
+	m_NumSaltPctDmg			=
+	m_NumSaltThreeStars		=
+	m_NumSaltFirstAttempts	= // 3-star on the first attempt
+	
+	// same TH vs TH level
+	m_NumBootAttacks		=
+	m_NumBootStars			=
+	m_NumBootPctDmg			=
+	m_NumBootThreeStars		=
+	m_NumBootFirstAttempts	=
+	
+	// player TH > opponent TH
+	m_NumNukeAttacks		=
+	m_NumNukeStars			=
+	m_NumNukePctDmg			=
+	m_NumNukeThreeStars		=
+	m_NumNukeFirstAttempts	=
+	
+	// player TH < opponent TH
+	m_NumSnipeAttacks		=
+	m_NumSnipeStars			=
+	m_NumSnipePctDmg		=
+	m_NumSnipeThreeStars	=
+	m_NumSnipeFirstAttempts	= 0;
+}
+
 
 PlayerDefendSummary::PlayerDefendSummary()
 : m_TotalDefends(0)
@@ -83,6 +120,33 @@ PlayerDefendSummary::PlayerDefendSummary()
 	
 }
 
+void PlayerDefendSummary::Reset()
+{
+	m_TotalDefends			=
+	m_TotalStarsYielded		=
+	m_TotalDamage			=
+	m_TotalThreeStars		=
+	m_TotalMisses			=
+	
+	m_NumPeerAttacks		=
+	m_NumPeerStarsYielded	=
+	m_NumPeerDamage			=
+	m_NumPeerThreeStars		=
+	m_NumPeerMisses			=
+	
+	m_NumSnipeAttacks		=
+	m_NumSnipeStarsYielded	=
+	m_NumSnipeDamage		=
+	m_NumSnipeThreeStars	=
+	m_NumsnipeMisses		=
+	
+	m_NumNukeAttacks		=
+	m_NumNukeStarsYielded	=
+	m_NumNukeDamage			=
+	m_NumNukeThreeStars		=
+	m_NumNukeMisses			= 0;
+}
+
 PlayerWarSummary::PlayerWarSummary()
 : m_TotalWars(0)
 , m_TotalCloserStars(0)
@@ -93,6 +157,17 @@ PlayerWarSummary::PlayerWarSummary()
 , m_TotalThreeStars(0)
 {
 	
+}
+
+void PlayerWarSummary::Reset()
+{
+	m_TotalWars			=
+	m_TotalCloserStars	=
+	m_TotalHolds		=
+	m_TotalBleeds		=
+	m_TotalNuked		=
+	m_TotalStars		=
+	m_TotalThreeStars	= 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,9 +204,13 @@ void Player::Reset()
 	
 	for (int i = eTownHallLevel::kTH0; i < eTownHallLevel::kTH11; ++i)
 	{
-		memset(&m_AttackSummary[i], 0, sizeof(PlayerAttackSummary));
-		memset(&m_DefendSummary[i], 0, sizeof(PlayerDefendSummary));
-		memset(&m_WarSummary[i], 0, sizeof(PlayerWarSummary));
+//		memset(&m_AttackSummary[i], 0, sizeof(PlayerAttackSummary));
+//		memset(&m_DefendSummary[i], 0, sizeof(PlayerDefendSummary));
+//		memset(&m_WarSummary[i], 0, sizeof(PlayerWarSummary));
+		
+		m_AttackSummary[i].Reset();
+		m_DefendSummary[i].Reset();
+		m_WarSummary[i].Reset();
 	}
 }
 

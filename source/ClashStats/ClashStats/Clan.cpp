@@ -139,8 +139,12 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 	{
 		Player *p = new Player(playerIDs[i]);
 		p->GenerateSeasonHistoryWithMeta(userMeta);
+		if (p->GetName().compare("bugerhead") == 0)
+		{
+			printf("");
+		}
 		p->WritePlayerStatsData(outputFile);
-		delete p;
+		//delete p;
 	}
 	
 	// close

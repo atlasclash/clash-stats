@@ -20,6 +20,7 @@ struct DefendRecord;
 struct PlayerAttackSummary
 {
 	PlayerAttackSummary();
+	void Reset();
 
 	int m_TotalAttacks;
 	int	m_TotalStars;
@@ -64,6 +65,7 @@ struct PlayerAttackSummary
 struct PlayerDefendSummary
 {
 	PlayerDefendSummary();
+	void Reset();
 	
 	int m_TotalDefends;
 	int m_TotalStarsYielded;
@@ -93,6 +95,7 @@ struct PlayerDefendSummary
 struct PlayerWarSummary
 {
 	PlayerWarSummary();
+	void Reset();
 	
 	int m_TotalWars;
 	int m_TotalCloserStars;
@@ -109,6 +112,9 @@ public:
 	Player();
 	Player(const int pk);
 	virtual ~Player();
+	
+	std::string GetName() const { return m_Name; }
+	std::string GetTag() const  { return m_Tag;  }
 	
 	void Reset();
 	
