@@ -21,6 +21,7 @@ struct PlayerAttackSummary
 {
 	PlayerAttackSummary();
 	void Reset();
+	bool isEqual(const PlayerAttackSummary a) const;
 
 	int m_TotalAttacks;
 	int	m_TotalStars;
@@ -66,6 +67,7 @@ struct PlayerDefendSummary
 {
 	PlayerDefendSummary();
 	void Reset();
+	bool isEqual(const PlayerDefendSummary d) const;
 	
 	int m_TotalDefends;
 	int m_TotalStarsYielded;
@@ -83,7 +85,7 @@ struct PlayerDefendSummary
 	int m_NumSnipeStarsYielded;
 	int m_NumSnipeDamage;
 	int m_NumSnipeThreeStars;
-	int m_NumsnipeMisses;
+	int m_NumSnipeMisses;
 	
 	int m_NumNukeAttacks;
 	int m_NumNukeStarsYielded;
@@ -96,6 +98,7 @@ struct PlayerWarSummary
 {
 	PlayerWarSummary();
 	void Reset();
+	bool isEqual(const PlayerWarSummary w) const;
 	
 	int m_TotalWars;
 	int m_TotalCloserStars;
@@ -117,7 +120,8 @@ public:
 	std::string GetTag() const  { return m_Tag;  }
 	
 	void Reset();
-	
+	bool Compare(const Player *p) const;
+
 	void GenerateHistoryWithName(std::string name);
 	void GenerateSeasonHistoryWithMeta(std::string warMeta);
 	

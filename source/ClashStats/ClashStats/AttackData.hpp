@@ -35,6 +35,8 @@ public:
 	const int GetAttemptNumber() const				{ return m_AttemptNumber; }
 	const int GetAttackNumber() const				{ return m_AttackNumber; }
 	
+	void SetClosed(bool closed)						{ m_IsClose = closed; }
+	
 protected:
 	int				m_OpponentId;		// index (1's based) of attacker or defender - based on context
 	StarType		m_Stars;
