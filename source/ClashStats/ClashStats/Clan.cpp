@@ -137,10 +137,11 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 	// write each player's record
 	for (int i = 0; i < playerIDs.size(); ++i)
 	{
-		Player *p = new Player(playerIDs[i]);
-		p->GenerateSeasonHistoryWithMeta(userMeta);
-		p->WritePlayerStatsData(outputFile);
-		delete p;
+		Player *p1 = new Player(playerIDs[i]);
+		p1->GenerateSeasonHistoryWithMeta(userMeta);
+		p1->WritePlayerStatsData(outputFile);
+		
+		delete p1;
 	}
 	
 	// close

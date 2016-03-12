@@ -108,10 +108,18 @@ void WarData::CalcCloserStars()
 	
 	for (int i = 0; i < m_ThemList.size(); ++i)
 	{
-		const AttackData *ad = m_ThemList[i].GetCloserAttack();
+		AttackData *ad = m_ThemList[i].GetCloserAttack();
 		if (ad)
 		{
 			closerStars[ad->GetTargetId()-1] += ad->GetStars();
+			
+			// in some cases, the closer stars are awarded to non-3-starred bases.
+			// we need to denote that this attack was the closer attack.
+			{
+				AttackData *usAttack = m_UsList[ad->GetTargetId()-1].GetAttackVs(i+1);
+				usAttack->SetClosed(true);
+				ad->SetClosed(true);
+			}
 		}
 		else if (OPTIONS::GetInstance().parser_Check_Missing_Attacks)
 		{

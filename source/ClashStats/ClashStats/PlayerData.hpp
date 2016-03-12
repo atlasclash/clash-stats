@@ -66,7 +66,8 @@ public:
 	const int GetMaxStarsGiven() const;
 	const int GetTotalStars() const;
 	
-	const AttackData* GetCloserAttack() const;
+	AttackData* GetCloserAttack();
+	AttackData* GetAttackVs(const int opponent);
 	
 protected:
 	int 						m_CloserStars;

@@ -13,6 +13,8 @@
 
 struct DefendRecord
 {
+	bool isEqual(const DefendRecord d) const;
+	
 	int			pk;
 	std::string	playerTagPk;
 	int			playerTH;

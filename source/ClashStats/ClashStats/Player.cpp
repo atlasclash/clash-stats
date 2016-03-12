@@ -54,6 +54,84 @@ PlayerAttackSummary::PlayerAttackSummary()
 	
 }
 
+bool PlayerAttackSummary::isEqual(const PlayerAttackSummary a) const
+{
+	if (m_TotalAttacks != a.m_TotalAttacks)					return false;
+	if (m_TotalStars != a.m_TotalStars)						return false;
+	if (m_TotalPctDmg != a.m_TotalPctDmg)					return false;
+	if (m_TotalThreeStars != a.m_TotalThreeStars)			return false;
+	if (m_TotalNearMiss != a.m_TotalNearMiss)				return false;
+	if (m_NumSaltAttacks != a.m_NumSaltAttacks)				return false;
+	if (m_NumSaltStars != a.m_NumSaltStars)					return false;
+	if (m_NumSaltPctDmg != a.m_NumSaltPctDmg)				return false;
+	if (m_NumSaltThreeStars != a.m_NumSaltThreeStars)		return false;
+	if (m_NumSaltFirstAttempts != a.m_NumSaltFirstAttempts) return false;		// 3-star on the first attempt
+	
+	// same TH vs TH level
+	if (m_NumBootAttacks != a.m_NumBootAttacks)				return false;
+	if (m_NumBootStars != a.m_NumBootStars)					return false;
+	if (m_NumBootPctDmg != a.m_NumBootPctDmg)				return false;
+	if (m_NumBootThreeStars != a.m_NumBootThreeStars) 		return false;
+	if (m_NumBootFirstAttempts != a.m_NumBootFirstAttempts) return false;
+	
+	// player TH > opponent TH
+	if (m_NumNukeAttacks != a.m_NumNukeAttacks)				return false;
+	if (m_NumNukeStars != a.m_NumNukeStars)					return false;
+	if (m_NumNukePctDmg != a.m_NumNukePctDmg)				return false;
+	if (m_NumNukeThreeStars != a.m_NumNukeThreeStars) 		return false;
+	if (m_NumNukeFirstAttempts != a.m_NumNukeFirstAttempts) return false;
+	
+	// player TH < opponent TH
+	if (m_NumSnipeAttacks != a.m_NumSnipeAttacks)			return false;
+	if (m_NumSnipeStars != a.m_NumSnipeStars)				return false;
+	if (m_NumSnipePctDmg != a.m_NumSnipePctDmg)				return false;
+	if (m_NumSnipeThreeStars != a.m_NumSnipeThreeStars)		return false;
+	if (m_NumSnipeFirstAttempts != a.m_NumSnipeFirstAttempts) return false;
+
+	return true;
+}
+
+void PlayerAttackSummary::Reset()
+{
+	m_TotalAttacks			=
+	m_TotalStars			=
+	m_TotalPctDmg			=
+	m_TotalThreeStars		=
+	m_TotalCloserStars		=
+	m_TotalNearMiss			=
+	
+	// same TH vs TH level
+	m_NumSaltAttacks		=
+	m_NumSaltStars			=
+	m_NumSaltPctDmg			=
+	m_NumSaltThreeStars		=
+	m_NumSaltCloserStars	=
+	m_NumSaltFirstAttempts	= // 3-star on the first attempt
+	
+	// same TH vs TH level
+	m_NumBootAttacks		=
+	m_NumBootStars			=
+	m_NumBootPctDmg			=
+	m_NumBootThreeStars		=
+	m_NumBootCloserStars	=
+	m_NumBootFirstAttempts	=
+	
+	// player TH > opponent TH
+	m_NumNukeAttacks		=
+	m_NumNukeStars			=
+	m_NumNukePctDmg			=
+	m_NumNukeThreeStars		=
+	m_NumNukeCloserStars	= 
+	m_NumNukeFirstAttempts	=
+	
+	// player TH < opponent TH
+	m_NumSnipeAttacks		=
+	m_NumSnipeStars			=
+	m_NumSnipePctDmg		=
+	m_NumSnipeThreeStars	=
+	m_NumSnipeFirstAttempts	= 0;
+}
+
 
 PlayerDefendSummary::PlayerDefendSummary()
 : m_TotalDefends(0)
@@ -72,7 +150,7 @@ PlayerDefendSummary::PlayerDefendSummary()
 , m_NumSnipeStarsYielded(0)
 , m_NumSnipeDamage(0)
 , m_NumSnipeThreeStars(0)
-, m_NumsnipeMisses(0)
+, m_NumSnipeMisses(0)
 
 , m_NumNukeAttacks(0)
 , m_NumNukeStarsYielded(0)
@@ -81,6 +159,63 @@ PlayerDefendSummary::PlayerDefendSummary()
 , m_NumNukeMisses(0)
 {
 	
+}
+
+void PlayerDefendSummary::Reset()
+{
+	m_TotalDefends			=
+	m_TotalStarsYielded		=
+	m_TotalDamage			=
+	m_TotalThreeStars		=
+	m_TotalMisses			=
+	
+	m_NumPeerAttacks		=
+	m_NumPeerStarsYielded	=
+	m_NumPeerDamage			=
+	m_NumPeerThreeStars		=
+	m_NumPeerMisses			=
+	
+	m_NumSnipeAttacks		=
+	m_NumSnipeStarsYielded	=
+	m_NumSnipeDamage		=
+	m_NumSnipeThreeStars	=
+	m_NumSnipeMisses		=
+	
+	m_NumNukeAttacks		=
+	m_NumNukeStarsYielded	=
+	m_NumNukeDamage			=
+	m_NumNukeThreeStars		=
+	m_NumNukeMisses			= 0;
+}
+
+bool PlayerDefendSummary::isEqual(const PlayerDefendSummary d) const
+{
+	if (m_TotalDefends != d.m_TotalDefends)					return false;
+	if (m_TotalStarsYielded != d.m_TotalStarsYielded)		return false;
+	if (m_TotalDamage != d.m_TotalDamage)					return false;
+	if (m_TotalThreeStars != d.m_TotalThreeStars)			return false;
+	if (m_TotalMisses != d.m_TotalMisses)					return false;
+	
+	if (m_NumPeerAttacks != d.m_NumPeerAttacks)				return false;
+	if (m_NumPeerStarsYielded != d.m_NumPeerStarsYielded) 	return false;
+	if (m_NumPeerDamage != d.m_NumPeerDamage)				return false;
+	
+	if (m_NumPeerThreeStars != d.m_NumPeerThreeStars)		return false;
+	if (m_NumPeerMisses != d.m_NumPeerMisses)				return false;
+	
+	if (m_NumSnipeAttacks != d.m_NumSnipeAttacks)			return false;
+	if (m_NumSnipeStarsYielded != d.m_NumSnipeStarsYielded) return false;
+	if (m_NumSnipeDamage != d.m_NumSnipeDamage)				return false;
+	if (m_NumSnipeThreeStars != d.m_NumSnipeThreeStars)		return false;
+	if (m_NumSnipeMisses != d.m_NumSnipeMisses)				return false;
+	
+	if (m_NumNukeAttacks != d.m_NumNukeAttacks)				return false;
+	if (m_NumNukeStarsYielded != d.m_NumNukeStarsYielded) 	return false;
+	if (m_NumNukeDamage != d.m_NumNukeDamage)				return false;
+	if (m_NumNukeThreeStars != d.m_NumNukeThreeStars)		return false;
+	if (m_NumNukeMisses != d.m_NumNukeMisses)				return false;
+	
+	return true;
 }
 
 PlayerWarSummary::PlayerWarSummary()
@@ -93,6 +228,30 @@ PlayerWarSummary::PlayerWarSummary()
 , m_TotalThreeStars(0)
 {
 	
+}
+
+void PlayerWarSummary::Reset()
+{
+	m_TotalWars			=
+	m_TotalCloserStars	=
+	m_TotalHolds		=
+	m_TotalBleeds		=
+	m_TotalNuked		=
+	m_TotalStars		=
+	m_TotalThreeStars	= 0;
+}
+
+bool PlayerWarSummary::isEqual(const PlayerWarSummary w) const
+{
+	if (m_TotalWars	!= w.m_TotalWars)			return false;
+	if (m_TotalCloserStars != w.m_TotalCloserStars) return false;
+	if (m_TotalHolds != w.m_TotalHolds)			return false;
+	if (m_TotalBleeds != w.m_TotalBleeds)		return false;
+	if (m_TotalNuked != w.m_TotalNuked)			return false;
+	if (m_TotalStars != w.m_TotalStars)			return false;
+	if (m_TotalThreeStars != w.m_TotalThreeStars) return false;
+		
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,10 +288,75 @@ void Player::Reset()
 	
 	for (int i = eTownHallLevel::kTH0; i < eTownHallLevel::kTH11; ++i)
 	{
-		memset(&m_AttackSummary[i], 0, sizeof(PlayerAttackSummary));
-		memset(&m_DefendSummary[i], 0, sizeof(PlayerDefendSummary));
-		memset(&m_WarSummary[i], 0, sizeof(PlayerWarSummary));
+		m_AttackSummary[i].Reset();
+		m_DefendSummary[i].Reset();
+		m_WarSummary[i].Reset();
 	}
+}
+
+bool Player::Compare(const Player *p) const
+{
+	for (int i = 0; i < m_WarRecordList.size(); ++i)
+	{
+		const PlayerWarRecord rec1 = m_WarRecordList[i];
+		const PlayerWarRecord rec2 = p->m_WarRecordList[i];
+		
+		if (!rec1.isEqual(rec2))
+		{
+			return false;
+		}
+	}
+	
+	for (int i = 0; i < m_AttackRecordList.size(); ++i)
+	{
+		const AttackRecord rec1 = m_AttackRecordList[i];
+		const AttackRecord rec2 = p->m_AttackRecordList[i];
+		
+		if (!rec1.isEqual(rec2))
+		{
+			return false;
+		}
+	}
+	
+	for (int i = 0; i < m_DefendRecordList.size(); ++i)
+	{
+		const DefendRecord rec1 = m_DefendRecordList[i];
+		const DefendRecord rec2 = p->m_DefendRecordList[i];
+		
+		if (!rec1.isEqual(rec2))
+		{
+			return false;
+		}
+	}
+	
+	for (int i = eTownHallLevel::kTH0; i < eTownHallLevel::kTH11; ++i)
+	{
+		const PlayerAttackSummary attackRec1 = m_AttackSummary[i];
+		const PlayerAttackSummary attackRec2 = p->m_AttackSummary[i];
+		
+		if (!attackRec1.isEqual(attackRec2))
+		{
+			return false;
+		}
+		
+		const PlayerDefendSummary defendRec1 = m_DefendSummary[i];
+		const PlayerDefendSummary defendRec2 = p->m_DefendSummary[i];
+		
+		if (!defendRec1.isEqual(defendRec2))
+		{
+			return false;
+		}
+		
+		const PlayerWarSummary warRec1 = m_WarSummary[i];
+		const PlayerWarSummary warRec2 = p->m_WarSummary[i];
+		
+		if (!warRec1.isEqual(warRec2))
+		{
+			return false;
+		}
+	}
+	
+	return true;
 }
 
 void Player::GenerateSeasonHistoryWithMeta(std::string warMeta)
@@ -178,7 +402,7 @@ void Player::GenerateAttackSummaryData()
 		summary.m_TotalPctDmg		+= rec.percentDmg;
 		summary.m_TotalThreeStars	+= (rec.starCount == MAX_STARS_PER_ATTACK) ? 1 : 0;
 		summary.m_TotalNearMiss		+= (rec.starCount != MAX_STARS_PER_ATTACK && rec.percentDmg >= NEAR_MISS_PCT_THRESHOLD) ? 1 : 0;
-		summary.m_TotalCloserStars	+= (rec.isClose) ? MAX_STARS_PER_ATTACK : 0;
+		summary.m_TotalCloserStars	+= (rec.isClose) ? rec.starCount : 0;
 		
 		if (rec.playerTH == rec.opponentTH)
 		{
@@ -189,7 +413,7 @@ void Player::GenerateAttackSummaryData()
 				summary.m_NumSaltPctDmg			+= rec.percentDmg;
 				summary.m_NumSaltThreeStars		+= (rec.starCount == MAX_STARS_PER_ATTACK) ? 1 : 0;
 				summary.m_NumSaltFirstAttempts	+= (rec.isClose && rec.attemptNum == 1) ? 1 : 0;
-				summary.m_NumSaltCloserStars	+= (rec.isClose) ? MAX_STARS_PER_ATTACK : 0;
+				summary.m_NumSaltCloserStars	+= (rec.isClose) ? rec.starCount : 0;
 			}
 			else
 			{
@@ -198,7 +422,7 @@ void Player::GenerateAttackSummaryData()
 				summary.m_NumBootPctDmg			+= rec.percentDmg;
 				summary.m_NumBootThreeStars		+= (rec.starCount == MAX_STARS_PER_ATTACK) ? 1 : 0;
 				summary.m_NumBootFirstAttempts	+= (rec.isClose && rec.attemptNum == 1) ? 1 : 0;
-				summary.m_NumBootCloserStars	+= (rec.isClose) ? MAX_STARS_PER_ATTACK : 0;
+				summary.m_NumBootCloserStars	+= (rec.isClose) ? rec.starCount : 0;
 			}
 		}
 		// snipe
@@ -209,7 +433,7 @@ void Player::GenerateAttackSummaryData()
 			summary.m_NumSnipePctDmg			+= rec.percentDmg;
 			summary.m_NumSnipeThreeStars		+= (rec.starCount == MAX_STARS_PER_ATTACK) ? 1 : 0;
 			summary.m_NumSnipeFirstAttempts		+= (rec.isClose && rec.attemptNum == 1) ? 1 : 0;
-			summary.m_NumSnipeCloserStars		+= (rec.isClose) ? MAX_STARS_PER_ATTACK : 0;
+			summary.m_NumSnipeCloserStars		+= (rec.isClose) ? rec.starCount : 0;
 		}
 		// nuke
 		else if (rec.playerTH > rec.opponentTH)
@@ -219,7 +443,7 @@ void Player::GenerateAttackSummaryData()
 			summary.m_NumNukePctDmg				+= rec.percentDmg;
 			summary.m_NumNukeThreeStars			+= (rec.starCount == MAX_STARS_PER_ATTACK) ? 1 : 0;
 			summary.m_NumNukeFirstAttempts		+= (rec.isClose && rec.attemptNum == 1) ? 1 : 0;
-			summary.m_NumNukeCloserStars		+= (rec.isClose) ? MAX_STARS_PER_ATTACK : 0;
+			summary.m_NumNukeCloserStars		+= (rec.isClose) ? rec.starCount : 0;
 		}
 	}
 }
@@ -262,7 +486,7 @@ void Player::GenerateDefendSummaryData()
 			summary.m_NumSnipeStarsYielded		+= rec.starCount;
 			summary.m_NumSnipeDamage			+= rec.percentDmg;
 			summary.m_NumSnipeThreeStars		+= (rec.starCount == MAX_STARS_PER_ATTACK) ? 1 : 0;
-			summary.m_NumsnipeMisses			+= (rec.starCount == 0) ? 1 : 0;
+			summary.m_NumSnipeMisses			+= (rec.starCount == 0) ? 1 : 0;
 		}
 	}
 }
@@ -507,7 +731,7 @@ void Player::WritePlayerStatsData(std::ofstream &outputFile)
 							<< m_DefendSummary[thLvl].m_NumSnipeThreeStars												<< delimiter
 							<< (float)m_DefendSummary[thLvl].m_NumSnipeStarsYielded / (float)m_DefendSummary[thLvl].m_NumSnipeAttacks	<< delimiter
 							<< (float)m_DefendSummary[thLvl].m_NumSnipeDamage / (float)m_DefendSummary[thLvl].m_NumSnipeAttacks		<< delimiter
-							<< m_DefendSummary[thLvl].m_NumsnipeMisses													<< delimiter;
+							<< m_DefendSummary[thLvl].m_NumSnipeMisses													<< delimiter;
 			}
 			else
 			{
