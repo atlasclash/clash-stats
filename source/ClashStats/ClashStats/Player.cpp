@@ -537,6 +537,7 @@ void Player::WritePlayerStatsData(std::ofstream &outputFile)
 						<< thLvl																					<< delimiter
 						<< m_WarSummary[thLvl].m_TotalWars															<< delimiter
 						<< m_WarSummary[thLvl].m_TotalCloserStars													<< delimiter
+						<< (float)m_WarSummary[thLvl].m_TotalCloserStars / (float)m_WarSummary[thLvl].m_TotalWars	<< delimiter
 						<< m_WarSummary[thLvl].m_TotalStars															<< delimiter
 						<< (float)m_WarSummary[thLvl].m_TotalStars / (float)m_WarSummary[thLvl].m_TotalWars			<< delimiter
 						<< m_WarSummary[thLvl].m_TotalThreeStars													<< delimiter
@@ -548,6 +549,7 @@ void Player::WritePlayerStatsData(std::ofstream &outputFile)
 			{
 				outputFile	<< m_AttackSummary[thLvl].m_TotalAttacks													<< delimiter
 							<< m_AttackSummary[thLvl].m_TotalCloserStars												<< delimiter
+							<< (float)m_AttackSummary[thLvl].m_TotalCloserStars / (float)m_AttackSummary[thLvl].m_TotalAttacks << delimiter
 							<< m_AttackSummary[thLvl].m_TotalStars														<< delimiter
 							<< (float)m_AttackSummary[thLvl].m_TotalStars / (float)m_AttackSummary[thLvl].m_TotalAttacks<< delimiter
 							<< (float)m_AttackSummary[thLvl].m_TotalPctDmg / (float)m_AttackSummary[thLvl].m_TotalAttacks		<< delimiter

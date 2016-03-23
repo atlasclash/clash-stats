@@ -49,6 +49,7 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 				<< "TH"						<< delimiter
 				<< "Total Wars"				<< delimiter
 				<< "Total Closer Stars"		<< delimiter
+				<< "Total Avg Closer Stars"	<< delimiter
 				<< "Total Stars"			<< delimiter
 				<< "Avg Total Stars"		<< delimiter
 				<< "Total 3-stars"			<< delimiter
@@ -58,6 +59,7 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 
 				<< "Attacks"				<< delimiter
 				<< "Closer Stars"			<< delimiter
+				<< "Avg Closer Stars"		<< delimiter
 				<< "Stars"					<< delimiter
 				<< "Avg Stars"				<< delimiter
 				<< "Avg Dmg %"				<< delimiter
