@@ -147,6 +147,7 @@
     <ClInclude Include="ClashStats\Architecture.h" />
     <ClInclude Include="ClashStats\AttackData.hpp" />
     <ClInclude Include="ClashStats\AttackRecord.hpp" />
+    <ClInclude Include="ClashStats\Clan.hpp" />
     <ClInclude Include="ClashStats\Constants.h" />
     <ClInclude Include="ClashStats\Database.hpp" />
     <ClInclude Include="ClashStats\DataObject.hpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="ClashStats\Parser.hpp" />
     <ClInclude Include="ClashStats\ParserFactory.hpp" />
     <ClInclude Include="ClashStats\ParserV1.hpp" />
+    <ClInclude Include="ClashStats\Player.hpp" />
     <ClInclude Include="ClashStats\PlayerData.hpp" />
     <ClInclude Include="ClashStats\PlayerRecord.hpp" />
     <ClInclude Include="ClashStats\PlayerWarRecord.hpp" />
@@ -167,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClashStats\AttackData.cpp" />
+    <ClCompile Include="ClashStats\Clan.cpp" />
     <ClCompile Include="ClashStats\Database.cpp" />
     <ClCompile Include="ClashStats\DataObject.cpp" />
     <ClCompile Include="ClashStats\DefendRecord.cpp" />
@@ -176,6 +179,7 @@
     <ClCompile Include="ClashStats\Parser.cpp" />
     <ClCompile Include="ClashStats\ParserFactory.cpp" />
     <ClCompile Include="ClashStats\ParserV1.cpp" />
+    <ClCompile Include="ClashStats\Player.cpp" />
     <ClCompile Include="ClashStats\PlayerData.cpp" />
     <ClCompile Include="ClashStats\PlayerRecord.cpp" />
     <ClCompile Include="ClashStats\PlayerWarRecord.cpp" />
