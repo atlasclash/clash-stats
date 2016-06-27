@@ -29,6 +29,14 @@ void Clan::Reset()
 	m_WarRecordList.clear();
 }
 
+void Clan::CreateWarRecord()
+{
+	Reset();
+	
+	DATABASE::GetInstance().ReadAllWars(m_WarRecordList);
+}
+
+
 void Clan::CreateClanWithUserMeta(std::string userMeta)
 {
 	Reset();
