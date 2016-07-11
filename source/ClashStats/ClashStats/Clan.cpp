@@ -29,6 +29,14 @@ void Clan::Reset()
 	m_WarRecordList.clear();
 }
 
+void Clan::CreateWarRecord()
+{
+	Reset();
+	
+	DATABASE::GetInstance().ReadAllWars(m_WarRecordList);
+}
+
+
 void Clan::CreateClanWithUserMeta(std::string userMeta)
 {
 	Reset();
@@ -49,6 +57,7 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 				<< "TH"						<< delimiter
 				<< "Total Wars"				<< delimiter
 				<< "Total Closer Stars"		<< delimiter
+				<< "Total Avg Closer Stars"	<< delimiter
 				<< "Total Stars"			<< delimiter
 				<< "Avg Total Stars"		<< delimiter
 				<< "Total 3-stars"			<< delimiter
@@ -58,6 +67,7 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 
 				<< "Attacks"				<< delimiter
 				<< "Closer Stars"			<< delimiter
+				<< "Avg Closer Stars"		<< delimiter
 				<< "Stars"					<< delimiter
 				<< "Avg Stars"				<< delimiter
 				<< "Avg Dmg %"				<< delimiter
@@ -137,10 +147,15 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 	// write each player's record
 	for (int i = 0; i < playerIDs.size(); ++i)
 	{
-		Player *p = new Player(playerIDs[i]);
-		p->GenerateSeasonHistoryWithMeta(userMeta);
-		p->WritePlayerStatsData(outputFile);
-		delete p;
+		Player *p1 = new Player(playerIDs[i]);
+		if (p1->GetName() == "Alaska")
+		{
+			printf("break!\n");
+		}
+		p1->GenerateSeasonHistoryWithMeta(userMeta);
+		p1->WritePlayerStatsData(outputFile);
+		
+		delete p1;
 	}
 	
 	// close

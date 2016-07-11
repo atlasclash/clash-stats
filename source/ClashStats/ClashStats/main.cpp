@@ -210,6 +210,7 @@ void ui_ClanReports()
 	{
 		std::cout << "Clan Reports"						<< std::endl;
 		std::cout << "[1] User Meta"					<< std::endl;
+		std::cout << "[2] War Record"					<< std::endl;
 		std::cout << "[9] Quit"							<< std::endl;
 		
 		std::cin >> choice;
@@ -220,6 +221,10 @@ void ui_ClanReports()
 				std::cout << "User meta:"				<< std::endl;
 				std::cin >> meta;
 				myClan.CreateClanWithUserMeta(meta);
+				break;
+				
+			case 2:
+				myClan.CreateWarRecord();
 				break;
 				
 			case 9:

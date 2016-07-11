@@ -22,6 +22,7 @@ public:
 	virtual ~Clan();
 	
 	void CreateClanWithUserMeta(std::string userMeta);
+	void CreateWarRecord();
 	
 	void Reset();
 	

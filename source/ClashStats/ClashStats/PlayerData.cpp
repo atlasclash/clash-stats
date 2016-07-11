@@ -172,9 +172,9 @@ const int PlayerData::GetMaxStarsGiven() const
 	return max;
 }
 
-const AttackData* PlayerData::GetCloserAttack() const
+AttackData* PlayerData::GetCloserAttack()
 {
-	const AttackData *ad = NULL;
+	AttackData *ad = NULL;
 	for (int i = 0; i < m_Defends.size(); ++i)
 	{
 		if (ad == NULL)
@@ -188,6 +188,19 @@ const AttackData* PlayerData::GetCloserAttack() const
 	}
 	
 	return ad;
+}
+
+AttackData* PlayerData::GetAttackVs(const int opponent)
+{
+	for (int i = 0; i < m_Attacks.size(); ++i)
+	{
+		if (m_Attacks[i].GetTargetId() == opponent)
+		{
+			return &m_Attacks[i];
+		}
+	}
+	
+	return NULL;
 }
 
 const int PlayerData::GetTotalStars() const
