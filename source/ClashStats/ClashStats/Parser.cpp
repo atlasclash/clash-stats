@@ -9,6 +9,7 @@
 #include "Parser.hpp"
 #include <sstream>
 #include "StringHelpers.hpp"
+#include "Constants.h"
 
 Parser::Parser(const char *fileName)
 {
@@ -37,4 +38,22 @@ std::vector<std::string> Parser::GetCellsFromLine(const char token)
 	}
 	
 	return cellResults;
+}
+
+
+bool Parser::CheckDataRanges(const int opponentId, const int usId, const int stars, const int pct, const int warSize) const
+{
+	if (opponentId < MIN_ATTACKER_ID || opponentId > warSize)
+		return false;
+	
+	if (usId < MIN_ATTACKER_ID || usId > warSize)
+		return false;
+	
+	if (stars < MIN_STARS_PER_ATTACK || stars > MAX_STARS_PER_ATTACK)
+		return false;
+	
+	if (pct < MIN_PCT_DAMAGE || pct > MAX_PCT_DAMAGE)
+		return false;
+	
+	return true;
 }

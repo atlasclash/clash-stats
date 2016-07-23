@@ -43,5 +43,11 @@ bool AttackRecord::isEqual(const AttackRecord a) const
 	if (warPk != a.warPk)
 		return false;
 	
+	if (playerWgt != a.playerWgt)
+		return false;
+	
+	if (opponentWgt != a.opponentWgt)
+		return false;
+	
 	return true;
 }

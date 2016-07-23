@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0F71E4F11C1CEA1A00E75E97 /* Clan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F71E4EF1C1CEA1A00E75E97 /* Clan.cpp */; };
 		0F71E4F41C1CEA2C00E75E97 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F71E4F21C1CEA2C00E75E97 /* Player.cpp */; };
+		0FB1B6FB1D3C18DA001969BB /* ParserV2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FB1B6F91D3C18DA001969BB /* ParserV2.cpp */; };
 		0FC7BD761C0148FC008B9C28 /* AttackData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD741C0148FC008B9C28 /* AttackData.cpp */; };
 		0FC7BD791C0766EE008B9C28 /* Options.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD771C0766EE008B9C28 /* Options.cpp */; };
 		0FC7BD821C08EAA9008B9C28 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 0FC7BD7E1C08EAA9008B9C28 /* sqlite3.c */; };
@@ -47,6 +48,8 @@
 		0F71E4F01C1CEA1A00E75E97 /* Clan.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Clan.hpp; path = ClashStats/Clan.hpp; sourceTree = "<group>"; };
 		0F71E4F21C1CEA2C00E75E97 /* Player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Player.cpp; path = ClashStats/Player.cpp; sourceTree = "<group>"; };
 		0F71E4F31C1CEA2C00E75E97 /* Player.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Player.hpp; path = ClashStats/Player.hpp; sourceTree = "<group>"; };
+		0FB1B6F91D3C18DA001969BB /* ParserV2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ParserV2.cpp; path = ClashStats/ParserV2.cpp; sourceTree = "<group>"; };
+		0FB1B6FA1D3C18DA001969BB /* ParserV2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ParserV2.hpp; path = ClashStats/ParserV2.hpp; sourceTree = "<group>"; };
 		0FC7BD741C0148FC008B9C28 /* AttackData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AttackData.cpp; path = ClashStats/AttackData.cpp; sourceTree = "<group>"; };
 		0FC7BD751C0148FC008B9C28 /* AttackData.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = AttackData.hpp; path = ClashStats/AttackData.hpp; sourceTree = "<group>"; };
 		0FC7BD771C0766EE008B9C28 /* Options.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Options.cpp; path = ClashStats/Options.cpp; sourceTree = "<group>"; };
@@ -110,6 +113,21 @@
 				0F71E4F21C1CEA2C00E75E97 /* Player.cpp */,
 			);
 			name = "Report Objects";
+			sourceTree = "<group>";
+		};
+		0FB1B6FC1D3C7D52001969BB /* Parser */ = {
+			isa = PBXGroup;
+			children = (
+				84BFADFA1BF853F100FBB85C /* ParserFactory.hpp */,
+				84BFADF91BF853F100FBB85C /* ParserFactory.cpp */,
+				84BFAE031BF952BC00FBB85C /* Parser.hpp */,
+				84BFAE021BF952BC00FBB85C /* Parser.cpp */,
+				84BFADFD1BF8543000FBB85C /* ParserV1.hpp */,
+				84BFADFC1BF8543000FBB85C /* ParserV1.cpp */,
+				0FB1B6FA1D3C18DA001969BB /* ParserV2.hpp */,
+				0FB1B6F91D3C18DA001969BB /* ParserV2.cpp */,
+			);
+			name = Parser;
 			sourceTree = "<group>";
 		};
 		0FC7BD7B1C08EA7F008B9C28 /* External */ = {
@@ -182,18 +200,13 @@
 		84BFADF21BF8382B00FBB85C /* Data Objects */ = {
 			isa = PBXGroup;
 			children = (
+				0FB1B6FC1D3C7D52001969BB /* Parser */,
 				84BFADF41BF8384A00FBB85C /* WarData.hpp */,
 				84BFADF31BF8384A00FBB85C /* WarData.cpp */,
 				84BFADF71BF83A1C00FBB85C /* PlayerData.hpp */,
 				84BFADF61BF83A1C00FBB85C /* PlayerData.cpp */,
 				0FC7BD751C0148FC008B9C28 /* AttackData.hpp */,
 				0FC7BD741C0148FC008B9C28 /* AttackData.cpp */,
-				84BFADFA1BF853F100FBB85C /* ParserFactory.hpp */,
-				84BFADF91BF853F100FBB85C /* ParserFactory.cpp */,
-				84BFAE031BF952BC00FBB85C /* Parser.hpp */,
-				84BFAE021BF952BC00FBB85C /* Parser.cpp */,
-				84BFADFD1BF8543000FBB85C /* ParserV1.hpp */,
-				84BFADFC1BF8543000FBB85C /* ParserV1.cpp */,
 				84010DA91C001DDF0061FFDE /* DataObject.hpp */,
 				84010DA81C001DDF0061FFDE /* DataObject.cpp */,
 				FB4E63DC1C064994001070C4 /* Constants.h */,
@@ -277,6 +290,7 @@
 				84BFADF81BF83A1C00FBB85C /* PlayerData.cpp in Sources */,
 				0F71E4F41C1CEA2C00E75E97 /* Player.cpp in Sources */,
 				0FC7BD921C0BDFB9008B9C28 /* AttackRecord.cpp in Sources */,
+				0FB1B6FB1D3C18DA001969BB /* ParserV2.cpp in Sources */,
 				0FC7BD9B1C0BE122008B9C28 /* HistoricRecord.cpp in Sources */,
 				84010DAA1C001DDF0061FFDE /* DataObject.cpp in Sources */,
 				0FC7BD8F1C0BDEF8008B9C28 /* PlayerRecord.cpp in Sources */,

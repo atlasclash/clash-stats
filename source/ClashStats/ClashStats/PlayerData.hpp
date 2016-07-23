@@ -45,6 +45,9 @@ public:
 	void SetCloserStars(const int stars);
 	const int GetCloserStars() const;
 
+	void SetPlayerWeight(const int weight);
+	const int GetPlayerWeight() const;
+	
 	const int GetBleeds() const;
 	const int GetHolds() const;
 	const int GetNukes() const;
@@ -75,6 +78,7 @@ protected:
 	eSpecialFlags				m_SpecialFlag;
 	std::string					m_PlayerTag;
 	std::string					m_PlayerName;
+	int							m_PlayerWeight;
 	std::vector<AttackData>		m_Attacks;
 	std::vector<AttackData>		m_Defends;
 };

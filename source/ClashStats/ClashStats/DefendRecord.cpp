@@ -31,5 +31,11 @@ bool DefendRecord::isEqual(const DefendRecord d) const
 	if (warPk != d.warPk)
 		return false;
 	
+	if (playerWgt != d.playerWgt)
+		return false;
+	
+	if (opponentWgt != d.opponentWgt)
+		return false;
+	
 	return true;
 }

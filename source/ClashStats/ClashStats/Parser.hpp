@@ -27,6 +27,8 @@ protected:
 	// returns a vector containing the tokenized line contents
 	std::vector<std::string> GetCellsFromLine(const char token = ',');
 	
+	virtual bool CheckDataRanges(const int opponentId, const int usId, const int stars, const int pct, const int warSize) const;
+
 	std::ifstream *m_dataFile;
 
 };

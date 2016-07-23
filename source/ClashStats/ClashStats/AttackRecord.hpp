@@ -18,7 +18,9 @@ struct AttackRecord
 	int			pk;
 	std::string	playerTagPk;
 	int			playerTH;
+	int			playerWgt;
 	int			opponentTH;
+	int			opponentWgt;
 	int			starCount;
 	int			percentDmg;
 	bool		isSalt;

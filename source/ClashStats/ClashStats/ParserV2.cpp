@@ -1,12 +1,12 @@
 //
-//  ParserV1.cpp
+//  ParserV2.cpp
 //  ClashStats
 //
-//  Created by Atlas on 11/14/15.
-//  Copyright © 2015 JTJ. All rights reserved.
+//  Created by Jeremy Jessup on 7/17/16.
+//  Copyright © 2016 JTJ. All rights reserved.
 //
 
-#include "ParserV1.hpp"
+#include "ParserV2.hpp"
 #include "StringHelpers.hpp"
 #include "WarData.hpp"
 #include "AttackData.hpp"
@@ -17,7 +17,7 @@
 #include <vector>
 #include <iostream>
 
-#define PARSER_VERSION						("1")
+#define PARSER_VERSION						("2")
 
 #define FIELD_WARDATA_ENEMY_CLAN_NAME		(0)
 #define FIELD_WARDATA_ENEMY_CLAN_TAG		(1)
@@ -32,8 +32,10 @@
 #define FIELD_PLAYER_NAME					(1)
 #define FIELD_PLAYER_TH						(2)
 #define FIELD_PLAYER_TAG					(3)
-#define FIELD_PLAYER_SPECIAL				(4)
-#define FIELD_PLAYER_OPPONENT_TH			(5)
+#define FIELD_PLAYER_WEIGHT					(4)
+#define FIELD_PLAYER_SPECIAL				(5)
+#define FIELD_PLAYER_OPPONENT_TH			(6)
+#define FIELD_PLAYER_OPPONENT_WEIGHT		(7)
 
 #define FIELD_ATTACK_NUM					(0)
 #define FIELD_ATTACK_US_STARS				(1)
@@ -43,19 +45,19 @@
 #define FIELD_ATTACK_THEM_STARS				(5)
 #define FIELD_ATTACK_THEM_PCT				(6)
 
-ParserV1::ParserV1(const char *fileName) : Parser(fileName)
+ParserV2::ParserV2(const char *fileName) : Parser(fileName)
 {
 	
 }
 
-ParserV1::~ParserV1()
+ParserV2::~ParserV2()
 {
 	
 }
 
-void ParserV1::ProcessWar(WarData *warData)
+void ParserV2::ProcessWar(WarData *warData)
 {
-	std::cout << "Reading war data... [v1]" << std::endl;
+	std::cout << "Reading war data... [v2]" << std::endl;
 	
 	if (m_dataFile == NULL)
 	{
@@ -102,10 +104,12 @@ void ParserV1::ProcessWar(WarData *warData)
 		usPlayer->SetPlayerName(cellResults[FIELD_PLAYER_NAME]);
 		usPlayer->SetTownHallLevel((eTownHallLevel)atoi(cellResults[FIELD_PLAYER_TH].c_str()));
 		usPlayer->SetPlayerTag(cellResults[FIELD_PLAYER_TAG]);
+		usPlayer->SetPlayerWeight(atoi(cellResults[FIELD_PLAYER_WEIGHT].c_str()));
 		
 		PlayerData *themPlayer = new PlayerData();
 		themPlayer->SetSpecialFlag((PlayerData::eSpecialFlags)atoi(cellResults[FIELD_PLAYER_SPECIAL].c_str()));
 		themPlayer->SetTownHallLevel((eTownHallLevel)atoi(cellResults[FIELD_PLAYER_OPPONENT_TH].c_str()));
+		themPlayer->SetPlayerWeight(atoi(cellResults[FIELD_PLAYER_OPPONENT_WEIGHT].c_str()));
 		
 		warData->AddUsPlayer(usPlayer);
 		warData->AddThemPlayer(themPlayer);
@@ -148,13 +152,17 @@ void ParserV1::ProcessWar(WarData *warData)
 			const PlayerData *opponent = warData->GetThem(opponentId);
 			assert(opponent != NULL);
 			
-			eTownHallLevel usTH		= warData->GetUsTHLevel(usId);
+			const PlayerData *us = warData->GetUs(usId);
+			assert(us != NULL);
+			
+			eTownHallLevel usTH		= us->GetTownHallLevel();
 			eTownHallLevel oppTH 	= warData->GetThemTHLevel(opponentId);
+			int oppWgt				= opponent->GetPlayerWeight();
 			bool isSalt				= opponent->IsSalt();
 			bool isCloseAttk		= (!opponent->IsClosed() && stars == AttackData::kThreeStar);
 			int attemptNum			= (int)opponent->GetDefendCount() + 1;	// we're the next try
 			
-			const AttackData *usAttack = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH, isSalt, isCloseAttk, attemptNum, attackNumber);
+			const AttackData *usAttack = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH, isSalt, isCloseAttk, attemptNum, attackNumber, oppWgt);
 			const AttackData *themDefend = new AttackData(usId, (AttackData::StarType)stars, pct, usTH);
 			warData->AddUsAttack(usAttack, usId);
 			warData->AddThemDefend(themDefend, opponentId);
@@ -166,17 +174,19 @@ void ParserV1::ProcessWar(WarData *warData)
 			int stars				= atoi(cellResults[FIELD_ATTACK_THEM_STARS].c_str());
 			int pct					= atoi(cellResults[FIELD_ATTACK_THEM_PCT].c_str());
 			int usId				= atoi(cellResults[FIELD_ATTACK_US_INDEX].c_str());
-
+			
 			if (OPTIONS::GetInstance().parser_Check_Data_Ranges && !CheckDataRanges(opponentId, usId, stars, pct, warSize))
 			{
 				std::cout << "Check data range failure: attack: " << attackTotal << std::endl;
 				return;
 			}
-
+			
 			eTownHallLevel usTH		= warData->GetUsTHLevel(usId);
 			eTownHallLevel oppTH 	= warData->GetThemTHLevel(opponentId);
-
-			const AttackData *usDefend = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH);
+			
+			const PlayerData *them  = warData->GetThem(opponentId);
+			
+			const AttackData *usDefend = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH, them->GetPlayerWeight());
 			const AttackData *themAttack = new AttackData(usId, (AttackData::StarType)stars, pct, usTH);
 			warData->AddUsDefend(usDefend, usId);
 			warData->AddThemAttack(themAttack, opponentId);
@@ -188,5 +198,5 @@ void ParserV1::ProcessWar(WarData *warData)
 	
 	std::cout << "Read " << attackTotal << " attacks." << std::endl;
 	std::cout << "War data complete." << std::endl;
+	
 }
-
