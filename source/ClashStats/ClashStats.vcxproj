@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClashStats\AttackData.cpp" />
+    <ClCompile Include="ClashStats\AttackRecord.cpp" />
     <ClCompile Include="ClashStats\Clan.cpp" />
     <ClCompile Include="ClashStats\Database.cpp" />
     <ClCompile Include="ClashStats\DataObject.cpp" />
