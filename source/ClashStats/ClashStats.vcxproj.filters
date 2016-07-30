@@ -81,6 +81,9 @@
     <ClInclude Include="ClashStats\Player.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ClashStats\ParserV2.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClashStats\StringHelpers.cpp">
@@ -141,6 +144,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ClashStats\AttackRecord.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClashStats\ParserV2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
