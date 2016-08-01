@@ -624,12 +624,14 @@ void Database::ReadWarAttackData(std::string playerTag, std::string warMeta, std
 		attack.warPk		= sqlite3_column_int(statement, 2);
 		attack.attackNum	= sqlite3_column_int(statement, 3);
 		attack.playerTH		= sqlite3_column_int(statement, 4);
-		attack.opponentTH	= sqlite3_column_int(statement, 5);
-		attack.starCount	= sqlite3_column_int(statement, 6);
-		attack.percentDmg	= sqlite3_column_int(statement, 7);
-		attack.isSalt		= (sqlite3_column_int(statement, 8) == 1) ? true : false;
-		attack.isClose		= (sqlite3_column_int(statement, 9) == 1) ? true : false;
-		attack.attemptNum	= sqlite3_column_int(statement, 10);
+		attack.playerWgt	= sqlite3_column_int(statement, 5);
+		attack.opponentTH	= sqlite3_column_int(statement, 6);
+		attack.opponentWgt	= sqlite3_column_int(statement, 7);
+		attack.starCount	= sqlite3_column_int(statement, 8);
+		attack.percentDmg	= sqlite3_column_int(statement, 9);
+		attack.isSalt		= (sqlite3_column_int(statement, 10) == 1) ? true : false;
+		attack.isClose		= (sqlite3_column_int(statement, 11) == 1) ? true : false;
+		attack.attemptNum	= sqlite3_column_int(statement, 12);
 		
 		list.push_back(attack);
 	}

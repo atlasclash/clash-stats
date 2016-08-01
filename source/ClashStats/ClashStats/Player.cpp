@@ -49,6 +49,7 @@ PlayerAttackSummary::PlayerAttackSummary()
 , m_NumSnipeStars(0)
 , m_NumSnipePctDmg(0)
 , m_NumSnipeThreeStars(0)
+, m_NumSnipeCloserStars(0)
 , m_NumSnipeFirstAttempts(0)
 {
 	
@@ -129,6 +130,7 @@ void PlayerAttackSummary::Reset()
 	m_NumSnipeStars			=
 	m_NumSnipePctDmg		=
 	m_NumSnipeThreeStars	=
+	m_NumSnipeCloserStars   = 
 	m_NumSnipeFirstAttempts	= 0;
 }
 
