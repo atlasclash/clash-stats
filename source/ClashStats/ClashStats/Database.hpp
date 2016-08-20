@@ -57,6 +57,8 @@ public:
 	void	ReadWarsBetweenDates(std::vector<WarRecord> &list, int startDate, int endDate);
 	void	ReadWarsWithUserMeta(std::vector<WarRecord> &list, std::string userMeta);
 	
+	void	ReadAllAttackData(std::vector<AttackRecord> &list);
+	
 	// read player specific data
 	void	ReadAllPlayerAttackData(std::string playerName, std::vector<AttackRecord> &list);
 	void	ReadAllPlayerDefendData(std::string playerName, std::vector<DefendRecord> &list);
