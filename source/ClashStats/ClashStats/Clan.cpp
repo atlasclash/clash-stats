@@ -215,6 +215,7 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 				<< "Avg Dmg"				<< delimiter
 				<< "3-stars Yielded"		<< delimiter
 				<< "Misses"					<< delimiter
+				<< "Defend Ratio"			<< delimiter
 	
 				<< "Peer Attacks"			<< delimiter
 				<< "Peer Stars"				<< delimiter
@@ -242,10 +243,6 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 	for (int i = 0; i < playerIDs.size(); ++i)
 	{
 		Player *p1 = new Player(playerIDs[i]);
-		if (p1->GetName() == "Alaska")
-		{
-			printf("break!\n");
-		}
 		p1->GenerateSeasonHistoryWithMeta(userMeta);
 		p1->WritePlayerStatsData(outputFile);
 		

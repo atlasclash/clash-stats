@@ -160,7 +160,7 @@ PlayerDefendSummary::PlayerDefendSummary()
 , m_NumNukeThreeStars(0)
 , m_NumNukeMisses(0)
 {
-	
+	m_DefendRatio.clear();
 }
 
 void PlayerDefendSummary::Reset()
@@ -188,6 +188,8 @@ void PlayerDefendSummary::Reset()
 	m_NumNukeDamage			=
 	m_NumNukeThreeStars		=
 	m_NumNukeMisses			= 0;
+	
+	m_DefendRatio.clear();
 }
 
 bool PlayerDefendSummary::isEqual(const PlayerDefendSummary d) const
@@ -217,8 +219,23 @@ bool PlayerDefendSummary::isEqual(const PlayerDefendSummary d) const
 	if (m_NumNukeThreeStars != d.m_NumNukeThreeStars)		return false;
 	if (m_NumNukeMisses != d.m_NumNukeMisses)				return false;
 	
+	if (m_DefendRatio.size() != d.m_DefendRatio.size())		return false;
+	if (m_DefendRatio != d.m_DefendRatio)					return false;
+	
 	return true;
 }
+
+const float PlayerDefendSummary::OverallDefendRatio(const int numWars) const
+{
+	float total = 0;
+	for (int i = 0; i < m_DefendRatio.size(); ++i)
+	{
+		total += m_DefendRatio[i];
+	}
+	
+	return total / numWars;
+}
+
 
 PlayerWarSummary::PlayerWarSummary()
 : m_TotalWars(0)
@@ -406,7 +423,7 @@ void Player::GenerateAttackSummaryData()
 		summary.m_TotalNearMiss		+= (rec.starCount != MAX_STARS_PER_ATTACK && rec.percentDmg >= NEAR_MISS_PCT_THRESHOLD) ? 1 : 0;
 		summary.m_TotalCloserStars	+= (rec.isClose) ? rec.starCount : 0;
 		
-		if (rec.playerTH == rec.opponentTH)
+		if (rec.isPeerAttack())
 		{
 			if (rec.isSalt)
 			{
@@ -428,7 +445,7 @@ void Player::GenerateAttackSummaryData()
 			}
 		}
 		// snipe
-		else if (rec.playerTH < rec.opponentTH)
+		else if (rec.isSnipeAttack())
 		{
 			summary.m_NumSnipeAttacks++;
 			summary.m_NumSnipeStars				+= rec.starCount;
@@ -438,7 +455,7 @@ void Player::GenerateAttackSummaryData()
 			summary.m_NumSnipeCloserStars		+= (rec.isClose) ? rec.starCount : 0;
 		}
 		// nuke
-		else if (rec.playerTH > rec.opponentTH)
+		else if (rec.isNukeAttack())
 		{
 			summary.m_NumNukeAttacks++;
 			summary.m_NumNukeStars				+= rec.starCount;
@@ -446,6 +463,10 @@ void Player::GenerateAttackSummaryData()
 			summary.m_NumNukeThreeStars			+= (rec.starCount == MAX_STARS_PER_ATTACK) ? 1 : 0;
 			summary.m_NumNukeFirstAttempts		+= (rec.isClose && rec.attemptNum == 1) ? 1 : 0;
 			summary.m_NumNukeCloserStars		+= (rec.isClose) ? rec.starCount : 0;
+		}
+		else
+		{
+			assert(0 && "unhandled case");
 		}
 	}
 }
@@ -464,7 +485,12 @@ void Player::GenerateDefendSummaryData()
 		summary.m_TotalThreeStars		+= (rec.starCount == MAX_STARS_PER_ATTACK) ? 1 : 0;
 		summary.m_TotalMisses			+= (rec.starCount == 0) ? 1 : 0;
 		
-		if (rec.playerTH == rec.opponentTH)
+		if (rec.playerWgt > 0)
+		{
+			summary.m_DefendRatio.push_back((float)rec.opponentWgt/(float)rec.playerWgt);
+		}
+		
+		if (rec.isPeerDefend())
 		{
 			summary.m_NumPeerAttacks++;
 			summary.m_NumPeerStarsYielded		+= rec.starCount;
@@ -473,7 +499,7 @@ void Player::GenerateDefendSummaryData()
 			summary.m_NumPeerMisses				+= (rec.starCount == 0) ? 1 : 0;
 		}
 		// hit-down (nuke)
-		else if (rec.playerTH < rec.opponentTH)
+		else if (rec.isNukeDefend())
 		{
 			summary.m_NumNukeAttacks++;
 			summary.m_NumNukeStarsYielded		+= rec.starCount;
@@ -482,13 +508,17 @@ void Player::GenerateDefendSummaryData()
 			summary.m_NumNukeMisses				+= (rec.starCount == 0) ? 1 : 0;
 		}
 		// hit-up (snipe)
-		else if (rec.playerTH > rec.opponentTH)
+		else if (rec.isSnipeDefend())
 		{
 			summary.m_NumSnipeAttacks++;
 			summary.m_NumSnipeStarsYielded		+= rec.starCount;
 			summary.m_NumSnipeDamage			+= rec.percentDmg;
 			summary.m_NumSnipeThreeStars		+= (rec.starCount == MAX_STARS_PER_ATTACK) ? 1 : 0;
 			summary.m_NumSnipeMisses			+= (rec.starCount == 0) ? 1 : 0;
+		}
+		else
+		{
+			assert(0 && "unhandled case");
 		}
 	}
 }
@@ -673,12 +703,13 @@ void Player::WritePlayerStatsData(std::ofstream &outputFile)
 			
 			if (m_DefendSummary[thLvl].m_TotalDefends)
 			{
-				outputFile	<< m_DefendSummary[thLvl].m_TotalDefends													<< delimiter
-							<< m_DefendSummary[thLvl].m_TotalStarsYielded												<< delimiter
+				outputFile	<< m_DefendSummary[thLvl].m_TotalDefends																<< delimiter
+							<< m_DefendSummary[thLvl].m_TotalStarsYielded															<< delimiter
 							<< (float)m_DefendSummary[thLvl].m_TotalStarsYielded / (float)m_DefendSummary[thLvl].m_TotalDefends		<< delimiter
-							<< (float)m_DefendSummary[thLvl].m_TotalDamage / (float)m_DefendSummary[thLvl].m_TotalDefends				<< delimiter
-							<< m_DefendSummary[thLvl].m_TotalThreeStars													<< delimiter
-							<< m_DefendSummary[thLvl].m_TotalMisses														<< delimiter;
+							<< (float)m_DefendSummary[thLvl].m_TotalDamage / (float)m_DefendSummary[thLvl].m_TotalDefends			<< delimiter
+							<< m_DefendSummary[thLvl].m_TotalThreeStars																<< delimiter
+							<< m_DefendSummary[thLvl].m_TotalMisses																	<< delimiter
+							<< m_DefendSummary[thLvl].OverallDefendRatio(m_WarSummary[thLvl].m_TotalWars)							<< delimiter;
 			}
 			else
 			{

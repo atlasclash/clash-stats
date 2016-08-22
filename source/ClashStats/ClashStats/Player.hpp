@@ -68,6 +68,7 @@ struct PlayerDefendSummary
 	PlayerDefendSummary();
 	void Reset();
 	bool isEqual(const PlayerDefendSummary d) const;
+	const float OverallDefendRatio(const int numWars) const;
 	
 	int m_TotalDefends;
 	int m_TotalStarsYielded;
@@ -92,6 +93,8 @@ struct PlayerDefendSummary
 	int m_NumNukeDamage;
 	int m_NumNukeThreeStars;
 	int m_NumNukeMisses;
+	
+	std::vector<float> m_DefendRatio;
 };
 
 struct PlayerWarSummary

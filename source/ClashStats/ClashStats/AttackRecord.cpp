@@ -7,6 +7,7 @@
 //
 
 #include "AttackRecord.hpp"
+#include "Constants.h"
 
 bool AttackRecord::isEqual(const AttackRecord a) const
 {
@@ -50,4 +51,41 @@ bool AttackRecord::isEqual(const AttackRecord a) const
 		return false;
 	
 	return true;
+}
+
+bool AttackRecord::isPeerAttack() const
+{
+	const int minWgt = GetMinTHWeight(playerTH);
+	const int maxWgt = GetMaxTHWeight(playerTH);
+	
+	if (opponentWgt <= maxWgt && opponentWgt >= minWgt)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+bool AttackRecord::isSnipeAttack() const
+{
+	const int maxWgt = GetMaxTHWeight(playerTH);
+	
+	if (opponentWgt > maxWgt)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+bool AttackRecord::isNukeAttack() const
+{
+	const int minWgt = GetMinTHWeight(playerTH);
+	
+	if (opponentWgt < minWgt)
+	{
+		return true;
+	}
+	
+	return false;
 }
