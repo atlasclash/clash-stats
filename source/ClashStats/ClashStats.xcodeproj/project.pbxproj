@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F4464341D7DDB8A00E9A974 /* Constants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F4464331D7DDB8A00E9A974 /* Constants.cpp */; };
 		0F71E4F11C1CEA1A00E75E97 /* Clan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F71E4EF1C1CEA1A00E75E97 /* Clan.cpp */; };
 		0F71E4F41C1CEA2C00E75E97 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F71E4F21C1CEA2C00E75E97 /* Player.cpp */; };
 		0FB1B6FB1D3C18DA001969BB /* ParserV2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FB1B6F91D3C18DA001969BB /* ParserV2.cpp */; };
@@ -44,6 +45,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0F4464331D7DDB8A00E9A974 /* Constants.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Constants.cpp; path = ClashStats/Constants.cpp; sourceTree = "<group>"; };
 		0F71E4EF1C1CEA1A00E75E97 /* Clan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Clan.cpp; path = ClashStats/Clan.cpp; sourceTree = "<group>"; };
 		0F71E4F01C1CEA1A00E75E97 /* Clan.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Clan.hpp; path = ClashStats/Clan.hpp; sourceTree = "<group>"; };
 		0F71E4F21C1CEA2C00E75E97 /* Player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Player.cpp; path = ClashStats/Player.cpp; sourceTree = "<group>"; };
@@ -210,6 +212,7 @@
 				84010DA91C001DDF0061FFDE /* DataObject.hpp */,
 				84010DA81C001DDF0061FFDE /* DataObject.cpp */,
 				FB4E63DC1C064994001070C4 /* Constants.h */,
+				0F4464331D7DDB8A00E9A974 /* Constants.cpp */,
 				0FC7BD781C0766EE008B9C28 /* Options.hpp */,
 				0FC7BD771C0766EE008B9C28 /* Options.cpp */,
 				0FC7BD8B1C0BB9AC008B9C28 /* Database */,
@@ -254,7 +257,7 @@
 		84BFADE01BF8129100FBB85C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = JTJ;
 				TargetAttributes = {
 					84BFADE71BF8129100FBB85C = {
@@ -289,6 +292,7 @@
 				0FC7BD791C0766EE008B9C28 /* Options.cpp in Sources */,
 				84BFADF81BF83A1C00FBB85C /* PlayerData.cpp in Sources */,
 				0F71E4F41C1CEA2C00E75E97 /* Player.cpp in Sources */,
+				0F4464341D7DDB8A00E9A974 /* Constants.cpp in Sources */,
 				0FC7BD921C0BDFB9008B9C28 /* AttackRecord.cpp in Sources */,
 				0FB1B6FB1D3C18DA001969BB /* ParserV2.cpp in Sources */,
 				0FC7BD9B1C0BE122008B9C28 /* HistoricRecord.cpp in Sources */,
@@ -324,8 +328,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -367,8 +373,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
