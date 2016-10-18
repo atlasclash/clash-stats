@@ -123,7 +123,7 @@ void WarData::CalcCloserStars()
 		}
 		else if (OPTIONS::GetInstance().parser_Check_Missing_Attacks)
 		{
-			std::cout << "Warning: No attack against enemy #" << i << std::endl;
+			std::cout << "Warning: No attack against enemy #" << i+1 << std::endl;
 		}
 	}
 	
