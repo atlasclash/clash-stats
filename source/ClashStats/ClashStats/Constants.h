@@ -36,4 +36,8 @@ enum eTownHallLevel
 
 #define MIN_ATTACKER_ID				(1)
 
+int GetMaxTHWeight(const int thLvl);
+int GetMinTHWeight(const int thLvl);
+
+
 #endif /* Constants_h */

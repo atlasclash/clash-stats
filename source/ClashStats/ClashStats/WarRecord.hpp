@@ -24,6 +24,8 @@ struct WarRecord
 	int			themScore;
 	int			date;			// seconds from "epoch" (2010-Jan-01)
 	
+	WarRecord& operator=(const WarRecord &rhs);
+	
 	// Displays human readable description of the data
 	void		Description();
 };

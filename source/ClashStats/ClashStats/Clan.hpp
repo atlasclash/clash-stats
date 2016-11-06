@@ -23,6 +23,7 @@ public:
 	
 	void CreateClanWithUserMeta(std::string userMeta);
 	void CreateWarRecord();
+	void CreateBaseCloseRate();
 	
 	void Reset();
 	

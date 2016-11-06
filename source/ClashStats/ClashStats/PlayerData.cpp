@@ -72,6 +72,16 @@ const int PlayerData::GetCloserStars() const
 	return m_CloserStars;
 }
 
+void PlayerData::SetPlayerWeight(const int weight)
+{
+	m_PlayerWeight = weight;
+}
+
+const int PlayerData::GetPlayerWeight() const
+{
+	return m_PlayerWeight;
+}
+
 const int PlayerData::GetThreeStars() const
 {
 	int count = 0;

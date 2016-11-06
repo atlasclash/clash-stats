@@ -211,6 +211,7 @@ void ui_ClanReports()
 		std::cout << "Clan Reports"						<< std::endl;
 		std::cout << "[1] User Meta"					<< std::endl;
 		std::cout << "[2] War Record"					<< std::endl;
+		std::cout << "[3] Base Close Rate"				<< std::endl;
 		std::cout << "[9] Quit"							<< std::endl;
 		
 		std::cin >> choice;
@@ -225,6 +226,10 @@ void ui_ClanReports()
 				
 			case 2:
 				myClan.CreateWarRecord();
+				break;
+				
+			case 3:
+				myClan.CreateBaseCloseRate();
 				break;
 				
 			case 9:
@@ -247,7 +252,8 @@ void ui_PlayerReports()
 	while (choice != QUIT_OPTION)
 	{
 		std::cout << "Player Reports"					<< std::endl;
-		std::cout << "[1] Player Name"					<< std::endl;
+		std::cout << "[1] Player Name (All)"			<< std::endl;
+		std::cout << "[2] Player Name (S6)"				<< std::endl;
 		
 		std::cin >> choice;
 		
@@ -260,10 +266,17 @@ void ui_PlayerReports()
 		switch (choice)
 		{
 			case 1:
-				std::cout << "Name:"					<< std::endl;
+				std::cout << "Name (All):"					<< std::endl;
 				std::cin >> meta;
-				player = new Player();
-				player->GenerateHistoryWithName(meta);
+				player = new Player(meta);
+				player->GenerateHistory();
+				break;
+				
+			case 2:
+				std::cout << "Name (S6):"					<< std::endl;
+				std::cin >> meta;
+				player = new Player(meta);
+				player->GenerateHistoryWithMeta("S6");
 				break;
 				
 			case 9:
