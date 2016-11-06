@@ -35,47 +35,75 @@ void Clan::CreateWarRecord()
 	Reset();
 	
 	DATABASE::GetInstance().ReadAllWars(m_WarRecordList);
+//<<<<<<< Updated upstream
+//	
+//	struct tmpStruct
+//	{
+//		int matches;
+//		int wins;
+//	};
+//	
+//	std::map<int, tmpStruct> warRecord;
+//	
+//	for (int i = 0; i < m_WarRecordList.size(); ++i)
+//	{
+//		const WarRecord w = m_WarRecordList[i];
+//		
+//		tmpStruct warSize;
+//		if (warRecord.find(w.playerCount) == warRecord.end())
+//		{
+//			warSize.matches = 1;
+//			warSize.wins    = (w.usScore > w.themScore) ? 1 : 0;
+//			warRecord[w.playerCount] = warSize;
+//		}
+//		else
+//		{
+//			tmpStruct s = warRecord[w.playerCount];
+//			s.matches++;
+//			if (w.usScore > w.themScore)
+//			{
+//				s.wins++;
+//			}
+//			warRecord[w.playerCount] = s;
+//		}
+//	}
+//	
+//	std::map<int, tmpStruct>::iterator it = warRecord.begin();
+//	std::cout << "Sz # W" << std::endl;
+//	while (it != warRecord.end())
+//	{
+//		
+//		tmpStruct s = it->second;
+//		std::cout << it->first << " " << s.matches << " " << s.wins << " pct:" << (int)((float)s.wins / (float)s.matches*100) << std::endl;
+//		it++;
+//	}
+//=======
+	std::ofstream outputFile;
+	outputFile.open("Clan-War-History.csv");
+	const std::string delimiter = ",";
 	
-	struct tmpStruct
-	{
-		int matches;
-		int wins;
-	};
-	
-	std::map<int, tmpStruct> warRecord;
+	outputFile	<< "Meta" << delimiter
+				<< "Opponent" << delimiter
+				<< "Opp Tag" << delimiter
+				<< "Size" << delimiter
+				<< "Us Score" << delimiter
+				<< "Them Score" << delimiter
+				<< "Date" << delimiter << "\n";
 	
 	for (int i = 0; i < m_WarRecordList.size(); ++i)
 	{
-		const WarRecord w = m_WarRecordList[i];
+		WarRecord wr = m_WarRecordList[i];
 		
-		tmpStruct warSize;
-		if (warRecord.find(w.playerCount) == warRecord.end())
-		{
-			warSize.matches = 1;
-			warSize.wins    = (w.usScore > w.themScore) ? 1 : 0;
-			warRecord[w.playerCount] = warSize;
-		}
-		else
-		{
-			tmpStruct s = warRecord[w.playerCount];
-			s.matches++;
-			if (w.usScore > w.themScore)
-			{
-				s.wins++;
-			}
-			warRecord[w.playerCount] = s;
-		}
+		outputFile	<< wr.userMeta << delimiter
+					<< wr.opponentName << delimiter
+					<< wr.opponentTag << delimiter
+					<< wr.playerCount << delimiter
+					<< wr.usScore << delimiter
+					<< wr.themScore << delimiter
+					<< DATABASE::GetInstance().StringFromDate(wr.date) << delimiter << "\n";
 	}
 	
-	std::map<int, tmpStruct>::iterator it = warRecord.begin();
-	std::cout << "Sz # W" << std::endl;
-	while (it != warRecord.end())
-	{
-		
-		tmpStruct s = it->second;
-		std::cout << it->first << " " << s.matches << " " << s.wins << " pct:" << (int)((float)s.wins / (float)s.matches*100) << std::endl;
-		it++;
-	}
+	outputFile.close();
 }
 
 void Clan::CreateBaseCloseRate()
