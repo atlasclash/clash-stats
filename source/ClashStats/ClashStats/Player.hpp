@@ -29,6 +29,7 @@ struct PlayerAttackSummary
 	int m_TotalThreeStars;
 	int m_TotalCloserStars;
 	int	m_TotalNearMiss;			// 95% dmg >
+	float m_TotalQualityStars;
 	
 	// same TH vs TH level
 	int m_NumSaltAttacks;
@@ -115,7 +116,7 @@ struct PlayerWarSummary
 class Player
 {
 public:
-	Player();
+	Player(std::string name);
 	Player(const int pk);
 	virtual ~Player();
 	
@@ -125,8 +126,8 @@ public:
 	void Reset();
 	bool Compare(const Player *p) const;
 
-	void GenerateHistoryWithName(std::string name);
-	void GenerateSeasonHistoryWithMeta(std::string warMeta);
+	void GenerateHistory();
+	void GenerateHistoryWithMeta(std::string meta);
 	
 	void AddWarRecord(const PlayerWarRecord &record);
 	void AddAttackRecord(const AttackRecord &record);

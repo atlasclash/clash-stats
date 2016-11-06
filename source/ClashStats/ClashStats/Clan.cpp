@@ -161,6 +161,7 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 
 				<< "Attacks"				<< delimiter
 				<< "Closer Stars"			<< delimiter
+				<< "Quality Stars"			<< delimiter
 				<< "Avg Closer Stars"		<< delimiter
 				<< "Stars"					<< delimiter
 				<< "Avg Stars"				<< delimiter
@@ -243,7 +244,7 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 	for (int i = 0; i < playerIDs.size(); ++i)
 	{
 		Player *p1 = new Player(playerIDs[i]);
-		p1->GenerateSeasonHistoryWithMeta(userMeta);
+		p1->GenerateHistoryWithMeta(userMeta);
 		p1->WritePlayerStatsData(outputFile);
 		
 		delete p1;

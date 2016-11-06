@@ -19,6 +19,8 @@ struct AttackRecord
 	bool isSnipeAttack() const;
 	bool isNukeAttack() const;
 	
+	float CalculateQualityStars() const;
+	
 	int			pk;
 	std::string	playerTagPk;
 	int			playerTH;

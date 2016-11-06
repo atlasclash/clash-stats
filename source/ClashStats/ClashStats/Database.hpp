@@ -71,9 +71,9 @@ public:
 	
 	void	ReadPlayerIDsWithWarUserMeta(std::string warMeta, std::vector<int> &list);
 
-	
 	void	ReadPlayerRecord(const int pk, PlayerRecord &record);
-	
+	void	ReadPlayerRecord(std::string playerName, PlayerRecord &record);
+
 	// date of our "epoch" (2010-Jan-01)
 	boost::gregorian::date	GetEpochDate();
 	int						GetTotalSecondsFromEpoch(std::string dateString);

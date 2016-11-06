@@ -89,3 +89,22 @@ bool AttackRecord::isNukeAttack() const
 	
 	return false;
 }
+
+float AttackRecord::CalculateQualityStars() const
+{
+	if (isPeerAttack())
+	{
+		return (float)(starCount - 0.1f * (playerWgt - opponentWgt));
+	}
+	else if (isNukeAttack())
+	{
+		return (float)(starCount - (playerTH - opponentTH));
+	}
+	else if (isSnipeAttack())
+	{
+		return (float)(starCount + (opponentTH - playerTH));
+	}
+	
+	return 0.0f;
+}
+

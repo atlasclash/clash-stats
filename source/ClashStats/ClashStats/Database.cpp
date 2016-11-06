@@ -769,3 +769,22 @@ void Database::ReadPlayerRecord(const int pk, PlayerRecord &record)
 	
 	sqlite3_finalize(statement);
 }
+
+void Database::ReadPlayerRecord(std::string playerName, PlayerRecord &record)
+{
+	std::string sql = "SELECT * FROM PlayerTagTable WHERE playerName=?";
+	sqlite3_stmt *statement;
+	const char *unused;
+	
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	sqlite3_bind_text(statement, 1, playerName.c_str(), (int)playerName.length(), SQLITE_TRANSIENT);
+	
+	if (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		record.pk			= sqlite3_column_int(statement, 0);
+		record.playerTag	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1)));
+		record.playerName	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 2)));
+	}
+	
+	sqlite3_finalize(statement);
+}

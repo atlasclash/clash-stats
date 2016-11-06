@@ -22,6 +22,7 @@ PlayerAttackSummary::PlayerAttackSummary()
 , m_TotalPctDmg(0)
 , m_TotalThreeStars(0)
 , m_TotalNearMiss(0)			// 95% dmg >
+, m_TotalQualityStars(0.0f)
 
 // same TH vs TH level
 , m_NumSaltAttacks(0)
@@ -62,6 +63,8 @@ bool PlayerAttackSummary::isEqual(const PlayerAttackSummary a) const
 	if (m_TotalPctDmg != a.m_TotalPctDmg)					return false;
 	if (m_TotalThreeStars != a.m_TotalThreeStars)			return false;
 	if (m_TotalNearMiss != a.m_TotalNearMiss)				return false;
+	if (m_TotalQualityStars != a.m_TotalQualityStars)		return false;
+	
 	if (m_NumSaltAttacks != a.m_NumSaltAttacks)				return false;
 	if (m_NumSaltStars != a.m_NumSaltStars)					return false;
 	if (m_NumSaltPctDmg != a.m_NumSaltPctDmg)				return false;
@@ -100,6 +103,7 @@ void PlayerAttackSummary::Reset()
 	m_TotalThreeStars		=
 	m_TotalCloserStars		=
 	m_TotalNearMiss			=
+	m_TotalQualityStars		= 
 	
 	// same TH vs TH level
 	m_NumSaltAttacks		=
@@ -275,12 +279,17 @@ bool PlayerWarSummary::isEqual(const PlayerWarSummary w) const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Player::Player()
+Player::Player(std::string name)
 : m_Key(0)
 , m_Tag("")
-, m_Name("")
+, m_Name(name)
 {
+	PlayerRecord rec;
+	DATABASE::GetInstance().ReadPlayerRecord(m_Name, rec);
 	
+	m_Name	= rec.playerName;
+	m_Tag	= rec.playerTag;
+	m_Key	= rec.pk;
 }
 
 Player::Player(const int pk)
@@ -378,24 +387,23 @@ bool Player::Compare(const Player *p) const
 	return true;
 }
 
-void Player::GenerateSeasonHistoryWithMeta(std::string warMeta)
+
+void Player::GenerateHistoryWithMeta(std::string meta)
 {
 	Reset();
 	
-	DATABASE::GetInstance().ReadWarAttackData(m_Tag, warMeta, m_AttackRecordList);
+	DATABASE::GetInstance().ReadWarAttackData(m_Tag, meta, m_AttackRecordList);
 	GenerateAttackSummaryData();
 	
-	DATABASE::GetInstance().ReadWarDefendData(m_Tag, warMeta, m_DefendRecordList);
+	DATABASE::GetInstance().ReadWarDefendData(m_Tag, meta, m_DefendRecordList);
 	GenerateDefendSummaryData();
 	
-	DATABASE::GetInstance().ReadWarRecordData(m_Tag, warMeta, m_WarRecordList);
+	DATABASE::GetInstance().ReadWarRecordData(m_Tag, meta, m_WarRecordList);
 	GenerateWarSummaryData();
 }
 
-void Player::GenerateHistoryWithName(std::string name)
+void Player::GenerateHistory()
 {
-	m_Name = name;
-	
 	DATABASE::GetInstance().ReadAllPlayerAttackData(m_Name, m_AttackRecordList);
 	GenerateAttackSummaryData();
 	
@@ -422,6 +430,7 @@ void Player::GenerateAttackSummaryData()
 		summary.m_TotalThreeStars	+= (rec.starCount == MAX_STARS_PER_ATTACK) ? 1 : 0;
 		summary.m_TotalNearMiss		+= (rec.starCount != MAX_STARS_PER_ATTACK && rec.percentDmg >= NEAR_MISS_PCT_THRESHOLD) ? 1 : 0;
 		summary.m_TotalCloserStars	+= (rec.isClose) ? rec.starCount : 0;
+		summary.m_TotalQualityStars += rec.CalculateQualityStars();
 		
 		if (rec.isPeerAttack())
 		{
@@ -579,15 +588,16 @@ void Player::WritePlayerStatsData(std::ofstream &outputFile)
 			
 			if (m_AttackSummary[thLvl].m_TotalAttacks)
 			{
-				outputFile	<< m_AttackSummary[thLvl].m_TotalAttacks													<< delimiter
-							<< m_AttackSummary[thLvl].m_TotalCloserStars												<< delimiter
-							<< (float)m_AttackSummary[thLvl].m_TotalCloserStars / (float)m_AttackSummary[thLvl].m_TotalAttacks << delimiter
-							<< m_AttackSummary[thLvl].m_TotalStars														<< delimiter
-							<< (float)m_AttackSummary[thLvl].m_TotalStars / (float)m_AttackSummary[thLvl].m_TotalAttacks<< delimiter
+				outputFile	<< m_AttackSummary[thLvl].m_TotalAttacks															<< delimiter
+							<< m_AttackSummary[thLvl].m_TotalCloserStars														<< delimiter
+							<< m_AttackSummary[thLvl].m_TotalQualityStars														<< delimiter
+							<< (float)m_AttackSummary[thLvl].m_TotalCloserStars / (float)m_AttackSummary[thLvl].m_TotalAttacks	<< delimiter
+							<< m_AttackSummary[thLvl].m_TotalStars																<< delimiter
+							<< (float)m_AttackSummary[thLvl].m_TotalStars / (float)m_AttackSummary[thLvl].m_TotalAttacks		<< delimiter
 							<< (float)m_AttackSummary[thLvl].m_TotalPctDmg / (float)m_AttackSummary[thLvl].m_TotalAttacks		<< delimiter
-							<< m_AttackSummary[thLvl].m_TotalThreeStars													<< delimiter
-							<< (float)m_AttackSummary[thLvl].m_TotalThreeStars / (float)m_AttackSummary[thLvl].m_TotalAttacks			<< delimiter
-							<< m_AttackSummary[thLvl].m_TotalNearMiss													<< delimiter;
+							<< m_AttackSummary[thLvl].m_TotalThreeStars															<< delimiter
+							<< (float)m_AttackSummary[thLvl].m_TotalThreeStars / (float)m_AttackSummary[thLvl].m_TotalAttacks	<< delimiter
+							<< m_AttackSummary[thLvl].m_TotalNearMiss															<< delimiter;
 			}
 			else
 			{
