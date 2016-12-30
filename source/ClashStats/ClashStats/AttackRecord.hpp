@@ -15,10 +15,18 @@ struct AttackRecord
 {
 	bool isEqual(const AttackRecord a) const;
 	
+	bool isPeerAttack() const;
+	bool isSnipeAttack() const;
+	bool isNukeAttack() const;
+	
+	float CalculateQualityStars() const;
+	
 	int			pk;
 	std::string	playerTagPk;
 	int			playerTH;
+	int			playerWgt;
 	int			opponentTH;
+	int			opponentWgt;
 	int			starCount;
 	int			percentDmg;
 	bool		isSalt;

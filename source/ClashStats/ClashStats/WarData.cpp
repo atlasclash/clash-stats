@@ -123,7 +123,7 @@ void WarData::CalcCloserStars()
 		}
 		else if (OPTIONS::GetInstance().parser_Check_Missing_Attacks)
 		{
-			std::cout << "Warning: No attack against enemy #" << i << std::endl;
+			std::cout << "Warning: No attack against enemy #" << i+1 << std::endl;
 		}
 	}
 	
@@ -248,7 +248,9 @@ bool WarData::SaveWarToDB()
 			
 			ar.playerTagPk					= pd.GetPlayerTag();
 			ar.playerTH						= (int)pd.GetTownHallLevel();
+			ar.playerWgt					= pd.GetPlayerWeight();
 			ar.opponentTH					= ad.GetTownHall();
+			ar.opponentWgt					= ad.GetOpponentWeight();
 			ar.starCount					= ad.GetStars();
 			ar.percentDmg					= ad.GetPctDamage();
 			ar.isSalt						= ad.IsSalt();
@@ -267,7 +269,9 @@ bool WarData::SaveWarToDB()
 			
 			dd.playerTagPk					= pd.GetPlayerTag();
 			dd.playerTH						= (int)pd.GetTownHallLevel();
+			dd.playerWgt					= pd.GetPlayerWeight();
 			dd.opponentTH					= ad.GetTownHall();
+			dd.opponentWgt					= ad.GetOpponentWeight();
 			dd.starCount					= ad.GetStars();
 			dd.percentDmg					= ad.GetPctDamage();
 			dd.warPk						= warRecord.pk;

@@ -57,6 +57,8 @@ public:
 	void	ReadWarsBetweenDates(std::vector<WarRecord> &list, int startDate, int endDate);
 	void	ReadWarsWithUserMeta(std::vector<WarRecord> &list, std::string userMeta);
 	
+	void	ReadAllAttackData(std::vector<AttackRecord> &list);
+	
 	// read player specific data
 	void	ReadAllPlayerAttackData(std::string playerName, std::vector<AttackRecord> &list);
 	void	ReadAllPlayerDefendData(std::string playerName, std::vector<DefendRecord> &list);
@@ -69,9 +71,9 @@ public:
 	
 	void	ReadPlayerIDsWithWarUserMeta(std::string warMeta, std::vector<int> &list);
 
-	
 	void	ReadPlayerRecord(const int pk, PlayerRecord &record);
-	
+	void	ReadPlayerRecord(std::string playerName, PlayerRecord &record);
+
 	// date of our "epoch" (2010-Jan-01)
 	boost::gregorian::date	GetEpochDate();
 	int						GetTotalSecondsFromEpoch(std::string dateString);
@@ -81,6 +83,10 @@ public:
 protected:
 	bool	IsDatabasePresent() const;
 	bool	CreateDatabase();
+	int		ReadDatabaseVersion() const;
+	
+	// Migration routines
+	const char *MigrateV1toV2();
 	
 	
 	sqlite3		*m_database;

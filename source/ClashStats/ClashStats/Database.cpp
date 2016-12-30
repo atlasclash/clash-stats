@@ -23,7 +23,7 @@
 #endif
 
 #define WAR_DATABASE_NAME				("wardata.sqlite")
-#define WAR_DATABASE_SCHEMA_VERSION		(1)
+#define WAR_DATABASE_SCHEMA_VERSION		(2)
 
 #define TABLE_VERSION					("Version")
 #define TABLE_PLAYER_TAG				("PlayerTagTable")
@@ -86,8 +86,19 @@ bool Database::OpenDatabase()
 		}
 		
 		// check to see if it is the most recent?
-		
-		// TODO
+		const int old_version = ReadDatabaseVersion();
+		if (old_version < WAR_DATABASE_SCHEMA_VERSION)
+		{
+			// Need to migrate the data!
+			printf("need to migrate the data - version: %d\n", old_version);
+			if (old_version == 1 && WAR_DATABASE_SCHEMA_VERSION == 2)
+			{
+				char *unused;
+				int result = sqlite3_exec(m_database, MigrateV1toV2(), NULL, NULL, &unused);
+				if (result != SQLITE_OK)
+					printf("error migrating data!\n");
+			}
+		}
 		
 		return true;
 	}
@@ -101,6 +112,73 @@ bool Database::CreateDatabase()
 	sqlite3_open(WAR_DATABASE_NAME, &m_database);
 	int result = sqlite3_exec(m_database, CreateVersion1(), NULL, NULL, &errMsg);
 	return (result == SQLITE_OK);
+}
+
+const char* Database::MigrateV1toV2()
+{
+	return	"UPDATE 'Version' SET 'version'=2;"
+			""
+			"BEGIN TRANSACTION;"
+			""
+			"CREATE TABLE at_backup (pk INTEGER PRIMARY KEY AUTOINCREMENT,"
+									"playerTagKey TEXT,"
+									"warKey INTEGER,"
+									"attackNum INTEGER,"
+									"playerTH INTEGER,"
+									"opponentTH INTEGER,"
+									"starCnt INTEGER,"
+									"pctDmg INTEGER,"
+									"isSalt INTEGER,"
+									"isClose INTEGER,"
+									"attemptNum INTEGER );"
+			""
+			"INSERT INTO at_backup (pk, playerTagKey, warKey, attackNum, playerTH, opponentTH, starCnt, pctDmg, isSalt, isClose, attemptNum)"
+									"SELECT pk, playerTagKey, warKey, attackNum, playerTH, opponentTH, starCnt, pctDmg, isSalt, isClose, attemptNum FROM AttackTable ;"
+			""
+			"DROP TABLE AttackTable;"
+			"CREATE TABLE AttackTable (pk INTEGER PRIMARY KEY AUTOINCREMENT,"
+									"playerTagKey TEXT,"
+									"warKey INTEGER,"
+									"attackNum INTEGER,"
+									"playerTH INTEGER,"
+									"playerWgt INTEGER,"
+									"opponentTH INTEGER,"
+									"opponentWgt INTEGER,"
+									"starCnt INTEGER,"
+									"pctDmg INTEGER,"
+									"isSalt INTEGER,"
+									"isClose INTEGER,"
+									"attemptNum INTEGER );"
+			"INSERT INTO AttackTable (pk, playerTagKey, warKey, attackNum, playerTH, opponentTH, starCnt, pctDmg, isSalt, isClose, attemptNum)"
+									"SELECT pk, playerTagKey, warKey, attackNum, playerTH, opponentTH, starCnt, pctDmg, isSalt, isClose, attemptNum FROM at_backup ;"
+			"DROP TABLE at_backup;"
+			""
+			"CREATE TABLE dt_backup (pk INTEGER PRIMARY KEY AUTOINCREMENT,"
+									"playerTagKey TEXT,"
+									"warKey INTEGER,"
+									"playerTH INTEGER,"
+									"opponentTH INTEGER,"
+									"starCnt INTEGER,"
+									"pctDmg INTEGER );"
+			""
+			"INSERT INTO dt_backup (pk, playerTagKey, warKey, playerTH, opponentTH, starCnt, pctDmg)"
+									"SELECT pk, playerTagKey, warKey, playerTH, opponentTH, starCnt, pctDmg FROM DefendTable;"
+			"DROP TABLE DefendTable;"
+			""
+			"CREATE TABLE DefendTable (pk INTEGER PRIMARY KEY AUTOINCREMENT,"
+									"playerTagKey TEXT,"
+									"warKey INTEGER,"
+									"playerTH INTEGER,"
+									"playerWgt INTEGER,"
+									"opponentTH INTEGER,"
+									"opponentWgt INTEGER,"
+									"starCnt INTEGER,"
+									"pctDmg INTEGER );"
+			"INSERT INTO DefendTable (pk, playerTagKey, warKey, playerTH, opponentTH, starCnt, pctDmg)"
+									"SELECT pk, playerTagKey, warKey, playerTH, opponentTH, starCnt, pctDmg FROM dt_backup;"
+			"DROP TABLE dt_backup;"
+			""
+			"COMMIT;";
 }
 
 const char* Database::CreateVersion1()
@@ -269,7 +347,7 @@ void Database::WritePlayerAttackRecord(AttackRecord &attackRecord)
 {
 	attackRecord.pk = 0;
 	
-	std::string insert_sql = "INSERT INTO AttackTable (playerTagKey, warKey, attackNum, playerTH, opponentTH, starCnt, pctDmg, isSalt, isClose, attemptNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	std::string insert_sql = "INSERT INTO AttackTable (playerTagKey, warKey, attackNum, playerTH, playerWgt, opponentTH, opponentWgt, starCnt, pctDmg, isSalt, isClose, attemptNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	sqlite3_stmt *insert_statement;
 	
 	const char *unused;
@@ -279,12 +357,14 @@ void Database::WritePlayerAttackRecord(AttackRecord &attackRecord)
 	sqlite3_bind_int(insert_statement, 2, attackRecord.warPk);
 	sqlite3_bind_int(insert_statement, 3, attackRecord.attackNum);
 	sqlite3_bind_int(insert_statement, 4, attackRecord.playerTH);
-	sqlite3_bind_int(insert_statement, 5, attackRecord.opponentTH);
-	sqlite3_bind_int(insert_statement, 6, attackRecord.starCount);
-	sqlite3_bind_int(insert_statement, 7, attackRecord.percentDmg);
-	sqlite3_bind_int(insert_statement, 8, (attackRecord.isSalt)?YES:NO);
-	sqlite3_bind_int(insert_statement, 9, (attackRecord.isClose)?YES:NO);
-	sqlite3_bind_int(insert_statement, 10, attackRecord.attemptNum);
+	sqlite3_bind_int(insert_statement, 5, attackRecord.playerWgt);
+	sqlite3_bind_int(insert_statement, 6, attackRecord.opponentTH);
+	sqlite3_bind_int(insert_statement, 7, attackRecord.opponentWgt);
+	sqlite3_bind_int(insert_statement, 8, attackRecord.starCount);
+	sqlite3_bind_int(insert_statement, 9, attackRecord.percentDmg);
+	sqlite3_bind_int(insert_statement, 10, (attackRecord.isSalt)?YES:NO);
+	sqlite3_bind_int(insert_statement, 11, (attackRecord.isClose)?YES:NO);
+	sqlite3_bind_int(insert_statement, 12, attackRecord.attemptNum);
 	
 	sqlite3_step(insert_statement);
 	attackRecord.pk = (int)sqlite3_last_insert_rowid(m_database);
@@ -296,7 +376,7 @@ void Database::WritePlayerDefendRecord(DefendRecord &defendRecord)
 {
 	defendRecord.pk = 0;
 	
-	std::string insert_sql = "INSERT INTO DefendTable (playerTagKey, warKey, playerTH, opponentTH, starCnt, pctDmg) VALUES (?, ?, ?, ?, ?, ?)";
+	std::string insert_sql = "INSERT INTO DefendTable (playerTagKey, warKey, playerTH, playerWgt, opponentTH, opponentWgt, starCnt, pctDmg) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 	sqlite3_stmt *insert_statement;
 	
 	const char *unused;
@@ -305,15 +385,36 @@ void Database::WritePlayerDefendRecord(DefendRecord &defendRecord)
 	sqlite3_bind_text(insert_statement, 1, defendRecord.playerTagPk.c_str(), (int)defendRecord.playerTagPk.length(), SQLITE_TRANSIENT);
 	sqlite3_bind_int(insert_statement, 2, defendRecord.warPk);
 	sqlite3_bind_int(insert_statement, 3, defendRecord.playerTH);
-	sqlite3_bind_int(insert_statement, 4, defendRecord.opponentTH);
-	sqlite3_bind_int(insert_statement, 5, defendRecord.starCount);
-	sqlite3_bind_int(insert_statement, 6, defendRecord.percentDmg);
+	sqlite3_bind_int(insert_statement, 4, defendRecord.playerWgt);
+	sqlite3_bind_int(insert_statement, 5, defendRecord.opponentTH);
+	sqlite3_bind_int(insert_statement, 6, defendRecord.opponentWgt);
+	sqlite3_bind_int(insert_statement, 7, defendRecord.starCount);
+	sqlite3_bind_int(insert_statement, 8, defendRecord.percentDmg);
 	
 	sqlite3_step(insert_statement);
 	defendRecord.pk = (int)sqlite3_last_insert_rowid(m_database);
 	
 	sqlite3_finalize(insert_statement);
 }
+
+int Database::ReadDatabaseVersion() const
+{
+	int retval = -1;
+	std::string sql = "SELECT version FROM Version;";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	if (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		retval = sqlite3_column_int(statement, 0);
+	}
+	
+	sqlite3_finalize(statement);
+	
+	return retval;
+}
+
 
 void Database::ReadAllWars(std::vector<WarRecord> &list)
 {
@@ -407,6 +508,37 @@ void Database::ReadWarsWithUserMeta(std::vector<WarRecord> &list, std::string us
 	sqlite3_finalize(statement);
 }
 
+void Database::ReadAllAttackData(std::vector<AttackRecord> &list)
+{
+	std::string sql = "SELECT * FROM AttackTable WHERE opponentWgt > 0";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		AttackRecord attack;
+		
+		attack.pk			= sqlite3_column_int(statement, 0);
+		attack.playerTagPk	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1)));
+		attack.warPk		= sqlite3_column_int(statement, 2);
+		attack.attackNum	= sqlite3_column_int(statement, 3);
+		attack.playerTH		= sqlite3_column_int(statement, 4);
+		attack.playerWgt	= sqlite3_column_int(statement, 5);
+		attack.opponentTH	= sqlite3_column_int(statement, 6);
+		attack.opponentWgt  = sqlite3_column_int(statement, 7);
+		attack.starCount	= sqlite3_column_int(statement, 8);
+		attack.percentDmg	= sqlite3_column_int(statement, 9);
+		attack.isSalt		= (sqlite3_column_int(statement, 10) == 1) ? true : false;
+		attack.isClose		= (sqlite3_column_int(statement, 11) == 1) ? true : false;
+		attack.attemptNum	= sqlite3_column_int(statement, 12);
+		
+		list.push_back(attack);
+	}
+	
+	sqlite3_finalize(statement);
+}
 
 void Database::ReadAllPlayerAttackData(std::string playerName, std::vector<AttackRecord> &list)
 {
@@ -427,12 +559,14 @@ void Database::ReadAllPlayerAttackData(std::string playerName, std::vector<Attac
 		attack.warPk		= sqlite3_column_int(statement, 2);
 		attack.attackNum	= sqlite3_column_int(statement, 3);
 		attack.playerTH		= sqlite3_column_int(statement, 4);
-		attack.opponentTH	= sqlite3_column_int(statement, 5);
-		attack.starCount	= sqlite3_column_int(statement, 6);
-		attack.percentDmg	= sqlite3_column_int(statement, 7);
-		attack.isSalt		= (sqlite3_column_int(statement, 8) == 1) ? true : false;
-		attack.isClose		= (sqlite3_column_int(statement, 9) == 1) ? true : false;
-		attack.attemptNum	= sqlite3_column_int(statement, 10);
+		attack.playerWgt	= sqlite3_column_int(statement, 5);
+		attack.opponentTH	= sqlite3_column_int(statement, 6);
+		attack.opponentWgt  = sqlite3_column_int(statement, 7);
+		attack.starCount	= sqlite3_column_int(statement, 8);
+		attack.percentDmg	= sqlite3_column_int(statement, 9);
+		attack.isSalt		= (sqlite3_column_int(statement, 10) == 1) ? true : false;
+		attack.isClose		= (sqlite3_column_int(statement, 11) == 1) ? true : false;
+		attack.attemptNum	= sqlite3_column_int(statement, 12);
 		
 		list.push_back(attack);
 	}
@@ -458,9 +592,11 @@ void Database::ReadAllPlayerDefendData(std::string playerName, std::vector<Defen
 		defend.playerTagPk	= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
 		defend.warPk		= sqlite3_column_int(statement, 2);
 		defend.playerTH		= sqlite3_column_int(statement, 3);
-		defend.opponentTH	= sqlite3_column_int(statement, 4);
-		defend.starCount	= sqlite3_column_int(statement, 5);
-		defend.percentDmg	= sqlite3_column_int(statement, 6);
+		defend.playerWgt	= sqlite3_column_int(statement, 4);
+		defend.opponentTH	= sqlite3_column_int(statement, 5);
+		defend.opponentWgt  = sqlite3_column_int(statement, 6);
+		defend.starCount	= sqlite3_column_int(statement, 7);
+		defend.percentDmg	= sqlite3_column_int(statement, 8);
 		
 		list.push_back(defend);
 	}
@@ -519,12 +655,14 @@ void Database::ReadWarAttackData(std::string playerTag, std::string warMeta, std
 		attack.warPk		= sqlite3_column_int(statement, 2);
 		attack.attackNum	= sqlite3_column_int(statement, 3);
 		attack.playerTH		= sqlite3_column_int(statement, 4);
-		attack.opponentTH	= sqlite3_column_int(statement, 5);
-		attack.starCount	= sqlite3_column_int(statement, 6);
-		attack.percentDmg	= sqlite3_column_int(statement, 7);
-		attack.isSalt		= (sqlite3_column_int(statement, 8) == 1) ? true : false;
-		attack.isClose		= (sqlite3_column_int(statement, 9) == 1) ? true : false;
-		attack.attemptNum	= sqlite3_column_int(statement, 10);
+		attack.playerWgt	= sqlite3_column_int(statement, 5);
+		attack.opponentTH	= sqlite3_column_int(statement, 6);
+		attack.opponentWgt	= sqlite3_column_int(statement, 7);
+		attack.starCount	= sqlite3_column_int(statement, 8);
+		attack.percentDmg	= sqlite3_column_int(statement, 9);
+		attack.isSalt		= (sqlite3_column_int(statement, 10) == 1) ? true : false;
+		attack.isClose		= (sqlite3_column_int(statement, 11) == 1) ? true : false;
+		attack.attemptNum	= sqlite3_column_int(statement, 12);
 		
 		list.push_back(attack);
 	}
@@ -551,9 +689,11 @@ void Database::ReadWarDefendData(std::string playerTag, std::string warMeta, std
 		defend.playerTagPk	= std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 1)));
 		defend.warPk		= sqlite3_column_int(statement, 2);
 		defend.playerTH		= sqlite3_column_int(statement, 3);
-		defend.opponentTH	= sqlite3_column_int(statement, 4);
-		defend.starCount	= sqlite3_column_int(statement, 5);
-		defend.percentDmg	= sqlite3_column_int(statement, 6);
+		defend.playerWgt	= sqlite3_column_int(statement, 4);
+		defend.opponentTH	= sqlite3_column_int(statement, 5);
+		defend.opponentWgt	= sqlite3_column_int(statement, 6);
+		defend.starCount	= sqlite3_column_int(statement, 7);
+		defend.percentDmg	= sqlite3_column_int(statement, 8);
 		
 		list.push_back(defend);
 	}
@@ -619,6 +759,25 @@ void Database::ReadPlayerRecord(const int pk, PlayerRecord &record)
 	
 	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
 	sqlite3_bind_int(statement, 1, pk);
+	
+	if (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		record.pk			= sqlite3_column_int(statement, 0);
+		record.playerTag	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1)));
+		record.playerName	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 2)));
+	}
+	
+	sqlite3_finalize(statement);
+}
+
+void Database::ReadPlayerRecord(std::string playerName, PlayerRecord &record)
+{
+	std::string sql = "SELECT * FROM PlayerTagTable WHERE playerName=?";
+	sqlite3_stmt *statement;
+	const char *unused;
+	
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	sqlite3_bind_text(statement, 1, playerName.c_str(), (int)playerName.length(), SQLITE_TRANSIENT);
 	
 	if (sqlite3_step(statement) == SQLITE_ROW)
 	{

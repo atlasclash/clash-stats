@@ -24,3 +24,19 @@ void WarRecord::Description()
 				<< " Date: " << DATABASE::GetInstance().StringFromDate(date)
 				<< std::endl;
 }
+
+WarRecord& WarRecord::operator=(const WarRecord &rhs)
+{
+	pk				= rhs.pk;
+	userMeta		= rhs.userMeta;
+	opponentName	= rhs.opponentName;
+	opponentTag		= rhs.opponentTag;
+	usName			= rhs.usName;
+	usTag			= rhs.usTag;
+	playerCount		= rhs.playerCount;
+	usScore			= rhs.usScore;
+	themScore		= rhs.themScore;
+	date			= rhs.date;			// seconds from "epoch" (2010-Jan-01)
+	
+	return *this;
+}
