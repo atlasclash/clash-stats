@@ -35,49 +35,15 @@ void Clan::CreateWarRecord()
 	Reset();
 	
 	DATABASE::GetInstance().ReadAllWars(m_WarRecordList);
-//<<<<<<< Updated upstream
-//	
-//	struct tmpStruct
-//	{
-//		int matches;
-//		int wins;
-//	};
-//	
-//	std::map<int, tmpStruct> warRecord;
-//	
-//	for (int i = 0; i < m_WarRecordList.size(); ++i)
-//	{
-//		const WarRecord w = m_WarRecordList[i];
-//		
-//		tmpStruct warSize;
-//		if (warRecord.find(w.playerCount) == warRecord.end())
-//		{
-//			warSize.matches = 1;
-//			warSize.wins    = (w.usScore > w.themScore) ? 1 : 0;
-//			warRecord[w.playerCount] = warSize;
-//		}
-//		else
-//		{
-//			tmpStruct s = warRecord[w.playerCount];
-//			s.matches++;
-//			if (w.usScore > w.themScore)
-//			{
-//				s.wins++;
-//			}
-//			warRecord[w.playerCount] = s;
-//		}
-//	}
-//	
-//	std::map<int, tmpStruct>::iterator it = warRecord.begin();
-//	std::cout << "Sz # W" << std::endl;
-//	while (it != warRecord.end())
-//	{
-//		
-//		tmpStruct s = it->second;
-//		std::cout << it->first << " " << s.matches << " " << s.wins << " pct:" << (int)((float)s.wins / (float)s.matches*100) << std::endl;
-//		it++;
-//	}
-//=======
+
+	struct tmpStruct
+	{
+		int matches;
+		int wins;
+	};
+	
+	std::map<int, tmpStruct> warRecord;
+	
 	std::ofstream outputFile;
 	outputFile.open("Clan-War-History.csv");
 	const std::string delimiter = ",";
@@ -92,7 +58,25 @@ void Clan::CreateWarRecord()
 	
 	for (int i = 0; i < m_WarRecordList.size(); ++i)
 	{
-		WarRecord wr = m_WarRecordList[i];
+		tmpStruct warSize;
+		const WarRecord wr = m_WarRecordList[i];
+		
+		if (warRecord.find(wr.playerCount) == warRecord.end())
+		{
+			warSize.matches = 1;
+			warSize.wins	= (wr.usScore > wr.themScore) ? 1 : 0;
+			warRecord[wr.playerCount] = warSize;
+		}
+		else
+		{
+			tmpStruct s = warRecord[wr.playerCount];
+			s.matches++;
+			if (wr.usScore > wr.themScore)
+			{
+				s.wins++;
+			}
+			warRecord[wr.playerCount] = s;
+		}
 		
 		outputFile	<< wr.userMeta << delimiter
 					<< wr.opponentName << delimiter
@@ -101,6 +85,23 @@ void Clan::CreateWarRecord()
 					<< wr.usScore << delimiter
 					<< wr.themScore << delimiter
 					<< DATABASE::GetInstance().StringFromDate(wr.date) << delimiter << "\n";
+	}
+	
+	std::map<int, tmpStruct>::iterator it = warRecord.begin();
+	
+	outputFile	<< "Size" << delimiter
+				<< "Matches" << delimiter
+				<< "Wins" << delimiter
+				<< "Percent" << delimiter << "\n";
+	
+	while (it != warRecord.end())
+	{
+		tmpStruct s = it->second;
+		outputFile	<< it->first << delimiter
+					<< s.matches << delimiter
+					<< s.wins << delimiter
+					<< (int)((float)s.wins / (float)s.matches*100) << delimiter << "\n";
+		it++;
 	}
 	
 	outputFile.close();
