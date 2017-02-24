@@ -9,6 +9,7 @@
 #include "ParserFactory.hpp"
 #include "StringHelpers.hpp"
 #include "ParserV1.hpp"
+#include "ParserV2.hpp"
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -16,6 +17,7 @@
 #include <vector>
 
 #define VERSION_ONE		(1)
+#define VERSION_TWO		(2)
 
 Parser* ParserFactory::getParserForFile(const char *fileName)
 {
@@ -39,6 +41,10 @@ Parser* ParserFactory::getParserForFile(const char *fileName)
 	if (atoi(lineData[1].c_str()) == VERSION_ONE)
 	{
 		return new ParserV1(fileName);
+	}
+	else if (atoi(lineData[1].c_str()) == VERSION_TWO)
+	{
+		return new ParserV2(fileName);
 	}
 
 	return NULL;

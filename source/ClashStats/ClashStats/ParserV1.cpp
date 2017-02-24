@@ -190,19 +190,3 @@ void ParserV1::ProcessWar(WarData *warData)
 	std::cout << "War data complete." << std::endl;
 }
 
-bool ParserV1::CheckDataRanges(int opponentId, int usId, int stars, int pct, int warSize)
-{
-	if (opponentId < MIN_ATTACKER_ID || opponentId > warSize)
-		return false;
-	
-	if (usId < MIN_ATTACKER_ID || usId > warSize)
-		return false;
-	
-	if (stars < MIN_STARS_PER_ATTACK || stars > MAX_STARS_PER_ATTACK)
-		return false;
-
-	if (pct < MIN_PCT_DAMAGE || pct > MAX_PCT_DAMAGE)
-		return false;
-	
-	return true;
-}

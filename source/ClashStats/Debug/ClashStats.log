@@ -1,0 +1,41 @@
+﻿Build started 4/17/2016 10:10:29 AM.
+     1>Project "C:\Users\Jeremy\Documents\GitHubVisualStudio\clash-stats\source\ClashStats\ClashStats.vcxproj" on node 2 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt ClashStats\AttackData.cpp ClashStats\Clan.cpp ClashStats\Database.cpp ClashStats\DataObject.cpp ClashStats\DefendRecord.cpp ClashStats\HistoricRecord.cpp ClashStats\main.cpp ClashStats\Options.cpp ClashStats\Parser.cpp ClashStats\ParserFactory.cpp ClashStats\ParserV1.cpp ClashStats\Player.cpp ClashStats\PlayerData.cpp ClashStats\PlayerRecord.cpp ClashStats\PlayerWarRecord.cpp ClashStats\StringHelpers.cpp ClashStats\WarData.cpp ClashStats\WarRecord.cpp
+         WarRecord.cpp
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\database.hpp(13): fatal error C1083: Cannot open include file: 'boost/date_time/gregorian/gregorian.hpp': No such file or directory
+         WarData.cpp
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\database.hpp(13): fatal error C1083: Cannot open include file: 'boost/date_time/gregorian/gregorian.hpp': No such file or directory
+         StringHelpers.cpp
+         PlayerWarRecord.cpp
+         PlayerRecord.cpp
+         PlayerData.cpp
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\playerdata.cpp(78): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\playerdata.cpp(96): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\playerdata.cpp(150): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\playerdata.cpp(164): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\playerdata.cpp(178): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\playerdata.cpp(195): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\playerdata.cpp(209): warning C4018: '<': signed/unsigned mismatch
+         Player.cpp
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\database.hpp(13): fatal error C1083: Cannot open include file: 'boost/date_time/gregorian/gregorian.hpp': No such file or directory
+         ParserV1.cpp
+         ParserFactory.cpp
+         Parser.cpp
+         Options.cpp
+         main.cpp
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\database.hpp(13): fatal error C1083: Cannot open include file: 'boost/date_time/gregorian/gregorian.hpp': No such file or directory
+         HistoricRecord.cpp
+         DefendRecord.cpp
+         DataObject.cpp
+         Database.cpp
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\database.hpp(13): fatal error C1083: Cannot open include file: 'boost/date_time/gregorian/gregorian.hpp': No such file or directory
+         Clan.cpp
+     1>c:\users\jeremy\documents\githubvisualstudio\clash-stats\source\clashstats\clashstats\database.hpp(13): fatal error C1083: Cannot open include file: 'boost/date_time/gregorian/gregorian.hpp': No such file or directory
+         AttackData.cpp
+         Generating Code...
+     1>Done Building Project "C:\Users\Jeremy\Documents\GitHubVisualStudio\clash-stats\source\ClashStats\ClashStats.vcxproj" (Rebuild target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:09.31

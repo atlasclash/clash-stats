@@ -9,6 +9,7 @@
 #include "Clan.hpp"
 #include "Player.hpp"
 #include "WarRecord.hpp"
+#include "AttackRecord.hpp"
 #include "Database.hpp"
 #include <iostream>
 #include <fstream>
@@ -34,8 +35,130 @@ void Clan::CreateWarRecord()
 	Reset();
 	
 	DATABASE::GetInstance().ReadAllWars(m_WarRecordList);
+
+	struct tmpStruct
+	{
+		int matches;
+		int wins;
+	};
+	
+	std::map<int, tmpStruct> warRecord;
+	
+	std::ofstream outputFile;
+	outputFile.open("Clan-War-History.csv");
+	const std::string delimiter = ",";
+	
+	outputFile	<< "Meta" << delimiter
+				<< "Opponent" << delimiter
+				<< "Opp Tag" << delimiter
+				<< "Size" << delimiter
+				<< "Us Score" << delimiter
+				<< "Them Score" << delimiter
+				<< "Date" << delimiter << "\n";
+	
+	for (int i = 0; i < m_WarRecordList.size(); ++i)
+	{
+		tmpStruct warSize;
+		const WarRecord wr = m_WarRecordList[i];
+		
+		if (warRecord.find(wr.playerCount) == warRecord.end())
+		{
+			warSize.matches = 1;
+			warSize.wins	= (wr.usScore > wr.themScore) ? 1 : 0;
+			warRecord[wr.playerCount] = warSize;
+		}
+		else
+		{
+			tmpStruct s = warRecord[wr.playerCount];
+			s.matches++;
+			if (wr.usScore > wr.themScore)
+			{
+				s.wins++;
+			}
+			warRecord[wr.playerCount] = s;
+		}
+		
+		outputFile	<< wr.userMeta << delimiter
+					<< wr.opponentName << delimiter
+					<< wr.opponentTag << delimiter
+					<< wr.playerCount << delimiter
+					<< wr.usScore << delimiter
+					<< wr.themScore << delimiter
+					<< DATABASE::GetInstance().StringFromDate(wr.date) << delimiter << "\n";
+	}
+	
+	std::map<int, tmpStruct>::iterator it = warRecord.begin();
+	
+	outputFile	<< "Size" << delimiter
+				<< "Matches" << delimiter
+				<< "Wins" << delimiter
+				<< "Percent" << delimiter << "\n";
+	
+	while (it != warRecord.end())
+	{
+		tmpStruct s = it->second;
+		outputFile	<< it->first << delimiter
+					<< s.matches << delimiter
+					<< s.wins << delimiter
+					<< (int)((float)s.wins / (float)s.matches*100) << delimiter << "\n";
+		it++;
+	}
+	
+	outputFile.close();
 }
 
+void Clan::CreateBaseCloseRate()
+{
+	Reset();
+	
+	// Get all attacks
+	std::vector<AttackRecord> attackList;
+	DATABASE::GetInstance().ReadAllAttackData(attackList);
+	
+	struct tmpStruct
+	{
+		int attacks;
+		int closes;
+	};
+	
+	std::map<int, tmpStruct> closeRate;
+	
+	for (int i = 0; i < attackList.size(); ++i)
+	{
+		const AttackRecord ar = attackList[i];
+		if (ar.opponentTH != ar.playerTH)
+			continue;
+		
+		// do we have this base weight already?
+		if (closeRate.find(ar.opponentWgt) == closeRate.end())
+		{
+			tmpStruct baseWgt;
+			baseWgt.attacks = 1;
+			baseWgt.closes  = (ar.starCount == 3) ? 1 : 0;
+			closeRate[ar.opponentWgt] = baseWgt;
+		}
+		else
+		{
+			tmpStruct s = closeRate[ar.opponentWgt];
+			s.attacks++;
+			if (ar.starCount == 3)
+			{
+				s.closes++;
+			}
+			
+			closeRate[ar.opponentWgt] = s;
+		}
+	}
+	
+	std::map<int, tmpStruct>::iterator it = closeRate.begin();
+	std::cout << "Wgt # Close Pct" << std::endl;
+	while (it != closeRate.end())
+	{
+		tmpStruct s = it->second;
+		std::cout << it->first << " " << s.attacks << " " << s.closes << " " << (int)((float)s.closes / (float)s.attacks*100) << std::endl;
+		it++;
+	}
+}
 
 void Clan::CreateClanWithUserMeta(std::string userMeta)
 {
@@ -67,6 +190,7 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 
 				<< "Attacks"				<< delimiter
 				<< "Closer Stars"			<< delimiter
+				<< "Quality Stars"			<< delimiter
 				<< "Avg Closer Stars"		<< delimiter
 				<< "Stars"					<< delimiter
 				<< "Avg Stars"				<< delimiter
@@ -121,6 +245,7 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 				<< "Avg Dmg"				<< delimiter
 				<< "3-stars Yielded"		<< delimiter
 				<< "Misses"					<< delimiter
+				<< "Defend Ratio"			<< delimiter
 	
 				<< "Peer Attacks"			<< delimiter
 				<< "Peer Stars"				<< delimiter
@@ -148,11 +273,7 @@ void Clan::CreateClanWithUserMeta(std::string userMeta)
 	for (int i = 0; i < playerIDs.size(); ++i)
 	{
 		Player *p1 = new Player(playerIDs[i]);
-		if (p1->GetName() == "Alaska")
-		{
-			printf("break!\n");
-		}
-		p1->GenerateSeasonHistoryWithMeta(userMeta);
+		p1->GenerateHistoryWithMeta(userMeta);
 		p1->WritePlayerStatsData(outputFile);
 		
 		delete p1;
