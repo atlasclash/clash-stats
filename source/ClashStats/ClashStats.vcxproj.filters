@@ -149,5 +149,8 @@
     <ClCompile Include="ClashStats\ParserV2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ClashStats\Constants.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
