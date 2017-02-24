@@ -103,7 +103,6 @@ void PlayerAttackSummary::Reset()
 	m_TotalThreeStars		=
 	m_TotalCloserStars		=
 	m_TotalNearMiss			=
-	m_TotalQualityStars		= 
 	
 	// same TH vs TH level
 	m_NumSaltAttacks		=
@@ -136,6 +135,8 @@ void PlayerAttackSummary::Reset()
 	m_NumSnipeThreeStars	=
 	m_NumSnipeCloserStars   = 
 	m_NumSnipeFirstAttempts	= 0;
+
+	m_TotalQualityStars = 0.0f;
 }
 
 
