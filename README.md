@@ -1,6 +1,6 @@
 **Clash-Stats** is a simple command-line utility for Mac OS and Windows that aggregates and reports Clan War statistics from the Supercell game, Clash of Clans.
 
-###About
+# About
 
 Clash-Stats is a command-line tool that reads war data from a comma-separated-value (CSV) file.  Once read, the tool can perform a variety of simple reporting tasks - final score, stars earned by players, and who hit above (snipe) or below (nuke) their townhall level.
 
@@ -8,11 +8,11 @@ Clash-Stats records a player history at each townhall level.  For example, attac
 
 The war results can be written to a SQLite3 database for aggregate reports.
 
-###Supported Platforms
+# Supported Platforms
 
 Clash-Stats builds and has been tested on Windows 7 and Mac OS X (10.10+).
 
-###Development Requirements
+# Development Requirements
 
 Building Clash-Stats is pretty easy.  The code is written in portable C++ using
 Boost and the C++ STL.  There are project files for Visual Studio 2015 and Xcode 7.2.
@@ -21,7 +21,7 @@ Boost and the C++ STL.  There are project files for Visual Studio 2015 and Xcode
 2. Grab [Boost](http://www.boost.org/) binaries or source code for your platform.
 3. Build!
 
-###War Input Format
+# War Input Format
 
 Clash-Stats parses a simple CSV input file.  The file parser is created via a factory method so it is relatively easy to extend and modify the file format.  Currently, the format is composed of three main "sections" of data: header, participants, and attack log.  These are described in detail below.
 
@@ -29,7 +29,7 @@ Examples of the file format are also included in the repository under "wardata".
 
 The maximum width of the file is 7 columns (G).
 
-####Header Block
+## Header Block
 
 This section defines the participants in the war, size of the war party and date of the encounter.  Fields not specified can be left blank or ignored.
 
@@ -45,7 +45,7 @@ A3: War size
 
 A4: Date of war (YYYY/MM/DD format)
 
-####Participants
+## Participants
 
 The participants section provides the player names, player tags, and townhall levels of all the participants in the war.  An optional flag can be placed in column E to denote a "max" base.
 
@@ -58,7 +58,7 @@ D5: Player Tag
 E5: "Max" Flag (1 = Max, empty is okay)
 F5: Opponent Townhall Level
 
-####Attack Log
+## Attack Log
 
 The attack log section lists all of the attacks from the War Log tab in chronological order.  The format is as follows:
 
@@ -72,7 +72,7 @@ Gx: Opponent Team Destruction Percentage
 
 The important thing to note is that not all of the cells in each row will have values.  If the attack was initiated by your team, A, B, C, D, and E will have values.  If the attack was initiated by your opponent, A, D, E, F, and G will have values.
 
-###Sample Output
+# Sample Output
 
 Some of the statistics that Clash-Stats can report are:
 
