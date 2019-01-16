@@ -9,7 +9,7 @@
 #ifndef _SINGLETON_H_
 #define _SINGLETON_H_
 
-#include "architecture.h"
+#include "Architecture.h"
 #include <assert.h>
 
 template <typename _Type>

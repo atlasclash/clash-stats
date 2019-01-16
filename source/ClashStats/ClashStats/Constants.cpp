@@ -13,6 +13,7 @@ int GetMaxTHWeight(const int thLvl)
 {
 	switch (thLvl)
 	{
+        case kTH12:         return 120;
 		case kTH11:			return 110;
 		case kTH10:			return 90;
 		case kTH9:			return 70;
@@ -27,6 +28,7 @@ int GetMinTHWeight(const int thLvl)
 {
 	switch (thLvl)
 	{
+        case kTH12:         return 110;
 		case kTH11:			return 100;
 		case kTH10:			return 80;
 		case kTH9:			return 60;

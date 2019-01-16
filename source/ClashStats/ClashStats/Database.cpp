@@ -15,7 +15,6 @@
 #include <sys/stat.h>
 #include <string>
 #include <iostream>
-#include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "sqlite3.h"
 #ifndef _WIN
@@ -65,7 +64,7 @@ int Database::GetTotalSecondsBetweenEpochAndDate(boost::gregorian::date d)
 	boost::posix_time::ptime posixTimeEpochDate(s_epoch);
 	boost::posix_time::time_duration td = posixTimeDateA - posixTimeEpochDate;
 	
-	return td.total_seconds();
+	return (int)td.total_seconds();
 }
 
 bool Database::IsDatabasePresent() const
