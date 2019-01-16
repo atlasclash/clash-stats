@@ -30,3 +30,5 @@ DerivedData
 *.obj
 source/ClashStats/ClashStats.opensdf
 source/ClashStats/ClashStats.sdf
+/source/ClashStats/ClashStats.xcodeproj/project.xcworkspace/xcshareddata
+/source/ClashStats/ClashStats.xcodeproj/xcshareddata

@@ -31,6 +31,7 @@ protected:
 
 	std::ifstream *m_dataFile;
 
+    int m_version;
 };
 
 #endif /* Parser_hpp */

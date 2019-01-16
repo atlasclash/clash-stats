@@ -19,6 +19,10 @@ Boost and the C++ STL.  There are project files for Visual Studio 2015 and Xcode
 
 1. Clone this repository.
 2. Grab [Boost](http://www.boost.org/) binaries or source code for your platform.
+   - Mac: 
+       - Install [Brew](https://brew.sh/).
+       - Open the terminal and type `brew install boost`
+       - Optionally, adjust the Xcode project's search paths
 3. Build!
 
 # War Input Format

@@ -88,7 +88,6 @@ protected:
 	// Migration routines
 	const char *MigrateV1toV2();
 	
-	
 	sqlite3		*m_database;
 	
 private:

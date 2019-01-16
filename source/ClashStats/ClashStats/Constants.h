@@ -24,6 +24,7 @@ enum eTownHallLevel
 	kTH9,
 	kTH10,
 	kTH11,
+    kTH12,
 };
 
 #define MAX_STARS_PER_WAR			(6)
@@ -36,7 +37,21 @@ enum eTownHallLevel
 
 #define MIN_ATTACKER_ID				(1)
 
+/**
+ Get the maximum war weight by townhall level
+
+ @param thLvl Townhall level
+ @return The maximum war weight of the townhall
+ */
 int GetMaxTHWeight(const int thLvl);
+
+
+/**
+ Get the minimum war weight by townhall level
+
+ @param thLvl Townhall level
+ @return The minimum war weight of the townhall
+ */
 int GetMinTHWeight(const int thLvl);
 
 

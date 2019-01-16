@@ -45,7 +45,7 @@
 
 ParserV1::ParserV1(const char *fileName) : Parser(fileName)
 {
-	
+    m_version = atoi(PARSER_VERSION);
 }
 
 ParserV1::~ParserV1()
