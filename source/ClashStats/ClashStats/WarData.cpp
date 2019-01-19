@@ -166,11 +166,11 @@ void WarData::CalcTotalScores()
 	int usScore = 0;
 	int themScore = 0;
 	
-	int usTHScore[kTH11];
-	memset(usTHScore, 0, sizeof(int)*kTH11);
+	int usTHScore[kTH12];
+	memset(usTHScore, 0, sizeof(int)*kTH12);
 	
-	int themTHScore[kTH11];
-	memset(themTHScore, 0, sizeof(int)*kTH11);
+	int themTHScore[kTH12];
+	memset(themTHScore, 0, sizeof(int)*kTH12);
 	
 	// assumption is that these lists are the same length
 	for (int i = 0; i < m_UsList.size(); ++i)
@@ -189,7 +189,7 @@ void WarData::CalcTotalScores()
 	m_ThemScore = themScore;
 
 //	std::cout << "Stars earned per TH level" << std::endl;
-//	for (int i = kTH6-1; i < kTH11; ++i)
+//	for (int i = kTH6-1; i < kTH12; ++i)
 //	{
 //		std::cout << "TH(" << i+1 << ") Us: " << usTHScore[i] << " Them: " << themTHScore[i] << std::endl;
 //	}
