@@ -58,7 +58,7 @@ bool AttackRecord::isPeerAttack() const
 	const int minWgt = GetMinTHWeight(playerTH);
 	const int maxWgt = GetMaxTHWeight(playerTH);
 	
-	if (opponentWgt <= maxWgt && opponentWgt >= minWgt)
+	if ((opponentWgt <= maxWgt && opponentWgt >= minWgt) || opponentTH == playerTH)
 	{
 		return true;
 	}
