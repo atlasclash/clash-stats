@@ -147,9 +147,9 @@ protected:
 	std::string m_Name;
 	std::string m_Tag;
 	int			m_Key;
-	PlayerAttackSummary m_AttackSummary[eTownHallLevel::kTH11+1];
-	PlayerDefendSummary m_DefendSummary[eTownHallLevel::kTH11+1];
-	PlayerWarSummary m_WarSummary[eTownHallLevel::kTH11+1];
+	PlayerAttackSummary m_AttackSummary[eTownHallLevel::kTH12+1];
+	PlayerDefendSummary m_DefendSummary[eTownHallLevel::kTH12+1];
+	PlayerWarSummary m_WarSummary[eTownHallLevel::kTH12+1];
 };
 
 #endif /* Player_hpp */

@@ -110,6 +110,9 @@ bool Database::CreateDatabase()
 	char *errMsg;
 	sqlite3_open(WAR_DATABASE_NAME, &m_database);
 	int result = sqlite3_exec(m_database, CreateVersion1(), NULL, NULL, &errMsg);
+    if (result == SQLITE_OK) {
+        result = sqlite3_exec(m_database, MigrateV1toV2(), NULL, NULL, &errMsg);
+    }
 	return (result == SQLITE_OK);
 }
 

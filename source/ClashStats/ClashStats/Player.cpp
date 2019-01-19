@@ -21,6 +21,7 @@ PlayerAttackSummary::PlayerAttackSummary()
 , m_TotalStars(0)
 , m_TotalPctDmg(0)
 , m_TotalThreeStars(0)
+, m_TotalCloserStars(0)
 , m_TotalNearMiss(0)			// 95% dmg >
 , m_TotalQualityStars(0.0f)
 
@@ -29,6 +30,7 @@ PlayerAttackSummary::PlayerAttackSummary()
 , m_NumSaltStars(0)
 , m_NumSaltPctDmg(0)
 , m_NumSaltThreeStars(0)
+, m_NumSaltCloserStars(0)
 , m_NumSaltFirstAttempts(0)		// 3-star on the first attempt
 
 // same TH vs TH level
@@ -36,6 +38,7 @@ PlayerAttackSummary::PlayerAttackSummary()
 , m_NumBootStars(0)
 , m_NumBootPctDmg(0)
 , m_NumBootThreeStars(0)
+, m_NumBootCloserStars(0)
 , m_NumBootFirstAttempts(0)
 
 // player TH > opponent TH
@@ -43,6 +46,7 @@ PlayerAttackSummary::PlayerAttackSummary()
 , m_NumNukeStars(0)
 , m_NumNukePctDmg(0)
 , m_NumNukeThreeStars(0)
+, m_NumNukeCloserStars(0)
 , m_NumNukeFirstAttempts(0)
 
 // player TH < opponent TH
@@ -315,7 +319,7 @@ void Player::Reset()
 	m_AttackRecordList.clear();
 	m_DefendRecordList.clear();
 	
-	for (int i = eTownHallLevel::kTH0; i < eTownHallLevel::kTH11; ++i)
+	for (int i = eTownHallLevel::kTH0; i < eTownHallLevel::kTH12; ++i)
 	{
 		m_AttackSummary[i].Reset();
 		m_DefendSummary[i].Reset();
@@ -358,7 +362,7 @@ bool Player::Compare(const Player *p) const
 		}
 	}
 	
-	for (int i = eTownHallLevel::kTH0; i < eTownHallLevel::kTH11; ++i)
+	for (int i = eTownHallLevel::kTH0; i < eTownHallLevel::kTH12; ++i)
 	{
 		const PlayerAttackSummary attackRec1 = m_AttackSummary[i];
 		const PlayerAttackSummary attackRec2 = p->m_AttackSummary[i];
@@ -571,7 +575,7 @@ void Player::WritePlayerStatsData(std::ofstream &outputFile)
 	const std::string delimiter = ",";
 	std::string zero = "0";
 	
-	for (int thLvl = eTownHallLevel::kTH7; thLvl <= eTownHallLevel::kTH11; ++thLvl)
+	for (int thLvl = eTownHallLevel::kTH7; thLvl <= eTownHallLevel::kTH12; ++thLvl)
 	{
 		if (m_AttackSummary[thLvl].m_TotalAttacks > 0)
 		{
