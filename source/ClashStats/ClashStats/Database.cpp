@@ -185,7 +185,9 @@ const char* Database::MigrateV1toV2()
 
 const char* Database::CreateVersion1()
 {
-	return 	"DROP TABLE IF EXISTS 'Version';"
+    return  "BEGIN TRANSACTION;"
+            ""
+            "DROP TABLE IF EXISTS 'Version';"
 			"CREATE TABLE 'Version' ('version' INTEGER NOT NULL );"
 			"INSERT INTO 'Version' VALUES(1);"
 			""
@@ -239,20 +241,21 @@ const char* Database::CreateVersion1()
 										"'nuked' INTEGER,"								// nuked
 										"'totalStars' INTEGER,"							// total stars
 										"'threeStars' INTEGER );"						// three star attacks
-			""
-			"DROP TABLE IF EXISTS 'Historic';"											// table to store summary data to bootstrap missing war info
-			"CREATE TABLE 'Historic' ('pk' INTEGER PRIMARY TEXT AUTOINCREMENT,"
-										"'playerTagKey' TEXT,"
-										"'warTotal' INTEGER,"							// total wars participated
-										"'closerStars' INTEGER,"
-										"'holds' INTEGER,"
-										"'bleeds' INTEGER,"
-										"'nuked' INTEGER,"
-										"'starsTotal' INTEGER,"
-										"'threeStars' INTEGER,"
-										"'mia' INTEGER,"
-										"'scout' INTEGER );"
-	;
+            ""
+            "DROP TABLE IF EXISTS 'Historic';"                                            // table to store summary data to bootstrap missing war info
+            "CREATE TABLE 'Historic' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                        "'playerTagKey' TEXT,"
+                                        "'warTotal' INTEGER,"                            // total wars participated
+                                        "'closerStars' INTEGER,"
+                                        "'holds' INTEGER,"
+                                        "'bleeds' INTEGER,"
+                                        "'nuked' INTEGER,"
+                                        "'starsTotal' INTEGER,"
+                                        "'threeStars' INTEGER,"
+                                        "'mia' INTEGER,"
+                                        "'scout' INTEGER );"
+            ""
+            "COMMIT;";
 }
 
 void Database::WritePlayerTags(std::vector<PlayerData> list)
