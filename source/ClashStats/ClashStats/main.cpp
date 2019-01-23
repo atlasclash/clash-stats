@@ -376,7 +376,10 @@ int main(int argc, const char * argv[])
 	OPTIONS::Instantiate();
 	PARSER::Instantiate();
 	DATABASE::Instantiate();
-	DATABASE::GetInstance().OpenDatabase();
+    if (!DATABASE::GetInstance().OpenDatabase()) {
+        std::cout << "Unable to open/create database!" << std::endl;
+        return 0;
+    }
 
 	// assume second argument is a file to parse, otherwise go into interactive mode
 	if (argc != 2)

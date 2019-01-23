@@ -12,12 +12,14 @@
 
 PlayerData::PlayerData()
 : m_SpecialFlag(kSpecialNone)
+, m_CloserStars(0)
 , m_PlayerName("")
 , m_PlayerTag("")
 , m_TownHallLevel(kTH0)
-, m_CloserStars(0)
+, m_PlayerWeight(0)
 {
-	
+    m_Attacks.clear();
+    m_Defends.clear();
 }
 
 PlayerData::~PlayerData()

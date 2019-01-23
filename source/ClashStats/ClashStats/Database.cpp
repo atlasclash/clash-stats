@@ -15,7 +15,6 @@
 #include <sys/stat.h>
 #include <string>
 #include <iostream>
-#include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "sqlite3.h"
 #ifndef _WIN
@@ -65,7 +64,7 @@ int Database::GetTotalSecondsBetweenEpochAndDate(boost::gregorian::date d)
 	boost::posix_time::ptime posixTimeEpochDate(s_epoch);
 	boost::posix_time::time_duration td = posixTimeDateA - posixTimeEpochDate;
 	
-	return td.total_seconds();
+	return (int)td.total_seconds();
 }
 
 bool Database::IsDatabasePresent() const
@@ -111,6 +110,9 @@ bool Database::CreateDatabase()
 	char *errMsg;
 	sqlite3_open(WAR_DATABASE_NAME, &m_database);
 	int result = sqlite3_exec(m_database, CreateVersion1(), NULL, NULL, &errMsg);
+    if (result == SQLITE_OK) {
+        result = sqlite3_exec(m_database, MigrateV1toV2(), NULL, NULL, &errMsg);
+    }
 	return (result == SQLITE_OK);
 }
 
@@ -183,7 +185,9 @@ const char* Database::MigrateV1toV2()
 
 const char* Database::CreateVersion1()
 {
-	return 	"DROP TABLE IF EXISTS 'Version';"
+    return  "BEGIN TRANSACTION;"
+            ""
+            "DROP TABLE IF EXISTS 'Version';"
 			"CREATE TABLE 'Version' ('version' INTEGER NOT NULL );"
 			"INSERT INTO 'Version' VALUES(1);"
 			""
@@ -237,20 +241,21 @@ const char* Database::CreateVersion1()
 										"'nuked' INTEGER,"								// nuked
 										"'totalStars' INTEGER,"							// total stars
 										"'threeStars' INTEGER );"						// three star attacks
-			""
-			"DROP TABLE IF EXISTS 'Historic';"											// table to store summary data to bootstrap missing war info
-			"CREATE TABLE 'Historic' ('pk' INTEGER PRIMARY TEXT AUTOINCREMENT,"
-										"'playerTagKey' TEXT,"
-										"'warTotal' INTEGER,"							// total wars participated
-										"'closerStars' INTEGER,"
-										"'holds' INTEGER,"
-										"'bleeds' INTEGER,"
-										"'nuked' INTEGER,"
-										"'starsTotal' INTEGER,"
-										"'threeStars' INTEGER,"
-										"'mia' INTEGER,"
-										"'scout' INTEGER );"
-	;
+            ""
+            "DROP TABLE IF EXISTS 'Historic';"                                            // table to store summary data to bootstrap missing war info
+            "CREATE TABLE 'Historic' ('pk' INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                        "'playerTagKey' TEXT,"
+                                        "'warTotal' INTEGER,"                            // total wars participated
+                                        "'closerStars' INTEGER,"
+                                        "'holds' INTEGER,"
+                                        "'bleeds' INTEGER,"
+                                        "'nuked' INTEGER,"
+                                        "'starsTotal' INTEGER,"
+                                        "'threeStars' INTEGER,"
+                                        "'mia' INTEGER,"
+                                        "'scout' INTEGER );"
+            ""
+            "COMMIT;";
 }
 
 void Database::WritePlayerTags(std::vector<PlayerData> list)
