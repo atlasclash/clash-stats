@@ -508,6 +508,40 @@ void Database::ReadWarsWithUserMeta(std::vector<WarRecord> &list, std::string us
 	sqlite3_finalize(statement);
 }
 
+void Database::ReadAttackDataWithUserMeta(std::vector<AttackRecord> &list, std::string userMeta)
+{
+	std::string sql = "SELECT * FROM AttackTable WHERE warKey IN (SELECT pk FROM WarTable WHERE userMeta = ?)";
+	sqlite3_stmt *statement;
+	
+	const char *unused;
+	sqlite3_prepare_v2(m_database, sql.c_str(), (int)sql.length(), &statement, &unused);
+	
+	sqlite3_bind_text(statement, 1, userMeta.c_str(), (int)userMeta.length(), SQLITE_TRANSIENT);
+	
+	while (sqlite3_step(statement) == SQLITE_ROW)
+	{
+		AttackRecord attack;
+		
+		attack.pk			= sqlite3_column_int(statement, 0);
+		attack.playerTagPk	= std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1)));
+		attack.warPk		= sqlite3_column_int(statement, 2);
+		attack.attackNum	= sqlite3_column_int(statement, 3);
+		attack.playerTH		= sqlite3_column_int(statement, 4);
+		attack.playerWgt	= sqlite3_column_int(statement, 5);
+		attack.opponentTH	= sqlite3_column_int(statement, 6);
+		attack.opponentWgt  = sqlite3_column_int(statement, 7);
+		attack.starCount	= sqlite3_column_int(statement, 8);
+		attack.percentDmg	= sqlite3_column_int(statement, 9);
+		attack.isSalt		= (sqlite3_column_int(statement, 10) == 1) ? true : false;
+		attack.isClose		= (sqlite3_column_int(statement, 11) == 1) ? true : false;
+		attack.attemptNum	= sqlite3_column_int(statement, 12);
+		
+		list.push_back(attack);
+	}
+	
+	sqlite3_finalize(statement);
+}
+
 void Database::ReadAllAttackData(std::vector<AttackRecord> &list)
 {
 	std::string sql = "SELECT * FROM AttackTable WHERE opponentWgt > 0";

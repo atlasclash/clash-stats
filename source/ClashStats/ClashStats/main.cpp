@@ -212,6 +212,8 @@ void ui_ClanReports()
 		std::cout << "[1] User Meta"					<< std::endl;
 		std::cout << "[2] War Record"					<< std::endl;
 		std::cout << "[3] Base Close Rate"				<< std::endl;
+		std::cout << "[4] Close Rate by AttkNum"		<< std::endl;
+		std::cout << "[5] League Attack Matrix"			<< std::endl;
 		std::cout << "[9] Quit"							<< std::endl;
 		
 		std::cin >> choice;
@@ -230,6 +232,14 @@ void ui_ClanReports()
 				
 			case 3:
 				myClan.CreateBaseCloseRate();
+				break;
+				
+			case 4:
+				myClan.CreateCloseRateByAttackNumber();
+				break;
+				
+			case 5:
+				myClan.CreateLeagueAttackMatrix();
 				break;
 				
 			case 9:
@@ -303,6 +313,7 @@ bool ui_MainMenu()
 		std::cout << "[4] War Reports"					<< std::endl;
 		std::cout << "[5] Clan Reports"					<< std::endl;
 		std::cout << "[6] Player Reports"				<< std::endl;
+		std::cout << "[7] Score Graph"					<< std::endl;
 		std::cout << "[8] Options"						<< std::endl;
 		std::cout << "[9] Quit"							<< std::endl;
 		std::cin >> choice;
@@ -340,6 +351,10 @@ bool ui_MainMenu()
 
 			case 6:
 				ui_PlayerReports();
+				break;
+				
+			case 7:
+				g_WarData->ReportScoreGraph();
 				break;
 				
 			case 8:

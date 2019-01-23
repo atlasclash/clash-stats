@@ -439,3 +439,39 @@ void WarData::ReportWarningSnipe() const
 	std::cout << "Total snipes (them): " << total << std::endl;
 }
 
+void WarData::ReportScoreGraph() const
+{
+	ReportScoreGraphWithList(m_UsList);
+	ReportScoreGraphWithList(m_ThemList);
+}
+
+void WarData::ReportScoreGraphWithList(const std::vector<PlayerData> list) const
+{
+	int i = (int)list.size();
+	do
+	{
+		std::cout << "Player,Rank,TH,OppRank,OppWgt,Stars,Pct,OppTH,Close,Attempt,AttackNumber" << std::endl;
+		
+		for (int j = 0; j < list[i].GetAttacks().size(); ++j)
+		{
+			const AttackData attack = list[i].GetAttacks()[j];
+			// output the attack data
+			// player name, player id, player th, attack record ...
+			
+			PlayerData player = list[i];
+			
+			std::cout	<< player.GetPlayerName()			<< ","
+						<< i+1								<< ","
+						<< player.GetTownHallLevel()		<< ","
+						<< attack.GetTargetId()				<< ","
+						<< attack.GetOpponentWeight()		<< ","
+						<< attack.GetStars()				<< ","
+						<< attack.GetPctDamage()			<< ","
+						<< attack.GetTownHall()				<< ","
+						<< attack.IsClose()					<< ","
+						<< attack.GetAttemptNumber()		<< ","
+						<< attack.GetAttackNumber()			<< std::endl;
+		}
+		
+	} while (--i >= 0);
+}

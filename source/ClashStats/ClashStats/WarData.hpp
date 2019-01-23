@@ -75,12 +75,15 @@ public:
 	void ReportWarningNuke() const;
 	void ReportWarningSnipe() const;
 	
+	void ReportScoreGraph() const;
+	
 	bool SaveWarToDB();
 	
 protected:
 	void CalcTotalScores();
 
 	int GetTotalSecondsFromEpochOfWarDate() const;
+	void ReportScoreGraphWithList(const std::vector<PlayerData> list) const;
 	
 	int							m_WarSize;										// number of players in the war
 	std::string					m_UserDefinedMeta;								// optional field for meta-data

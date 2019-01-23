@@ -170,6 +170,7 @@ void ParserV2::ProcessWar(WarData *warData)
 		// they are attacking us
 		else if (cellResults[FIELD_ATTACK_THEM_STARS].length() && cellResults[FIELD_ATTACK_THEM_PCT].length())
 		{
+			int attackNumber		= atoi(cellResults[FIELD_ATTACK_NUM].c_str());
 			int opponentId			= atoi(cellResults[FIELD_ATTACK_THEM_INDEX].c_str());
 			int stars				= atoi(cellResults[FIELD_ATTACK_THEM_STARS].c_str());
 			int pct					= atoi(cellResults[FIELD_ATTACK_THEM_PCT].c_str());
@@ -183,11 +184,20 @@ void ParserV2::ProcessWar(WarData *warData)
 			
 			eTownHallLevel usTH		= warData->GetUsTHLevel(usId);
 			eTownHallLevel oppTH 	= warData->GetThemTHLevel(opponentId);
-			
+
 			const PlayerData *them  = warData->GetThem(opponentId);
+			assert(them != NULL);
 			
+			const PlayerData *opponent = warData->GetUs(opponentId);
+			assert(opponent != NULL);
+			
+			int oppWgt				= opponent->GetPlayerWeight();
+			bool isSalt				= false;
+			bool isCloseAttk		= (!opponent->IsClosed() && stars == AttackData::kThreeStar);
+			int attemptNum			= (int)opponent->GetDefendCount() + 1;
+			
+			const AttackData *themAttack = new AttackData(usId, (AttackData::StarType)stars, pct, usTH, isSalt, isCloseAttk, attemptNum, attackNumber, oppWgt);
 			const AttackData *usDefend = new AttackData(opponentId, (AttackData::StarType)stars, pct, oppTH, them->GetPlayerWeight());
-			const AttackData *themAttack = new AttackData(usId, (AttackData::StarType)stars, pct, usTH);
 			warData->AddUsDefend(usDefend, usId);
 			warData->AddThemAttack(themAttack, opponentId);
 		}

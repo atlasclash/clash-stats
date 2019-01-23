@@ -160,6 +160,112 @@ void Clan::CreateBaseCloseRate()
 	}
 }
 
+void Clan::CreateCloseRateByAttackNumber()
+{
+	Reset();
+	
+	// Get all attacks
+	std::vector<AttackRecord> attackList;
+	DATABASE::GetInstance().ReadAllAttackData(attackList);
+	
+	struct tmpStruct
+	{
+		int stars;
+		int destruction;
+		int count;
+	};
+	
+	std::map<int, tmpStruct> starsPerAttempt;
+	
+	for (int i = 0; i < attackList.size(); ++i)
+	{
+		const AttackRecord ar = attackList[i];
+		if (ar.opponentTH != ar.playerTH)
+			continue;
+		
+		if (starsPerAttempt.find(ar.attemptNum) == starsPerAttempt.end())
+		{
+			tmpStruct attk;
+			attk.stars = ar.starCount;
+			attk.destruction = ar.percentDmg;
+			attk.count++;
+			starsPerAttempt[ar.attemptNum] = attk;
+		}
+		else
+		{
+			tmpStruct totalAttk = starsPerAttempt[ar.attemptNum];
+			totalAttk.stars += ar.starCount;
+			totalAttk.destruction += ar.percentDmg;
+			totalAttk.count++;
+			starsPerAttempt[ar.attemptNum] = totalAttk;
+		}
+	}
+	
+	std::map<int, tmpStruct>::iterator it = starsPerAttempt.begin();
+	std::cout << "Close Rate Per Attempt" << std::endl;
+	std::cout << "Attempt - Avg Stars - Avg Destruction" << std::endl;
+	while (it != starsPerAttempt.end())
+	{
+		tmpStruct s = it->second;
+		std::cout << it->first << " " << (float)((float)s.stars / (float)s.count) << " " << s.destruction / s.count << " " << s.count << std::endl;
+		it++;
+	}
+}
+
+// SELECT * FROM AttackTable WHERE playerTH = 11 AND opponentTH = 9 AND attemptNum = 1 AND warKey IN (SELECT pk FROM WarTable WHERE userMeta='LEAGUE');
+void Clan::CreateLeagueAttackMatrix()
+{
+	Reset();
+
+	struct peerStruct
+	{
+		int attacks;
+		int closes;
+	};
+	
+	std::map<int, peerStruct> freshPeerAttacks;
+	
+	std::vector<AttackRecord> attackList;
+	DATABASE::GetInstance().ReadAttackDataWithUserMeta(attackList, "LEAGUE");
+
+	for (int i = 0; i < attackList.size(); ++i)
+	{
+		const AttackRecord ar = attackList[i];
+		
+		// Fresh attempt
+		if (ar.attemptNum == 1)
+		{
+			if (ar.isPeerAttack())
+			{
+				if (freshPeerAttacks.find(ar.playerTH) == freshPeerAttacks.end())
+				{
+					peerStruct tmp;
+					tmp.attacks = 1;
+					tmp.closes = (ar.starCount == 3) ? 1 : 0;
+					freshPeerAttacks[ar.playerTH] = tmp;
+				}
+				else
+				{
+					peerStruct totPeerAttacks = freshPeerAttacks[ar.playerTH];
+					totPeerAttacks.attacks++;
+					if (ar.starCount == 3)
+					{
+						totPeerAttacks.closes++;
+					}
+					freshPeerAttacks[ar.playerTH] = totPeerAttacks;
+				}
+			}
+		}
+		// "Scouted"
+		else
+		{
+			
+		}
+	}
+	
+	printf("");
+}
+
 void Clan::CreateClanWithUserMeta(std::string userMeta)
 {
 	Reset();

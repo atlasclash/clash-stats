@@ -24,6 +24,8 @@ public:
 	void CreateClanWithUserMeta(std::string userMeta);
 	void CreateWarRecord();
 	void CreateBaseCloseRate();
+	void CreateCloseRateByAttackNumber();
+	void CreateLeagueAttackMatrix();
 	
 	void Reset();
 	
