@@ -10,14 +10,18 @@
 #include "StringHelpers.hpp"
 #include "ParserV1.hpp"
 #include "ParserV2.hpp"
+#include "Constants.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <string>
 #include <vector>
 
-#define VERSION_ONE		(1)
-#define VERSION_TWO		(2)
+#define VERSION_ONE		    (1)
+#define VERSION_TWO		    (2)
+#define CWL_MODE            ("CWL")
+#define REGULAR_WAR_MODE    ("REG")
+#define RESERVED            ("reserved")
 
 Parser* ParserFactory::getParserForFile(const char *fileName)
 {
@@ -46,6 +50,18 @@ Parser* ParserFactory::getParserForFile(const char *fileName)
 	{
 		return new ParserV2(fileName);
 	}
+    
+    if (lineData[2].c_str() == CWL_MODE)
+    {
+        SetMaxStarsPerWar(3);
+        SetMaxPlayerAttacks(1);
+    }
+    else if (lineData[2].c_str() == REGULAR_WAR_MODE ||
+             lineData[2].c_str() == RESERVED)
+    {
+        SetMaxStarsPerWar(6);
+        SetMaxPlayerAttacks(2);
+    }
 
 	return NULL;
 }

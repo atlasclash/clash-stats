@@ -27,7 +27,6 @@ enum eTownHallLevel
     kTH12,
 };
 
-#define MAX_STARS_PER_WAR			(6)
 #define MAX_STARS_PER_ATTACK		(3)
 #define MIN_STARS_PER_ATTACK		(0)
 
@@ -54,5 +53,11 @@ int GetMaxTHWeight(const int thLvl);
  */
 int GetMinTHWeight(const int thLvl);
 
+
+void SetMaxPlayerAttacks(const int maxAttacks);
+int GetMaxPlayerAttacks();
+
+void SetMaxStarsPerWar(const int maxStarsPerWar);
+int GetMaxStarsPerWar();
 
 #endif /* Constants_h */

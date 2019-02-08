@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include "Constants.h"
 
+int MAX_STARS_PER_WAR   = 6;
+int MAX_PLAYER_ATTACKS  = 2;
+
 int GetMaxTHWeight(const int thLvl)
 {
 	switch (thLvl)
@@ -37,4 +40,24 @@ int GetMinTHWeight(const int thLvl)
 		case kTH7:
 		default:			return 0;
 	}
+}
+
+void SetMaxPlayerAttacks(const int maxAttacks)
+{
+    MAX_PLAYER_ATTACKS = maxAttacks;
+}
+
+int GetMaxPlayerAttacks()
+{
+    return MAX_PLAYER_ATTACKS;
+}
+
+void SetMaxStarsPerWar(const int maxStarsPerWar)
+{
+    MAX_STARS_PER_WAR = maxStarsPerWar;
+}
+
+int GetMaxStarsPerWar()
+{
+    return MAX_STARS_PER_WAR;
 }

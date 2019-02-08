@@ -15,8 +15,6 @@
 #include "DataObject.hpp"
 #include "AttackData.hpp"
 
-#define MAX_PLAYER_ATTACKS		(2)
-
 class PlayerData : public DataObject
 {
 public:

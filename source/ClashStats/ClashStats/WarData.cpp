@@ -131,17 +131,17 @@ void WarData::CalcCloserStars()
 	{
 		if (OPTIONS::GetInstance().parser_Check_Player_Totals)
 		{
-			if (closerStars[i] > MAX_STARS_PER_WAR)
+			if (closerStars[i] > GetMaxStarsPerWar())
 			{
 				std::cout << "Warning: closer stars exceeded for " << m_UsList[i].GetPlayerName() << std::endl;
 			}
 			
-			if (m_UsList[i].GetTotalStars() > MAX_STARS_PER_WAR)
+			if (m_UsList[i].GetTotalStars() > GetMaxStarsPerWar())
 			{
 				std::cout << "Warning: max stars exceeded for " << m_UsList[i].GetPlayerName() << std::endl;
 			}
 			
-			if (m_UsList[i].GetAttackCount() > MAX_PLAYER_ATTACKS)
+			if (m_UsList[i].GetAttackCount() > GetMaxPlayerAttacks())
 			{
 				std::cout << "Warning: max attacks per player exceeded for " << m_UsList[i].GetPlayerName() << std::endl;
 			}
@@ -358,7 +358,7 @@ void WarData::ReportWarningMissingInAction() const
 {
 	for (int i = 0; i < m_UsList.size(); ++i)
 	{
-		if (m_UsList[i].GetAttackCount() < MAX_PLAYER_ATTACKS)
+		if (m_UsList[i].GetAttackCount() < GetMaxPlayerAttacks())
 		{
 			std::cout << "MIA: " << m_UsList[i].GetPlayerName() << " attacks " << m_UsList[i].GetAttackCount() << std::endl;
 		}
