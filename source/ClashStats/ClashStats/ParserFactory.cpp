@@ -55,12 +55,14 @@ Parser* ParserFactory::getParserForFile(const char *fileName)
     {
         SetMaxStarsPerWar(3);
         SetMaxPlayerAttacks(1);
+        SetWarMode(kCWL);
     }
     else if (lineData[2].c_str() == REGULAR_WAR_MODE ||
              lineData[2].c_str() == RESERVED)
     {
         SetMaxStarsPerWar(6);
         SetMaxPlayerAttacks(2);
+        SetWarMode(kRegular);
     }
 
 	return NULL;

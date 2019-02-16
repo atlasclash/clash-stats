@@ -54,6 +54,15 @@ bool Parser::CheckDataRanges(const int opponentId, const int usId, const int sta
 	
 	if (pct < MIN_PCT_DAMAGE || pct > MAX_PCT_DAMAGE)
 		return false;
+    
+    if (stars == 2 && pct < 50)
+        return false;
 	
+    // special checks for Clan War Leagues
+    if (GetWarMode() == kCWL)
+    {
+        
+    }
+    
 	return true;
 }

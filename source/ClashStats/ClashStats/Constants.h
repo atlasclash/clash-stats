@@ -36,6 +36,12 @@ enum eTownHallLevel
 
 #define MIN_ATTACKER_ID				(1)
 
+enum eWarMode
+{
+    kRegular = 0,
+    kCWL
+};
+
 /**
  Get the maximum war weight by townhall level
 
@@ -59,5 +65,8 @@ int GetMaxPlayerAttacks();
 
 void SetMaxStarsPerWar(const int maxStarsPerWar);
 int GetMaxStarsPerWar();
+
+void SetWarMode(const int warMode);
+int GetWarMode();
 
 #endif /* Constants_h */

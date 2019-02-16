@@ -365,6 +365,25 @@ void WarData::ReportWarningMissingInAction() const
 	}
 }
 
+void WarData::CheckDataRanges() const
+{
+    for (int i = 0; i < m_UsList.size(); ++i)
+    {
+        if (m_UsList[i].GetAttackCount() > GetMaxPlayerAttacks())
+        {
+            std::cout << "Us: Too many attacks " << m_UsList[i].GetPlayerName() << std::endl;
+        }
+    }
+    
+    for (int i = 0; i < m_ThemList.size(); ++i)
+    {
+        if (m_ThemList[i].GetAttackCount() > GetMaxPlayerAttacks())
+        {
+            std::cout << "Opponent: Too many attacks " << i << std::endl;
+        }
+    }
+}
+
 void WarData::ReportWarningNuke() const
 {
 	// us nukes

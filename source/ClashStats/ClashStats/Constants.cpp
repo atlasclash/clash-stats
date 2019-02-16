@@ -11,6 +11,7 @@
 
 int MAX_STARS_PER_WAR   = 6;
 int MAX_PLAYER_ATTACKS  = 2;
+int gWarMode = kRegular;
 
 int GetMaxTHWeight(const int thLvl)
 {
@@ -60,4 +61,14 @@ void SetMaxStarsPerWar(const int maxStarsPerWar)
 int GetMaxStarsPerWar()
 {
     return MAX_STARS_PER_WAR;
+}
+
+void SetWarMode(const int warMode)
+{
+    gWarMode = warMode;
+}
+
+int GetWarMode()
+{
+    return gWarMode;
 }

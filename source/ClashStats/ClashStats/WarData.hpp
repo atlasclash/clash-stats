@@ -76,6 +76,8 @@ public:
 	void ReportWarningSnipe() const;
 	
 	bool SaveWarToDB();
+    
+    void CheckDataRanges() const;
 	
 protected:
 	void CalcTotalScores();
