@@ -33,6 +33,7 @@ enum eTownHallLevel
 #define MIN_PCT_DAMAGE				(0)
 #define MAX_PCT_DAMAGE				(100)
 #define NEAR_MISS_PCT_THRESHOLD		(95)
+#define LOW_PCT_WARNING_THRESHOLD   (25)
 
 #define MIN_ATTACKER_ID				(1)
 

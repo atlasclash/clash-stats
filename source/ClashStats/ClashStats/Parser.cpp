@@ -8,6 +8,7 @@
 
 #include "Parser.hpp"
 #include <sstream>
+#include <iostream>
 #include "StringHelpers.hpp"
 #include "Constants.h"
 
@@ -57,6 +58,11 @@ bool Parser::CheckDataRanges(const int opponentId, const int usId, const int sta
     
     if (stars == 2 && pct < 50)
         return false;
+    
+    if (pct < LOW_PCT_WARNING_THRESHOLD)
+    {
+        std::cout << "Warning: Low damage - Opponent:" << opponentId << " Us:" << usId << " Pct: " << pct << " Stars: " << stars << std::endl;
+    }
 	
     // special checks for Clan War Leagues
     if (GetWarMode() == kCWL)
